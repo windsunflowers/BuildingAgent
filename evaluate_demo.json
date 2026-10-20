@@ -1,0 +1,41 @@
+[
+  {
+    "question": "哪些设备向 VAVRM2220B 供风？",
+    "gold_count": 1,
+    "pred_count": 0,
+    "exact_match": 0,
+    "f1": 0.0,
+    "relation_mismatch": false,
+    "pred_sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?upstreamType WHERE { ?vav rdf:type/rdfs:subClassOf* brick:Air_Terminal_Unit . ?upstream brick:feeds ?vav . ?upstream rdf:type ?upstreamType . }",
+    "gold_sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX ns2: <http://buildsys.org/ontologies/bldg11#> SELECT ?equip WHERE { ?equip brick:feeds ns2:VAVRM2220B }",
+    "steps": 15,
+    "elapsed_sec": 145.0,
+    "error": null
+  },
+  {
+    "question": "AHU03 向哪个 VAV 供风？",
+    "gold_count": 1,
+    "pred_count": 0,
+    "exact_match": 0,
+    "f1": 0.0,
+    "relation_mismatch": false,
+    "pred_sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?vav WHERE { ?ahu rdf:type/rdfs:subClassOf* brick:AHU . ?vav rdf:type/rdfs:subClassOf* brick:VAV_Box . ?ahu brick:feeds ?vav . }",
+    "gold_sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX ns2: <http://buildsys.org/ontologies/bldg11#> SELECT ?vav WHERE { ns2:AHU03 brick:feeds ?vav }",
+    "steps": 12,
+    "elapsed_sec": 107.5,
+    "error": null
+  },
+  {
+    "question": "哪些 VAV 为 HVAC 区域供风？",
+    "gold_count": 0,
+    "pred_count": 0,
+    "exact_match": 1,
+    "f1": 1.0,
+    "relation_mismatch": false,
+    "pred_sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nSELECT ?vav WHERE {\n    ?vav rdf:type/rdfs:subClassOf* brick:Variable_Air_Volume_Box .\n    ?zone rdf:type/rdfs:subClassOf* brick:Zone .\n    ?zone brick:hasPart ?vav .\n}",
+    "gold_sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#> SELECT ?vav ?zone WHERE { ?vav a brick:VAV . ?vav brick:feeds ?zone . ?zone a brick:HVAC_Zone }",
+    "steps": 15,
+    "elapsed_sec": 141.1,
+    "error": null
+  }
+]

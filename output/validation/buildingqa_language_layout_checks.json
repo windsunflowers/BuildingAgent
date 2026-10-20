@@ -1,0 +1,43 @@
+{
+  "metric_reference": {
+    "protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b",
+    "source": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\third_party\\buildingqa\\metrics.py",
+    "metrics": [
+      "entity_set_f1",
+      "row_matching_f1",
+      "exact_match_f1"
+    ],
+    "duplicates": "preserved",
+    "column_mapping": "one global mapping, optimized for Row Matching F1",
+    "exact_match_f1": "fixed column positions, one-to-one row matching; not binary EM",
+    "aggregation": "question mean and separate building macro average",
+    "model_failure": "zero",
+    "gold_failure": "invalid comparable summary",
+    "cancelled_question": "not scored; incomplete run"
+  },
+  "supplied_source_ast_equal": true,
+  "historical_run_language": "zh",
+  "scored_questions_checked": 24,
+  "failed_questions_kept_at_zero": 6,
+  "max_score_difference": 0,
+  "summary_matches": true,
+  "original_report_sha256": "f13ac6cb4d54712214189152b841ead1d8d5ca28586a6335623f512ded8c1fb7",
+  "original_report_unchanged": true,
+  "new_model_calls": 0,
+  "ui": {
+    "englishPurposes": true,
+    "feedback": [
+      "t ; ref:hasExternalReference/ref:hasTimeseriesId ?timeseriesId . }\n\nNo results. Status: empty_result",
+      "\"Max_Air_Temperature_Setpoint\"\n\nNo results found."
+    ],
+    "horizontalOverflow": false,
+    "pageHeight": 5446,
+    "resultHeight": 4770,
+    "resultOverflow": "visible",
+    "resultScrollHeight": 4770,
+    "scrollY": 2287.333251953125,
+    "viewport": 871
+  },
+  "offline_tests_passed": 92
+}

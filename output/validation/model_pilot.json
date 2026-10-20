@@ -1,0 +1,19 @@
+{
+  "question": "For each zone, what is the timeseries ID of its temperature sensor, and what is the zone’s IFC reference?",
+  "building": "TUC_building",
+  "mode": "paper",
+  "context": 0,
+  "model": "qwen-plus",
+  "gold_sparql": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX om: <http://openmetrics.eu/openmetrics#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nSELECT DISTINCT ?ZoneID ?point WHERE {\n    ?temp a brick:Temperature_Sensor;\n    ref:hasExternalReference/ref:hasTimeseriesId ?point.\n    ?zone a brick:Zone ; brick:hasPart ?space ;\n    ref:hasExternalReference ?zoneRef.\n    ?zoneRef a ref:IFCReference ;\n    ref:ifcName ?ZoneID .\n    ?space brick:isLocationOf/brick:hasPoint ?temp .\n}",
+  "gold_rows": 18,
+  "exact_match": 0,
+  "row_matching_f1": 0.0,
+  "entity_set_f1": 0.0,
+  "f1": 0.0,
+  "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX om: <http://openmetrics.eu/openmetrics#>\nPREFIX s4bldg: <https://saref.etsi.org/saref4bldg#>\nPREFIX s4ener: <https://saref.etsi.org/saref4ener#>\nPREFIX saref: <https://saref.etsi.org/core#>\nPREFIX schema1: <http://schema.org#>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nSELECT ?zoneName ?timeseriesId WHERE {\n    ?zone rdf:type brick:Zone ;\n          ref:hasExternalReference/ref:ifcName ?zoneName ;\n          brick:hasPoint ?sensor .\n    ?sensor rdf:type brick:Zone_Air_Temperature_Sensor ;\n            ref:hasExternalReference/ref:hasTimeseriesId ?timeseriesId .\n}",
+  "pred_rows": 0,
+  "actions": 9,
+  "tokens": 84033,
+  "status": "done",
+  "elapsed_seconds": 96.73
+}

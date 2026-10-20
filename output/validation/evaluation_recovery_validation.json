@@ -1,0 +1,8 @@
+{
+  "offlineTestsPassed": 61,
+  "benchmark": "benchmarks/bldg11_human.jsonl",
+  "current": "当前第 2/5 题 · 模型正在选择下一步 · 27.5s · 1 个动作\nOffline UI fixture — no model request",
+  "fixture": true,
+  "progress": "评测中 1/5 · BrickQA 作者方法 · 49d9e28",
+  "restoredAfterReload": true
+}

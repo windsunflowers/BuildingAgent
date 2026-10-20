@@ -1,0 +1,142 @@
+{
+  "status": "done",
+  "summary": {
+    "total": 2,
+    "done": 2,
+    "errors": 1,
+    "gold_errors": 0,
+    "model_errors": 1,
+    "valid": true,
+    "complete": true,
+    "metric_protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "entity_set_f1": 0.3333333333333333,
+    "row_matching_f1": 0.3333333333333333,
+    "exact_match_f1": 0.3333333333333333,
+    "by_building": {
+      "offline_fixture": {
+        "total": 2,
+        "entity_set_f1": 0.3333333333333333,
+        "row_matching_f1": 0.3333333333333333,
+        "exact_match_f1": 0.3333333333333333
+      }
+    },
+    "building_macro": {
+      "entity_set_f1": 0.3333333333333333,
+      "row_matching_f1": 0.3333333333333333,
+      "exact_match_f1": 0.3333333333333333
+    }
+  },
+  "results": [
+    {
+      "question": "Offline regression: partial answer (no model call)",
+      "query_id": null,
+      "question_source": null,
+      "building": "offline_fixture",
+      "language": "en",
+      "mode": "paper",
+      "gold_sparql": "SELECT ?x WHERE { VALUES ?x { \"A\" \"B\" } }",
+      "pred_sparql": "SELECT ?x WHERE { VALUES ?x { \"A\" } }",
+      "gold_count": 2,
+      "pred_count": 1,
+      "entity_set_f1": 0.6666666666666666,
+      "row_matching_f1": 0.6666666666666666,
+      "exact_match_f1": 0.6666666666666666,
+      "execution_accuracy_binary": 0,
+      "steps": 1,
+      "elapsed_sec": 0.094,
+      "error": null,
+      "status": "done",
+      "relation_mismatch": false,
+      "gold_rows": [
+        {
+          "x": "A"
+        },
+        {
+          "x": "B"
+        }
+      ],
+      "exact_match": 0,
+      "f1": 0.6666666666666666,
+      "pred_rows": [
+        {
+          "x": "A"
+        }
+      ],
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "decomposition": null,
+      "decomposition_fallback": false,
+      "actions": [
+        {
+          "thought": "Offline fixture; no model call",
+          "action_name": "stop",
+          "action_argument": "",
+          "observation": null
+        }
+      ],
+      "stop_reason": "stop"
+    },
+    {
+      "question": "Offline regression: simulated model failure (no model call)",
+      "query_id": null,
+      "question_source": null,
+      "building": "offline_fixture",
+      "language": "en",
+      "mode": "paper",
+      "gold_sparql": "SELECT ?x WHERE { VALUES ?x { \"A\" \"B\" } }",
+      "pred_sparql": null,
+      "gold_count": 2,
+      "pred_count": null,
+      "entity_set_f1": 0.0,
+      "row_matching_f1": 0.0,
+      "exact_match_f1": 0.0,
+      "execution_accuracy_binary": 0,
+      "steps": null,
+      "elapsed_sec": 0.015,
+      "error": "RuntimeError: Simulated model failure for offline UI regression",
+      "status": "error",
+      "relation_mismatch": null,
+      "gold_rows": [
+        {
+          "x": "A"
+        },
+        {
+          "x": "B"
+        }
+      ]
+    }
+  ],
+  "error": null,
+  "metric_protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+  "configuration": {
+    "language": "en",
+    "context": 0,
+    "mode": "paper",
+    "model": "offline-test (no API calls)",
+    "benchmark": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\tmp\\ui_metric_fixture\\offline_metric_regression.jsonl",
+    "graph": {
+      "building": "offline_fixture",
+      "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\tmp\\ui_metric_fixture\\buildings\\offline_fixture.ttl",
+      "csv": null,
+      "triples": 1,
+      "total_triples": 50088,
+      "sensors": 1,
+      "sample": false,
+      "timeseries": {
+        "rows": 0,
+        "available_rows": 0,
+        "truncated": false,
+        "unmatched_columns": []
+      },
+      "warnings": [],
+      "loaded_at": "2026-10-20T14:00:51.562456"
+    },
+    "temporal": false,
+    "operations": false,
+    "timeout": 150
+  },
+  "report_path": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\tmp\\ui_metric_fixture\\output\\evaluations\\e64b8eab86b4548ddb221c38939361efd\\report.json"
+}

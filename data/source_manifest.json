@@ -1,0 +1,39 @@
+{
+  "repository": "https://github.com/INFERLab/BuildingQA",
+  "commit": "b792a627419dfb679ad1f26e4d3dc325a758e95b",
+  "files": [
+    {
+      "path": "data\\buildings\\bldg11.ttl",
+      "upstream": "eval_buildings/bldg11.ttl",
+      "sha256": "babd99b4df631a0af8180ef1dab00e24c147592a86636167993a7d3792046c30",
+      "triples": 62578
+    },
+    {
+      "path": "data\\buildings\\TUC_building.ttl",
+      "upstream": "eval_buildings/TUC_building.ttl",
+      "sha256": "3b2d34c9c6fcca4b880f3102d04ddade3bc70ab9a95a7400bc9af3db8316434d",
+      "triples": 1855
+    },
+    {
+      "path": "data\\buildings\\dflexlibs_multizone.ttl",
+      "upstream": "eval_buildings/dflexlibs_multizone.ttl",
+      "sha256": "c7ece2015748f357e8294141bc5494e00c41d5933b74653a4f849dc274fd885e",
+      "triples": 629
+    },
+    {
+      "path": "data\\benchmarks\\TUC_building_combined.json",
+      "upstream": "Benchmark_QA_pairs/TUC_building_combined.json",
+      "sha256": "5073c1220ba708bb8944043baf3b7102c9c8e5163bd6f01f969788f17d91d95e"
+    },
+    {
+      "path": "data\\benchmarks\\bldg11_combined.json",
+      "upstream": "Benchmark_QA_pairs/bldg11_combined.json",
+      "sha256": "3c1641b817e5b0458ec7c86fc30463e9c9c904b6599dd916435d979074b4fc82"
+    },
+    {
+      "path": "data\\benchmarks\\dflexlibs_multizone_combined.json",
+      "upstream": "Benchmark_QA_pairs/dflexlibs_multizone_combined.json",
+      "sha256": "552ea2e9733e3adebe119a5faa8ceeda9c3f8ccc75012ebef3866935ee1bdb28"
+    }
+  ]
+}

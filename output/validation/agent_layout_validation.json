@@ -1,0 +1,54 @@
+{
+  "agentLabel": "Agent · dynamic exploration",
+  "agentOnly": true,
+  "history": [
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    },
+    {
+      "content": 189,
+      "fits": true,
+      "width": 189
+    }
+  ],
+  "pageFits": true,
+  "agentRequestMode": "paper",
+  "requestVerifiedWithOfflineFixture": true
+}

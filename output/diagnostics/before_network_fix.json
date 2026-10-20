@@ -1,0 +1,1104 @@
+{
+  "status": {
+    "graph": {
+      "building": "TUC_building",
+      "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+      "csv": null,
+      "triples": 1855,
+      "total_triples": 51942,
+      "sensors": 36,
+      "sample": false,
+      "timeseries": {
+        "rows": 0,
+        "available_rows": 0,
+        "truncated": false,
+        "unmatched_columns": []
+      },
+      "warnings": [],
+      "loaded_at": "2026-10-07T18:09:21.676158"
+    },
+    "running": false,
+    "active_task_id": null,
+    "evaluating": false,
+    "loading": false,
+    "llm_ready": true,
+    "model": "qwen-plus",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  "tasks": [
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU（1跳）",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "tfe385b7883674dd58f2a9697a848771b",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.03
+    },
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU（1跳）",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "tfcaacb77912b45779aa20ad37010ded1",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.03
+    },
+    {
+      "status": "error",
+      "question": "有多少传感器？",
+      "actions": [],
+      "decomposition": {
+        "sensors": [],
+        "sensor_count": 0,
+        "temporal": {
+          "has_constraint": false,
+          "type": "none",
+          "details": {}
+        },
+        "aggregation": {
+          "required": false,
+          "operations": []
+        },
+        "query_intent": "Mock decomposition of: 有多少传感器？"
+      },
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "te56544c6f32e4ec88854e812ccdf9ce7",
+      "graph": {
+        "building": "TUC_building",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+        "csv": null,
+        "triples": 1855,
+        "total_triples": 51942,
+        "sensors": 36,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:09:21.676158"
+      },
+      "elapsed_seconds": 4.05
+    },
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "tdcf0053731c1435d9718b6fae7cc7b35",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.05
+    },
+    {
+      "status": "done",
+      "question": "楼里有哪些温度传感器？",
+      "actions": [
+        {
+          "step": 1,
+          "thought": "按当前图谱的类型和实际关系生成查询",
+          "action_name": "execute_sparql",
+          "action_argument": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX om: <http://openmetrics.eu/openmetrics#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s4bldg: <https://saref.etsi.org/saref4bldg#>\nPREFIX s4ener: <https://saref.etsi.org/saref4ener#>\nPREFIX saref: <https://saref.etsi.org/core#>\nPREFIX schema1: <http://schema.org#>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nSELECT DISTINCT ?entity WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Temperature_Sensor }",
+          "observation": "                                                      entity\nhttp://openmetrics.eu/openmetrics#RC04N0047_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0054_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0043_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0050_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0048_TempSensingPoint\n... (8 rows omitted) ...\nhttp://openmetrics.eu/openmetrics#RC04N0057_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0046_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0053_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0042_TempSensingPoint\nhttp://openmetrics.eu/openmetrics#RC04N0058_TempSensingPoint"
+        },
+        {
+          "step": 2,
+          "thought": "查询执行完成",
+          "action_name": "stop",
+          "action_argument": "",
+          "observation": "完成"
+        }
+      ],
+      "decomposition": null,
+      "generated_sparqls": [
+        {
+          "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX om: <http://openmetrics.eu/openmetrics#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s4bldg: <https://saref.etsi.org/saref4bldg#>\nPREFIX s4ener: <https://saref.etsi.org/saref4ener#>\nPREFIX saref: <https://saref.etsi.org/core#>\nPREFIX schema1: <http://schema.org#>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nSELECT DISTINCT ?entity WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Temperature_Sensor }",
+          "status": "SUCCESS",
+          "num_results": 18
+        }
+      ],
+      "final_sparql": {
+        "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX om: <http://openmetrics.eu/openmetrics#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s4bldg: <https://saref.etsi.org/saref4bldg#>\nPREFIX s4ener: <https://saref.etsi.org/saref4ener#>\nPREFIX saref: <https://saref.etsi.org/core#>\nPREFIX schema1: <http://schema.org#>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nSELECT DISTINCT ?entity WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Temperature_Sensor }",
+        "status": "SUCCESS",
+        "num_results": 18,
+        "results": [
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0047_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0054_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0043_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0050_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0048_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0055_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0044_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0051_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0049_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0056_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0045_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0052_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0041_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0057_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0046_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0053_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0042_TempSensingPoint"
+          },
+          {
+            "entity": "http://openmetrics.eu/openmetrics#RC04N0058_TempSensingPoint"
+          }
+        ],
+        "warnings": [],
+        "error": null
+      },
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": null,
+      "phase": "完成",
+      "mode": "local",
+      "warnings": [],
+      "task_id": "td09b569b50474cbeb1f4d4eace0d4622",
+      "graph": {
+        "building": "TUC_building",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+        "csv": null,
+        "triples": 1855,
+        "total_triples": 51942,
+        "sensors": 36,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:06:48.397695"
+      },
+      "elapsed_seconds": 0.02
+    },
+    {
+      "status": "error",
+      "question": "楼里有哪些温度传感器？",
+      "actions": [],
+      "decomposition": {
+        "sensors": [],
+        "sensor_count": 0,
+        "temporal": {
+          "has_constraint": false,
+          "type": "none",
+          "details": {}
+        },
+        "aggregation": {
+          "required": false,
+          "operations": []
+        },
+        "query_intent": "Mock decomposition of: 楼里有哪些温度传感器？"
+      },
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "tca67d089f74245f5892ce7d0435af9cb",
+      "graph": {
+        "building": "TUC_building",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+        "csv": null,
+        "triples": 1855,
+        "total_triples": 51942,
+        "sensors": 36,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:09:21.676158"
+      },
+      "elapsed_seconds": 4.06
+    },
+    {
+      "status": "error",
+      "question": "楼里有哪些温度传感器？",
+      "actions": [],
+      "decomposition": {
+        "sensors": [],
+        "sensor_count": 0,
+        "temporal": {
+          "has_constraint": false,
+          "type": "none",
+          "details": {}
+        },
+        "aggregation": {
+          "required": false,
+          "operations": []
+        },
+        "query_intent": "Mock decomposition of: 楼里有哪些温度传感器？"
+      },
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "t9e209d7e094d4458b2ad91c49c1822d6",
+      "graph": {
+        "building": "TUC_building",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+        "csv": null,
+        "triples": 1855,
+        "total_triples": 51942,
+        "sensors": 36,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:09:21.676158"
+      },
+      "elapsed_seconds": 4.16
+    },
+    {
+      "status": "error",
+      "question": "Perception and Risk-Adaptive Navigation for Mobile Robots我们的主题是这个，我们想从优化导航的方面深入研究写一个proposal，帮我找相关论文，并给出简要概括和推荐理由，以最新的为主",
+      "actions": [],
+      "decomposition": {
+        "sensors": [],
+        "sensor_count": 0,
+        "temporal": {
+          "has_constraint": false,
+          "type": "none",
+          "details": {}
+        },
+        "aggregation": {
+          "required": false,
+          "operations": []
+        },
+        "query_intent": "Mock decomposition of: Perception and Risk-Adaptive Navigation for Mobile Robots我们的主题是这个，我们想从优化导航的方面深入研究写一个proposal，帮我找相关论文，并给出简要概括和推荐理由，以最新的为主"
+      },
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "t94856dde98d84ecbbf207eb4934782da",
+      "graph": {
+        "building": "TUC_building",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+        "csv": null,
+        "triples": 1855,
+        "total_triples": 51942,
+        "sensors": 36,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:09:21.676158"
+      },
+      "elapsed_seconds": 4.16
+    },
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "t86a985f1a20c4ee1b811c4f7ec20ce29",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.06
+    },
+    {
+      "status": "done",
+      "question": "楼里有哪些温度传感器？",
+      "actions": [
+        {
+          "step": 1,
+          "thought": "按当前图谱的类型和实际关系生成查询",
+          "action_name": "execute_sparql",
+          "action_argument": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT DISTINCT ?entity WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Temperature_Sensor }",
+          "observation": "                                                                entity\n http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU05.Mixed_Air_Temp\n http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU06.Mixed_Air_Temp\n http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU07.Mixed_Air_Temp\n http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU08.Mixed_Air_Temp\nhttp://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU05.Return_Air_Temp\n... (502 rows omitted) ...\nhttp://buildsys.org/ontologies/bldg11#bldg11.CHW.Building_Chilled_Water_Return_Temp\n    http://buildsys.org/ontologies/bldg11#bldg11.CHW.Loop_Chilled_Water_Return_Temp\n http://buildsys.org/ontologies/bldg11#bldg11.CHW.Building_Chilled_Water_Delta_Temp\nhttp://buildsys.org/ontologies/bldg11#bldg11.CHW.Building_Chilled_Water_Supply_Temp\n    http://buildsys.org/ontologies/bldg11#bldg11.CHW.Loop_Chilled_Water_Supply_Temp"
+        },
+        {
+          "step": 2,
+          "thought": "查询执行完成",
+          "action_name": "stop",
+          "action_argument": "",
+          "observation": "完成"
+        }
+      ],
+      "decomposition": null,
+      "generated_sparqls": [
+        {
+          "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT DISTINCT ?entity WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Temperature_Sensor }",
+          "status": "SUCCESS",
+          "num_results": 512
+        }
+      ],
+      "final_sparql": {
+        "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT DISTINCT ?entity WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Temperature_Sensor }",
+        "status": "SUCCESS",
+        "num_results": 512,
+        "results": [
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU05.Mixed_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU06.Mixed_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU07.Mixed_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU08.Mixed_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU05.Return_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU06.Return_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU07.Return_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU08.Return_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU01.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU03.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU05.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU06.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU07.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU08.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU11.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.CHW.Outside_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU01.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU02.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU03.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU04.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU05.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU06.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU07.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU08.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU09.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU11.Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM2502.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM2505.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM2511.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM2515.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM2519.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM3502.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM3503.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM3510.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM3511.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM3512.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM3517.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM4502.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM4503.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM4510.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM4511.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM4512.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM4517.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5502.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5503.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5510.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5511.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5512.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5515.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM5521.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6502.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6503.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6510.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6511.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6512.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6515.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU05.RM6521.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM1109.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM1300.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM1311.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM1313.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM1314.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM1319.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM2303.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM2306.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM2311.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM2312.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM2317.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM2319.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM3302.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM3303.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM3311.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM3313.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM3315.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM3321.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4302.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4303.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4310.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4311.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4312.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4319.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4321.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4330.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4332.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4333.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4336.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4337.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM4340.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5302.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5303.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5310.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5311.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5312.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5315.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM5321.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM6302.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM6303.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM6310.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM6311.Zone_Supply_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU06.RM6312.Zone_Supply_Air_Temp"
+          }
+        ],
+        "warnings": [],
+        "error": null
+      },
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": null,
+      "phase": "完成",
+      "mode": "local",
+      "warnings": [],
+      "task_id": "t6da69103e8ce4e349d4cbe7673b7b9c8",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T17:40:49.744521"
+      },
+      "elapsed_seconds": 0.19
+    },
+    {
+      "status": "done",
+      "question": "VAVRM0101关联了哪些测点？",
+      "actions": [
+        {
+          "step": 1,
+          "thought": "按当前图谱的类型和实际关系生成查询",
+          "action_name": "execute_sparql",
+          "action_argument": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT DISTINCT ?entity WHERE { <http://buildsys.org/ontologies/bldg11#VAVRM0101> (brick:hasPoint|^brick:isPointOf) ?entity }",
+          "observation": "                                                                               entity\n            http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU09.RM0101.VLV_2_COMD\n         http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU09.RM0101.Zone_Air_Temp\nhttp://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU09.RM0101.Zone_Air_Temp_Setpoint"
+        },
+        {
+          "step": 2,
+          "thought": "查询执行完成",
+          "action_name": "stop",
+          "action_argument": "",
+          "observation": "完成"
+        }
+      ],
+      "decomposition": null,
+      "generated_sparqls": [
+        {
+          "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT DISTINCT ?entity WHERE { <http://buildsys.org/ontologies/bldg11#VAVRM0101> (brick:hasPoint|^brick:isPointOf) ?entity }",
+          "status": "SUCCESS",
+          "num_results": 3
+        }
+      ],
+      "final_sparql": {
+        "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT DISTINCT ?entity WHERE { <http://buildsys.org/ontologies/bldg11#VAVRM0101> (brick:hasPoint|^brick:isPointOf) ?entity }",
+        "status": "SUCCESS",
+        "num_results": 3,
+        "results": [
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU09.RM0101.VLV_2_COMD"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU09.RM0101.Zone_Air_Temp"
+          },
+          {
+            "entity": "http://buildsys.org/ontologies/bldg11#bldg11.ZONE.AHU09.RM0101.Zone_Air_Temp_Setpoint"
+          }
+        ],
+        "warnings": [],
+        "error": null
+      },
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": null,
+      "phase": "完成",
+      "mode": "local",
+      "warnings": [],
+      "task_id": "t6a6228b4758b41f38153c2d940ad6b35",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 0.14
+    },
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU（1跳）",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "t455f7533d081400c8bf7128aeca23ee5",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.17
+    },
+    {
+      "status": "done",
+      "question": "有多少传感器？",
+      "actions": [
+        {
+          "step": 1,
+          "thought": "按当前图谱的类型和实际关系生成查询",
+          "action_name": "execute_sparql",
+          "action_argument": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT (COUNT(DISTINCT ?entity) AS ?count) WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Sensor }",
+          "observation": "count\n  709"
+        },
+        {
+          "step": 2,
+          "thought": "查询执行完成",
+          "action_name": "stop",
+          "action_argument": "",
+          "observation": "完成"
+        }
+      ],
+      "decomposition": null,
+      "generated_sparqls": [
+        {
+          "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT (COUNT(DISTINCT ?entity) AS ?count) WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Sensor }",
+          "status": "SUCCESS",
+          "num_results": 1
+        }
+      ],
+      "final_sparql": {
+        "sparql": "PREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nSELECT (COUNT(DISTINCT ?entity) AS ?count) WHERE { ?entity rdf:type/rdfs:subClassOf* brick:Sensor }",
+        "status": "SUCCESS",
+        "num_results": 1,
+        "results": [
+          {
+            "count": "709"
+          }
+        ],
+        "warnings": [],
+        "error": null
+      },
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": null,
+      "phase": "完成",
+      "mode": "local",
+      "warnings": [],
+      "task_id": "t4405600bc3ed44b2ae03f57c4f085271",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T17:40:49.744521"
+      },
+      "elapsed_seconds": 0.08
+    },
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU（1跳）",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "t38bb30290c394077bf15836428e60ba6",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.05
+    },
+    {
+      "status": "error",
+      "question": "寻找为 RM1018 (VAVRM1018) 供风的 AHU（1跳）",
+      "actions": [],
+      "decomposition": null,
+      "generated_sparqls": [],
+      "final_sparql": null,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "error": "LLM call failed after 2 attempts: Connection error.",
+      "phase": "模型正在选择下一步",
+      "mode": "paper",
+      "warnings": [],
+      "task_id": "t22016b75a9d04253bb2a66bef693205c",
+      "graph": {
+        "building": "bldg11",
+        "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+        "csv": null,
+        "triples": 62578,
+        "total_triples": 95601,
+        "sensors": 709,
+        "sample": false,
+        "timeseries": {
+          "rows": 0,
+          "available_rows": 0,
+          "truncated": false,
+          "unmatched_columns": []
+        },
+        "warnings": [],
+        "loaded_at": "2026-10-07T18:07:20.570914"
+      },
+      "elapsed_seconds": 2.08
+    }
+  ]
+}

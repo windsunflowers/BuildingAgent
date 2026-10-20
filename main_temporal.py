@@ -26,6 +26,7 @@ from typing import Dict, List, Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from brick_agent import BrickAgent
+from implementation_policy import policy_metadata
 
 
 def serialize_decomposition(decomposition) -> Optional[Dict]:
@@ -65,6 +66,7 @@ def serialize_actions(actions) -> List[Dict]:
             'thought': action.thought,
             'action_name': action.action_name,
             'action_argument': action.action_argument,
+            'diagnostics': action.diagnostics,
             'observation': action.observation[:2000] if action.observation and len(action.observation) > 2000 else action.observation
         }
         for i, action in enumerate(actions)
@@ -92,6 +94,8 @@ def run_single_question(agent: BrickAgent, question_text: str, query_id: str, ve
 
     result = {
         'query_id': query_id,
+        'implementation_mode': agent.implementation_mode,
+        'method_policy': policy_metadata(agent.brick_graph),
         'question_text': question_text,
         'timestamp': datetime.now().isoformat(),
         'status': 'unknown',
@@ -151,6 +155,7 @@ def run_single_question(agent: BrickAgent, question_text: str, query_id: str, ve
         import traceback
         traceback.print_exc()
 
+    result['method_policy'] = policy_metadata(agent.brick_graph)
     return result
 
 
@@ -185,9 +190,10 @@ def main():
                         help="Start date for timeseries filter (YYYY-MM-DD)")
     parser.add_argument("--end-date", type=str, default=None,
                         help="End date for timeseries filter (YYYY-MM-DD)")
-    parser.add_argument("--max-rows", type=int, default=2000,
-                        help="Maximum rows to load from timeseries CSV (default: 2000)")
+    parser.add_argument("--max-rows", type=int, default=100,
+                        help="Maximum rows to load from timeseries CSV (default: 100)")
 
+    parser.add_argument('--language', choices=('zh', 'en'), default='zh', help='Agent prompt language')
     args = parser.parse_args()
 
     building_id = args.building_id
@@ -220,7 +226,8 @@ def main():
         use_temporal_handler=use_temporal,
         ttl_schema_file=args.ttl,
         schema_description_file=args.schema_in_prompt,
-        result_limit=args.result_limit
+        result_limit=args.result_limit,
+        language=args.language,
     )
 
     print(f"      Loading graph with timeseries data...")
@@ -232,7 +239,6 @@ def main():
         ttl_file=args.ttl,
         csv_file=args.csv,
         max_csv_rows=args.max_rows,
-        use_cache=False,
     )
     if args.start_date:
         graph_kwargs['start_date'] = args.start_date

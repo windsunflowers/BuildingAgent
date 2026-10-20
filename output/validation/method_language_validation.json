@@ -1,0 +1,6 @@
+{
+  "Method": "fixed",
+  "SameLoadTimestamp": true,
+  "SameTripleCount": true,
+  "SameDiagnosticLog": true
+}

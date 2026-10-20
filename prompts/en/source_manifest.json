@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/yun-dam/BrickQA",
+  "commit": "49d9e283c2a3958e9be110583be6575cbd40039b",
+  "files": [
+    {
+      "path": "prompts/en/brick_controller.prompt",
+      "upstream_path": "prompts/brick_controller.prompt",
+      "sha256": "7c9d70b6aac1860893fe0b850a0fcf900176664744bbf46b030caa865a43d21e"
+    },
+    {
+      "path": "prompts/en/brick_decomposition.prompt",
+      "upstream_path": "prompts/brick_decomposition.prompt",
+      "sha256": "5968b35c20aebce9d3f597bc05e256817801010afc921770aaaf5be81dc0b9e1"
+    }
+  ],
+  "runtime_adaptation": "Graph namespaces, data dates, validation guidance and language-specific observations are added separately by prompting.py"
+}

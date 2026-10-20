@@ -229,194 +229,34 @@ class BrickTemporalHandler:
         Returns:
             (is_valid, message) tuple
         """
-        issues = []
-
-        # If decomposition provided, validate against expected temporal type
-        if decomposition and decomposition.temporal.has_constraint:
-            temporal_type = decomposition.temporal.type
-
-            # Check for expected temporal patterns based on type
-            if temporal_type in ["latest", "recent_n", "oldest_n", "trend"]:
-                # These require ORDER BY
-                has_order = bool(re.search(r'ORDER\s+BY.*\?timestamp', sparql, re.IGNORECASE))
-                if not has_order:
-                    issues.append(f"Expected ORDER BY for temporal type '{temporal_type}' but not found")
-
-                # Check for LIMIT
-                has_limit = bool(re.search(r'LIMIT\s+\d+', sparql, re.IGNORECASE))
-                if not has_limit:
-                    issues.append(f"Expected LIMIT for temporal type '{temporal_type}' but not found")
-
-                # Validate specific patterns
-                if temporal_type == "latest":
-                    has_desc = bool(re.search(r'ORDER\s+BY\s+DESC', sparql, re.IGNORECASE))
-                    limit_one = bool(re.search(r'LIMIT\s+1\b', sparql, re.IGNORECASE))
-                    if not has_desc:
-                        issues.append("Expected DESC for 'latest' but not found")
-                    if not limit_one:
-                        issues.append("Expected LIMIT 1 for 'latest' but not found")
-
-                elif temporal_type == "recent_n":
-                    has_desc = bool(re.search(r'ORDER\s+BY\s+DESC', sparql, re.IGNORECASE))
-                    if not has_desc:
-                        issues.append("Expected DESC for 'recent_n' but not found")
-
-                elif temporal_type == "oldest_n":
-                    has_asc = bool(re.search(r'ORDER\s+BY\s+(?!DESC)', sparql, re.IGNORECASE))
-                    if not has_asc:
-                        issues.append("Expected ASC (or no DESC) for 'oldest_n' but found DESC")
-
-            elif temporal_type in ["range", "specific"]:
-                # These require FILTER
-                has_filter = bool(re.search(r'FILTER.*\?timestamp', sparql, re.IGNORECASE))
-                if not has_filter:
-                    issues.append(f"Expected FILTER on ?timestamp for temporal type '{temporal_type}' but not found")
-
-                # For range, check for comparison operators
-                if temporal_type == "range":
-                    has_comparison = bool(re.search(r'FILTER.*\?timestamp.*[<>=]', sparql, re.IGNORECASE))
-                    if not has_comparison:
-                        issues.append("Expected comparison operators (>=, <=) for 'range' but not found")
-
-        else:
-            # General validation without decomposition
-            # Check if query has ?timestamp variable but no temporal constraint
-            if "?timestamp" in sparql.lower():
-                has_order = bool(re.search(r'ORDER\s+BY.*\?timestamp', sparql, re.IGNORECASE))
-                has_filter = bool(re.search(r'FILTER.*\?timestamp', sparql, re.IGNORECASE))
-
-                if not has_order and not has_filter:
-                    issues.append("Query has ?timestamp variable but no ORDER BY or FILTER on it")
-
-            # Check for ORDER BY without LIMIT (could return huge results)
-            if re.search(r'ORDER\s+BY', sparql, re.IGNORECASE):
-                if not re.search(r'LIMIT\s+\d+', sparql, re.IGNORECASE):
-                    issues.append("Query has ORDER BY but no LIMIT (may return too many results)")
-
-        if issues:
-            return False, "; ".join(issues)
-
-        return True, "Temporal constraints are valid"
+        if not decomposition or not decomposition.temporal.has_constraint:
+            return True, "No temporal constraint requested"
+        kind = decomposition.temporal.type
+        timestamp_vars = re.findall(r'(?:ref:hasTimestamp|<https://brickschema.org/schema/Brick/ref#hasTimestamp>)\s+(\?\w+)', sparql, re.I)
+        if not timestamp_vars:
+            return False, '缺少观测时间戳，无法验证时间约束'
+        if kind in ('latest', 'recent_n', 'oldest_n', 'trend'):
+            ordered = bool(re.search(r'ORDER\s+BY[\s\S]*?\?\w+', sparql, re.I))
+            latest_filter = bool(re.search(r'FILTER\s+NOT\s+EXISTS', sparql, re.I))
+            extremum = bool(re.search(r'MAX\s*\(\s*\?\w+', sparql, re.I))
+            limited = bool(re.search(r'LIMIT\s+\d+', sparql, re.I))
+            if not ((ordered and limited) or latest_filter or extremum):
+                return False, f'时间约束 {kind} 需要时间排序与 LIMIT，或按测点筛选最新时间戳'
+        elif kind in ('range', 'specific', 'date_range', 'specific_date', 'yesterday', 'last_n_hours', 'period'):
+            if not re.search(r'FILTER[\s\S]*(?:' + '|'.join(re.escape(v) for v in timestamp_vars) + ')', sparql, re.I):
+                return False, f'时间约束 {kind} 缺少时间戳 FILTER'
+            details = decomposition.temporal.details
+            dates = [str(details.get(k, '')) for k in ('date', 'start', 'end', 'start_date', 'end_date')]
+            for date in dates:
+                if re.match(r'^\d{4}-\d{2}-\d{2}', date) and date[:10] not in sparql:
+                    return False, f'查询未包含请求的日期 {date[:10]}'
+        return True, "Temporal constraints pass structural checks"
 
 
-def validate_sensor_coverage(sparql: str, decomposition: QueryDecomposition) -> Tuple[bool, str]:
-    """
-    Validate that all sensors from decomposition appear in final SPARQL.
-
-    Args:
-        sparql: SPARQL query to validate
-        decomposition: QueryDecomposition with expected sensors
-
-    Returns:
-        (is_valid, message) tuple
-    """
-    if not decomposition.sensors:
-        return True, "No sensors in decomposition"
-
-    required_sensors = {s.sensor_id for s in decomposition.sensors}
-    found_sensors = set()
-
-    # Extract sensor IDs from SPARQL (e.g., bldg:RM_TEMP -> RM_TEMP)
-    sensor_pattern = r'bldg:(\w+)'
-    for match in re.finditer(sensor_pattern, sparql):
-        found_sensors.add(match.group(1))
-
-    missing = required_sensors - found_sensors
-
-    if missing:
-        return False, f"Missing sensors: {', '.join(sorted(missing))}"
-
-    return True, f"All {len(required_sensors)} sensors present"
 
 
-def validate_aggregation(sparql: str, decomposition: QueryDecomposition) -> Tuple[bool, str]:
-    """
-    Validate that required aggregation operations are present.
-
-    Args:
-        sparql: SPARQL query to validate
-        decomposition: QueryDecomposition with expected aggregations
-
-    Returns:
-        (is_valid, message) tuple
-    """
-    if not decomposition.aggregation.required:
-        return True, "No aggregation required"
-
-    sparql_upper = sparql.upper()
-    missing_ops = []
-
-    for op in decomposition.aggregation.operations:
-        # Check for aggregation function: AVG(...), MIN(...), etc.
-        if f"{op}(" not in sparql_upper:
-            missing_ops.append(op)
-
-    if missing_ops:
-        issues = [f"Missing aggregation operations: {', '.join(missing_ops)}"]
-
-        # Also check for GROUP BY when aggregation is present
-        has_group_by = "GROUP BY" in sparql_upper
-        if not has_group_by:
-            issues.append("Missing GROUP BY clause")
-
-        return False, "; ".join(issues)
-
-    return True, f"All aggregations present: {', '.join(decomposition.aggregation.operations)}"
 
 
-def validate_multi_sensor_joins(sparql: str, decomposition: QueryDecomposition) -> Tuple[bool, str]:
-    """
-    Validate that multi-sensor queries properly join sensors on timestamp.
-
-    Args:
-        sparql: SPARQL query to validate
-        decomposition: QueryDecomposition with sensor information
-
-    Returns:
-        (is_valid, message) tuple
-    """
-    if len(decomposition.sensors) <= 1:
-        return True, "Single sensor query - no joins needed"
-
-    issues = []
-
-    # Check that ?timestamp variable is used
-    if "?timestamp" not in sparql.lower():
-        issues.append("Multi-sensor query should use ?timestamp variable to join sensors")
-        return False, "; ".join(issues)
-
-    # Count how many sensors reference ?timestamp
-    sensors_with_timestamp = 0
-    for sensor in decomposition.sensors:
-        # Look for pattern: sensor mentions followed by timestamp reference
-        # This is a heuristic - pattern: bldg:SENSOR ... ref:hasTimestamp ?timestamp
-        sensor_pattern = rf'bldg:{sensor.sensor_id}.*?ref:hasTimestamp\s+\?timestamp'
-        if re.search(sensor_pattern, sparql, re.DOTALL | re.IGNORECASE):
-            sensors_with_timestamp += 1
-
-    if sensors_with_timestamp < len(decomposition.sensors):
-        missing_count = len(decomposition.sensors) - sensors_with_timestamp
-        issues.append(
-            f"Multi-sensor query: {missing_count} sensor(s) not joined on ?timestamp "
-            f"(found {sensors_with_timestamp}/{len(decomposition.sensors)} with timestamp join)"
-        )
-
-    # Check for unique observation variables per sensor
-    # Good: ?oaf_obs, ?daf_obs, ?dmpr_obs
-    # Bad: ?obs for all (causes conflicts)
-    obs_var_pattern = r'\?(\w+)_obs\b'
-    unique_obs_vars = set(re.findall(obs_var_pattern, sparql))
-
-    if len(unique_obs_vars) < len(decomposition.sensors) and "?obs" in sparql:
-        issues.append(
-            f"Multi-sensor query should use unique observation variables for each sensor "
-            f"(e.g., ?oaf_obs, ?daf_obs) instead of reusing ?obs"
-        )
-
-    if issues:
-        return False, "; ".join(issues)
-
-    return True, f"Multi-sensor timestamp joins valid ({len(decomposition.sensors)} sensors joined)"
 
 
 def should_use_temporal_guide(decomposition: QueryDecomposition) -> bool:
@@ -531,3 +371,8 @@ WHERE {
 
 if __name__ == "__main__":
     test_temporal_handler()
+
+# Author validation is diagnostic only.
+from third_party.brickqa_upstream.brick_temporal_handler import (
+    validate_sensor_coverage, validate_aggregation, validate_multi_sensor_joins,
+)

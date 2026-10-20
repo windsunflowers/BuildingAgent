@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-20",
+  "tests": {
+    "passed": 45,
+    "command": ".venv/Scripts/python.exe -m pytest -q"
+  },
+  "english_templates": "2/2 byte-identical to author commit 49d9e283c2a3958e9be110583be6575cbd40039b",
+  "official_metrics": "Unmodified pinned BuildingQA source; SHA256 verified against audit evidence",
+  "browser_checks": [
+    "Chinese to English and back",
+    "Input preserved on language switch",
+    "Language remembered after reload",
+    "English examples",
+    "Three official F1 cards",
+    "Partial credit: 2/3",
+    "Simulated model failure remains zero in denominator; aggregate 1/3",
+    "JSON export link"
+  ],
+  "real_model_calls": 0,
+  "screenshot": "output/validation/language_metrics_en.jpg",
+  "offline_report": "output/validation/offline_metric_regression.json"
+}

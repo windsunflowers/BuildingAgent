@@ -1,5 +1,11 @@
 # 🧱 BrickQA
 
+Start the local web workbench from this directory with `npm run dev`, then open http://127.0.0.1:8123/. This uses the existing Python `.venv` and needs no npm package installation. Stop with Ctrl+C; use `npm run dev -- --port 8124` to select another port. Python changes require a restart.
+
+Local adaptation: the workbench now supports **中文 / English** in the top-right language selector. English controller and decomposition templates are unchanged copies of the upstream templates; runtime graph context is localized. CLI entry points accept `--language zh|en`.
+
+Evaluation uses the pinned official BuildingQA **Entity-set F1, Row Matching F1 and Exact Match F1** implementation in both the web app and CLI. Exact Match F1 allows partial credit; binary execution accuracy is a separate metric. Model failures remain in the denominator, while invalid gold queries block comparable summary scores. See [the local quick start](D:/桌面/HKUST/Brickqa/BrickQA/QUICKSTART.md) for the current Qwen setup, language controls and JSON report export. The original upstream introduction and setup are retained below.
+
 BrickQA is a friendly tool designed to help you explore and query building data using the Brick schema. Whether you're a building scientist, facility manager, or just curious about smart buildings, this project makes it easy to ask natural language questions about your building's sensors, equipment, and systems.
 
 By leveraging a LLM-based agent, BrickQA bridges the semantic gap in building operations, translating your questions into executable SPARQL queries through dynamic graph exploration and structured query decomposition. It effectively transforms abstract semantic models into actionable facility management insights without requiring you to master complex query languages.

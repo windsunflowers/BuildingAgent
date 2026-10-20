@@ -1,0 +1,1173 @@
+{
+  "checked_at": "2026-10-20T05:34:28.795398+00:00",
+  "llm_calls": 0,
+  "head": "49d9e283c2a3958e9be110583be6575cbd40039b",
+  "paper_sha256": "4eeb17c7462ba2590ed9f7c39bc73cac56da7a330df83edbea21ae6ed1f6629b",
+  "data_commit": "b792a627419dfb679ad1f26e4d3dc325a758e95b",
+  "checksums": [
+    {
+      "path": "data\\buildings\\bldg11.ttl",
+      "upstream": "eval_buildings/bldg11.ttl",
+      "sha256": "babd99b4df631a0af8180ef1dab00e24c147592a86636167993a7d3792046c30",
+      "triples": 62578,
+      "matches": true
+    },
+    {
+      "path": "data\\buildings\\TUC_building.ttl",
+      "upstream": "eval_buildings/TUC_building.ttl",
+      "sha256": "3b2d34c9c6fcca4b880f3102d04ddade3bc70ab9a95a7400bc9af3db8316434d",
+      "triples": 1855,
+      "matches": true
+    },
+    {
+      "path": "data\\buildings\\dflexlibs_multizone.ttl",
+      "upstream": "eval_buildings/dflexlibs_multizone.ttl",
+      "sha256": "c7ece2015748f357e8294141bc5494e00c41d5933b74653a4f849dc274fd885e",
+      "triples": 629,
+      "matches": true
+    },
+    {
+      "path": "data\\benchmarks\\TUC_building_combined.json",
+      "upstream": "Benchmark_QA_pairs/TUC_building_combined.json",
+      "sha256": "5073c1220ba708bb8944043baf3b7102c9c8e5163bd6f01f969788f17d91d95e",
+      "matches": true
+    },
+    {
+      "path": "data\\benchmarks\\bldg11_combined.json",
+      "upstream": "Benchmark_QA_pairs/bldg11_combined.json",
+      "sha256": "3c1641b817e5b0458ec7c86fc30463e9c9c904b6599dd916435d979074b4fc82",
+      "matches": true
+    },
+    {
+      "path": "data\\benchmarks\\dflexlibs_multizone_combined.json",
+      "upstream": "Benchmark_QA_pairs/dflexlibs_multizone_combined.json",
+      "sha256": "552ea2e9733e3adebe119a5faa8ceeda9c3f8ccc75012ebef3866935ee1bdb28",
+      "matches": true
+    }
+  ],
+  "buildings": [
+    {
+      "name": "dflexlibs_multizone",
+      "raw_triples": 629,
+      "merged_triples": 50716,
+      "all_questions": 36,
+      "human_questions": 6,
+      "query_ids": [
+        "DFLEXLIBS_001",
+        "DFLEXLIBS_002",
+        "DFLEXLIBS_003",
+        "DFLEXLIBS_004",
+        "DFLEXLIBS_005",
+        "DFLEXLIBS_006"
+      ],
+      "sources": {
+        "human": 6,
+        "LLM_1": 6,
+        "LLM_2": 6,
+        "LLM_3": 6,
+        "LLM_4": 6,
+        "LLM_5": 6
+      }
+    },
+    {
+      "name": "TUC_building",
+      "raw_triples": 1855,
+      "merged_triples": 51942,
+      "all_questions": 30,
+      "human_questions": 5,
+      "query_ids": [
+        "TUC_001",
+        "TUC_002",
+        "TUC_003",
+        "TUC_004",
+        "TUC_005"
+      ],
+      "sources": {
+        "human": 5,
+        "LLM_1": 5,
+        "LLM_2": 5,
+        "LLM_3": 5,
+        "LLM_4": 5,
+        "LLM_5": 5
+      }
+    },
+    {
+      "name": "bldg11",
+      "raw_triples": 62578,
+      "merged_triples": 95601,
+      "all_questions": 76,
+      "human_questions": 31,
+      "query_ids": [
+        "MORTAR_001",
+        "MORTAR_002",
+        "MORTAR_003",
+        "MORTAR_004",
+        "MORTAR_005",
+        "MORTAR_006",
+        "MORTAR_007",
+        "MORTAR_008",
+        "MORTAR_009"
+      ],
+      "sources": {
+        "human": 31,
+        "LLM_1": 9,
+        "LLM_2": 9,
+        "LLM_3": 9,
+        "LLM_4": 9,
+        "LLM_5": 9
+      }
+    }
+  ],
+  "gold_execution": [
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_001",
+      "raw": {
+        "status": "success",
+        "rows": 1080,
+        "error": null,
+        "vars": [
+          "zone_name",
+          "zone_temp_point",
+          "set_temp_min_point",
+          "set_temp_max_point",
+          "occ_sensor_point",
+          "occ_cmd_point",
+          "zone_set_temp_heat_point",
+          "zone_set_temp_cool_point",
+          "unocc_zone_set_temp_heat_point",
+          "unocc_zone_set_temp_cool_point",
+          "occ_zone_set_temp_heat_point",
+          "occ_zone_set_temp_cool_point",
+          "zone_set_temp_point",
+          "vav_damper_set_point",
+          "vav_discharge_temp_point",
+          "vav_reheat_command_point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 1080,
+        "error": null,
+        "vars": [
+          "zone_name",
+          "zone_temp_point",
+          "set_temp_min_point",
+          "set_temp_max_point",
+          "occ_sensor_point",
+          "occ_cmd_point",
+          "zone_set_temp_heat_point",
+          "zone_set_temp_cool_point",
+          "unocc_zone_set_temp_heat_point",
+          "unocc_zone_set_temp_cool_point",
+          "occ_zone_set_temp_heat_point",
+          "occ_zone_set_temp_cool_point",
+          "zone_set_temp_point",
+          "vav_damper_set_point",
+          "vav_discharge_temp_point",
+          "vav_reheat_command_point"
+        ]
+      }
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_002",
+      "raw": {
+        "status": "success",
+        "rows": 5,
+        "error": null,
+        "vars": [
+          "ahu_supply_temp_point",
+          "ahu_supply_flow_point",
+          "ahu_supply_flow_set_point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 5,
+        "error": null,
+        "vars": [
+          "ahu_supply_temp_point",
+          "ahu_supply_flow_point",
+          "ahu_supply_flow_set_point"
+        ]
+      }
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_003",
+      "raw": {
+        "status": "success",
+        "rows": 7,
+        "error": null,
+        "vars": [
+          "ele_pow_point",
+          "therm_pow_point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 7,
+        "error": null,
+        "vars": [
+          "ele_pow_point",
+          "therm_pow_point"
+        ]
+      }
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_004",
+      "raw": {
+        "status": "success",
+        "rows": 1,
+        "error": null,
+        "vars": [
+          "area"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 1,
+        "error": null,
+        "vars": [
+          "area"
+        ]
+      }
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_005",
+      "raw": {
+        "status": "success",
+        "rows": 7,
+        "error": null,
+        "vars": [
+          "power_point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 7,
+        "error": null,
+        "vars": [
+          "power_point"
+        ]
+      }
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_006",
+      "raw": {
+        "status": "success",
+        "rows": 7,
+        "error": null,
+        "vars": [
+          "power_point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 7,
+        "error": null,
+        "vars": [
+          "power_point"
+        ]
+      }
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_001",
+      "raw": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      }
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_002",
+      "raw": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      }
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_003",
+      "raw": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      }
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_004",
+      "raw": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      }
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_005",
+      "raw": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 18,
+        "error": null,
+        "vars": [
+          "ZoneID",
+          "point"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_001",
+      "raw": {
+        "status": "success",
+        "rows": 1347,
+        "error": null,
+        "vars": [
+          "point",
+          "point_type"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 1347,
+        "error": null,
+        "vars": [
+          "point",
+          "point_type"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_002",
+      "raw": {
+        "status": "success",
+        "rows": 222,
+        "error": null,
+        "vars": [
+          "sp",
+          "equip"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 222,
+        "error": null,
+        "vars": [
+          "sp",
+          "equip"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_003",
+      "raw": {
+        "status": "success",
+        "rows": 103,
+        "error": null,
+        "vars": [
+          "sp",
+          "equip"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 103,
+        "error": null,
+        "vars": [
+          "sp",
+          "equip"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_004",
+      "raw": {
+        "status": "success",
+        "rows": 388,
+        "error": null,
+        "vars": [
+          "sensor",
+          "equip"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 388,
+        "error": null,
+        "vars": [
+          "sensor",
+          "equip"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_005",
+      "raw": {
+        "status": "success",
+        "rows": 205,
+        "error": null,
+        "vars": [
+          "sensor",
+          "sp",
+          "equip"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 205,
+        "error": null,
+        "vars": [
+          "sensor",
+          "sp",
+          "equip"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_006",
+      "raw": {
+        "status": "success",
+        "rows": 519,
+        "error": null,
+        "vars": [
+          "sensor",
+          "sp",
+          "equip"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 519,
+        "error": null,
+        "vars": [
+          "sensor",
+          "sp",
+          "equip"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_007",
+      "raw": {
+        "status": "success",
+        "rows": 19,
+        "error": null,
+        "vars": [
+          "cooling_point",
+          "heating_point",
+          "ahu"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 19,
+        "error": null,
+        "vars": [
+          "cooling_point",
+          "heating_point",
+          "ahu"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_008",
+      "raw": {
+        "status": "success",
+        "rows": 8,
+        "error": null,
+        "vars": [
+          "meter",
+          "oat"
+        ]
+      },
+      "merged": {
+        "status": "success",
+        "rows": 8,
+        "error": null,
+        "vars": [
+          "meter",
+          "oat"
+        ]
+      }
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_009",
+      "raw": {
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 8 秒",
+        "vars": null
+      },
+      "merged": {
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 8 秒",
+        "vars": null
+      }
+    }
+  ],
+  "ontology": {
+    "triples": 50087,
+    "sha256": "e78a0e92409298b7d786184dfadd9c8754418b05546c9690b1d83bda407d9f1a"
+  },
+  "bundled_samples": [
+    {
+      "file": "prompts\\bldg11_sample_100.ttl",
+      "parsed_triples": 100,
+      "warnings": []
+    },
+    {
+      "file": "prompts\\bldg11_sample_5000.ttl",
+      "parsed_triples": 4907,
+      "warnings": [
+        "附带样本末尾有不完整 Turtle 语句，已排除末尾 932 个字符；原文件保留。"
+      ]
+    },
+    {
+      "file": "prompts\\dflexlibs_multizone_sample_100.ttl",
+      "parsed_triples": 100,
+      "warnings": []
+    },
+    {
+      "file": "prompts\\dflexlibs_multizone_sample_5000.ttl",
+      "parsed_triples": 629,
+      "warnings": []
+    },
+    {
+      "file": "prompts\\TUC_building_sample_100.ttl",
+      "parsed_triples": 100,
+      "warnings": []
+    },
+    {
+      "file": "prompts\\TUC_building_sample_5000.ttl",
+      "parsed_triples": 1855,
+      "warnings": []
+    }
+  ],
+  "reference_results": [
+    {
+      "file": "evaluation\\evaluation_per_query_100triples.csv",
+      "question_source_counts": {
+        "human": 42,
+        "LLM_1": 20,
+        "LLM_2": 20,
+        "LLM_3": 20,
+        "LLM_4": 20,
+        "LLM_5": 20
+      },
+      "groups": [
+        {
+          "dataset": "Dflexlibs",
+          "method": "BrickQA",
+          "n": 36,
+          "entity_set_f1": 0.5416666666666666,
+          "row_matching_f1": 0.4722222222222222,
+          "exact_match_f1": 0.16666666666666666,
+          "missing_scores": 5,
+          "status_counts": {
+            "success": 27,
+            "no_results": 4,
+            "no_sparql": 3,
+            "error": 2
+          }
+        },
+        {
+          "dataset": "Dflexlibs",
+          "method": "ReAct",
+          "n": 36,
+          "entity_set_f1": 0.2962962962777778,
+          "row_matching_f1": 0.2638888888888889,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 36
+          }
+        },
+        {
+          "dataset": "TUC",
+          "method": "BrickQA",
+          "n": 30,
+          "entity_set_f1": 0.95,
+          "row_matching_f1": 0.9333333333333333,
+          "exact_match_f1": 0.8666666666666667,
+          "missing_scores": 1,
+          "status_counts": {
+            "success": 29,
+            "error": 1
+          }
+        },
+        {
+          "dataset": "TUC",
+          "method": "ReAct",
+          "n": 30,
+          "entity_set_f1": 0.26175710593333334,
+          "row_matching_f1": 0.08333333333333333,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 30
+          }
+        },
+        {
+          "dataset": "bldg11",
+          "method": "BrickQA",
+          "n": 76,
+          "entity_set_f1": 0.40884267505263167,
+          "row_matching_f1": 0.3609462040394737,
+          "exact_match_f1": 0.13554647519736843,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 74,
+            "no_results": 2
+          }
+        },
+        {
+          "dataset": "bldg11",
+          "method": "ReAct",
+          "n": 76,
+          "entity_set_f1": 0.3700647230263158,
+          "row_matching_f1": 0.23128386740789472,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 76
+          }
+        }
+      ],
+      "bytes_identical_to_git_blob": false,
+      "normalized_content_identical_to_HEAD": true,
+      "brickqa_building_macro": {
+        "entity_set_f1": 0.6335031139064328,
+        "row_matching_f1": 0.5888339198650098,
+        "exact_match_f1": 0.3896266028435673
+      },
+      "brickqa_question_mean": {
+        "entity_set_f1": 0.5568453753802817,
+        "row_matching_f1": 0.5100838838521127,
+        "exact_match_f1": 0.2978981134859155
+      },
+      "aggregation": "Missing scores count as zero; Table 2 uses per-building means then building macro-average"
+    },
+    {
+      "file": "evaluation\\evaluation_per_query_5000triples.csv",
+      "question_source_counts": {
+        "human": 42,
+        "LLM_1": 20,
+        "LLM_2": 20,
+        "LLM_3": 20,
+        "LLM_4": 20,
+        "LLM_5": 20
+      },
+      "groups": [
+        {
+          "dataset": "Dflexlibs",
+          "method": "BrickQA",
+          "n": 36,
+          "entity_set_f1": 0.7870370370277777,
+          "row_matching_f1": 0.6761819423055555,
+          "exact_match_f1": 0.2916666666666667,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 36
+          }
+        },
+        {
+          "dataset": "Dflexlibs",
+          "method": "ReAct",
+          "n": 36,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "no_results": 36
+          }
+        },
+        {
+          "dataset": "TUC",
+          "method": "BrickQA",
+          "n": 30,
+          "entity_set_f1": 0.9995555555666668,
+          "row_matching_f1": 0.9888888889,
+          "exact_match_f1": 0.8888888889000001,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 30
+          }
+        },
+        {
+          "dataset": "TUC",
+          "method": "ReAct",
+          "n": 30,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "no_results": 30
+          }
+        },
+        {
+          "dataset": "bldg11",
+          "method": "BrickQA",
+          "n": 76,
+          "entity_set_f1": 0.44285199484210536,
+          "row_matching_f1": 0.4053835357368421,
+          "exact_match_f1": 0.13038005036842107,
+          "missing_scores": 4,
+          "status_counts": {
+            "success": 71,
+            "error": 4,
+            "no_results": 1
+          }
+        },
+        {
+          "dataset": "bldg11",
+          "method": "ReAct",
+          "n": 76,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "no_results": 76
+          }
+        }
+      ],
+      "bytes_identical_to_git_blob": false,
+      "normalized_content_identical_to_HEAD": true,
+      "brickqa_building_macro": {
+        "entity_set_f1": 0.7431481958121832,
+        "row_matching_f1": 0.6901514556474658,
+        "exact_match_f1": 0.43697853531169595
+      },
+      "brickqa_question_mean": {
+        "entity_set_f1": 0.6477236028732395,
+        "row_matching_f1": 0.5973124317323943,
+        "exact_match_f1": 0.33151796123239435
+      },
+      "aggregation": "Missing scores count as zero; Table 2 uses per-building means then building macro-average"
+    },
+    {
+      "file": "evaluation\\evaluation_per_query_no-knowledge-graph.csv",
+      "question_source_counts": {
+        "human": 42,
+        "LLM_1": 20,
+        "LLM_2": 20,
+        "LLM_3": 20,
+        "LLM_4": 20,
+        "LLM_5": 20
+      },
+      "groups": [
+        {
+          "dataset": "Dflexlibs",
+          "method": "BrickQA",
+          "n": 36,
+          "entity_set_f1": 0.5039682539722222,
+          "row_matching_f1": 0.3472222222222222,
+          "exact_match_f1": 0.041666666666666664,
+          "missing_scores": 6,
+          "status_counts": {
+            "success": 24,
+            "no_results": 6,
+            "no_sparql": 4,
+            "error": 2
+          }
+        },
+        {
+          "dataset": "Dflexlibs",
+          "method": "ReAct",
+          "n": 36,
+          "entity_set_f1": 0.027777777777777776,
+          "row_matching_f1": 0.013888888888888888,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 36
+          }
+        },
+        {
+          "dataset": "TUC",
+          "method": "BrickQA",
+          "n": 30,
+          "entity_set_f1": 0.75,
+          "row_matching_f1": 0.6333333333333333,
+          "exact_match_f1": 0.5666666666666667,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 28,
+            "no_results": 2
+          }
+        },
+        {
+          "dataset": "TUC",
+          "method": "ReAct",
+          "n": 30,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 30
+          }
+        },
+        {
+          "dataset": "bldg11",
+          "method": "BrickQA",
+          "n": 76,
+          "entity_set_f1": 0.45476394439473683,
+          "row_matching_f1": 0.3980401458421053,
+          "exact_match_f1": 0.10953040997368421,
+          "missing_scores": 1,
+          "status_counts": {
+            "success": 74,
+            "no_results": 1,
+            "error": 1
+          }
+        },
+        {
+          "dataset": "bldg11",
+          "method": "ReAct",
+          "n": 76,
+          "entity_set_f1": 0.3063115069868421,
+          "row_matching_f1": 0.17587392524999998,
+          "exact_match_f1": 0.0,
+          "missing_scores": 0,
+          "status_counts": {
+            "success": 76
+          }
+        }
+      ],
+      "bytes_identical_to_git_blob": false,
+      "normalized_content_identical_to_HEAD": true,
+      "brickqa_building_macro": {
+        "entity_set_f1": 0.5695773994556531,
+        "row_matching_f1": 0.45953190046588693,
+        "exact_match_f1": 0.23928791443567252
+      },
+      "brickqa_question_mean": {
+        "entity_set_f1": 0.5296120909647888,
+        "row_matching_f1": 0.43486655692957743,
+        "exact_match_f1": 0.18890359970422535
+      },
+      "aggregation": "Missing scores count as zero; Table 2 uses per-building means then building macro-average"
+    }
+  ],
+  "temporal_csv": {
+    "rows": 8760,
+    "columns": 30,
+    "start": "2018-01-01 00:00:00",
+    "end": "2018-12-31 23:00:00",
+    "tail100_start": "2018-12-27 20:00:00",
+    "tail2000_start": "2018-10-09 16:00:00",
+    "bytes_identical_to_git_blob": false,
+    "normalized_content_identical_to_HEAD": true
+  },
+  "reference_metrics_sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b",
+  "metric_counterexamples": {
+    "partial_positional_match": {
+      "local": {
+        "exact_match": 0,
+        "row_matching_f1": 0.6667,
+        "entity_set_f1": 0.6667,
+        "f1": 0.6667
+      },
+      "official": {
+        "entity_set_f1": 0.6666666666666666,
+        "row_matching_f1": 0.6666666666666666,
+        "exact_match_f1": 0.6666666666666666
+      }
+    },
+    "duplicate_rows": {
+      "local": {
+        "exact_match": 1,
+        "row_matching_f1": 1.0,
+        "entity_set_f1": 1.0,
+        "f1": 1.0
+      },
+      "official": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 0.6666666666666666,
+        "exact_match_f1": 0.6666666666666666
+      }
+    },
+    "fewer_predicted_columns": {
+      "local": {
+        "exact_match": 0,
+        "row_matching_f1": 0.0,
+        "entity_set_f1": 0.6667,
+        "f1": 0.0
+      },
+      "official": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    "extra_predicted_columns": {
+      "local": {
+        "exact_match": 0,
+        "row_matching_f1": 0.0,
+        "entity_set_f1": 0.6667,
+        "f1": 0.0
+      },
+      "official": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    "case_normalization": {
+      "local": {
+        "exact_match": 0,
+        "row_matching_f1": 0.0,
+        "entity_set_f1": 0.0,
+        "f1": 0.0
+      },
+      "official": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      }
+    },
+    "different_column_precision_and_recall": {
+      "local": {
+        "exact_match": 0,
+        "row_matching_f1": 0.5,
+        "entity_set_f1": 0.6667,
+        "f1": 0.5
+      },
+      "official": {
+        "entity_set_f1": 0.75,
+        "row_matching_f1": 0.5,
+        "exact_match_f1": 0.5
+      }
+    }
+  },
+  "historical_data_checks": {
+    "summary": {
+      "gold_queries": 42,
+      "gold_errors": 8,
+      "local_queries": 9,
+      "temporal_checks": 3
+    },
+    "errors": [
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_005",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_006",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_006",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_006",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_009",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_009",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_009",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      },
+      {
+        "building": "bldg11",
+        "query_id": "MORTAR_009",
+        "status": "timed_out",
+        "rows": null,
+        "error": "查询超过 5 秒"
+      }
+    ]
+  },
+  "output/validation/model_pilot.json": [
+    {
+      "question": "For each zone, what is the timeseries ID of its temperature sensor, and what is the zone’s IFC reference?",
+      "building": "TUC_building",
+      "mode": "paper",
+      "context": 0,
+      "model": "qwen-plus",
+      "gold_rows": 18,
+      "exact_match": 0,
+      "row_matching_f1": 0.0,
+      "entity_set_f1": 0.0,
+      "f1": 0.0,
+      "pred_rows": 0,
+      "actions": 9,
+      "tokens": 84033,
+      "status": "done",
+      "elapsed_seconds": 96.73
+    }
+  ],
+  "evaluate_demo.json": [
+    {
+      "question": "哪些设备向 VAVRM2220B 供风？",
+      "gold_count": 1,
+      "pred_count": 0,
+      "exact_match": 0,
+      "f1": 0.0,
+      "relation_mismatch": false,
+      "steps": 15,
+      "elapsed_sec": 145.0,
+      "error": null
+    },
+    {
+      "question": "AHU03 向哪个 VAV 供风？",
+      "gold_count": 1,
+      "pred_count": 0,
+      "exact_match": 0,
+      "f1": 0.0,
+      "relation_mismatch": false,
+      "steps": 12,
+      "elapsed_sec": 107.5,
+      "error": null
+    },
+    {
+      "question": "哪些 VAV 为 HVAC 区域供风？",
+      "gold_count": 0,
+      "pred_count": 0,
+      "exact_match": 1,
+      "f1": 1.0,
+      "relation_mismatch": false,
+      "steps": 15,
+      "elapsed_sec": 141.1,
+      "error": null
+    }
+  ],
+  "ontology_probe": [
+    {
+      "building": "dflexlibs_multizone",
+      "raw_temperature_sensors": 0,
+      "merged_temperature_sensors": 15,
+      "same_entity_set": false
+    },
+    {
+      "building": "TUC_building",
+      "raw_temperature_sensors": 18,
+      "merged_temperature_sensors": 18,
+      "same_entity_set": true
+    },
+    {
+      "building": "bldg11",
+      "raw_temperature_sensors": 512,
+      "merged_temperature_sensors": 512,
+      "same_entity_set": true
+    }
+  ],
+  "gold_summary": {
+    "unique_gold_queries": 20,
+    "timeout_seconds": 8,
+    "raw_success": 19,
+    "merged_success": 19,
+    "same_successful_row_counts": 19,
+    "note": "Row counts only; equal counts do not prove equal bindings. Timed out gold is a data/executor issue, not a model score."
+  }
+}

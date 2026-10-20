@@ -1,0 +1,60 @@
+{
+  "upstream_commit": "49d9e283c2a3958e9be110583be6575cbd40039b",
+  "official_dir": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\tmp\\official_brickqa_49d9e283\\BrickQA-49d9e283c2a3958e9be110583be6575cbd40039b",
+  "source_hashes": {
+    "brick_agent.py": "f8d2ae2307c8614072e822320728da62bd27cb7a4d4d940f43f09a9315abcb35",
+    "brick_decomposer.py": "093f585ff24ef3dbf9afd1f39fc5aa619d565e909a3d824e318e9f97811fd9f8",
+    "brick_temporal_handler.py": "25ec5ac055c104cfcae6e06b747fee967ea39a4695fd530ecbeaabed48eeaa46",
+    "brick_utils.py": "ef07321b885be2abc85b8ec94a469e4df06f8f25363fc89e46ed184cd5406c4b",
+    "prompts/brick_controller.prompt": "7c9d70b6aac1860893fe0b850a0fcf900176664744bbf46b030caa865a43d21e",
+    "prompts/brick_decomposition.prompt": "5968b35c20aebce9d3f597bc05e256817801010afc921770aaaf5be81dc0b9e1",
+    "prompts/brick_temporal_patterns.txt": "2ea8394651817beb5591afcb0f49786161fa0380342357ac08da3884abff95f1"
+  },
+  "transport": {
+    "transport": "stub",
+    "model": "stub",
+    "temperature": 1.0,
+    "max_tokens": 8192
+  },
+  "sleep": {
+    "mode": "clamped",
+    "budget_seconds": 0.0
+  },
+  "inputs": {
+    "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\tmp\\official_brickqa_49d9e283\\BrickQA-49d9e283c2a3958e9be110583be6575cbd40039b\\prompts\\lbnl_fdd_fcu.ttl",
+    "csv": null,
+    "sample": null,
+    "description": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\prompts\\lbnl_fdd_fcu_description.txt",
+    "max_rows": 100,
+    "use_decomposer": true,
+    "use_temporal_handler": true
+  },
+  "elapsed_seconds": 0.16,
+  "result": {
+    "state": {
+      "question": "What temperature sensors are in the building?",
+      "tokens": {
+        "prompt": 0,
+        "completion": 0,
+        "total": 0
+      },
+      "cooldown_seconds": 132,
+      "decomposition": null,
+      "actions": [
+        {
+          "thought": "Look up which temperature sensor entities exist.",
+          "action_name": "search_brick",
+          "action_argument": "temperature",
+          "observation": "FCU_CLG_EWT (FCU_CLG_EWT): A Entering_Water_Temperature_Sensor in the building\n  Type: Entering_Water_Temperature_Sensor\nFCU_HTG_EWT (FCU_HTG_EWT): A Entering_Water_Temperature_Sensor in the building\n  Type: Entering_Water_Temperature_Sensor\nFCU_CLG_RWT (FCU_CLG_RWT): A Leaving_Water_Temperature_Sensor in the building\n  Type: Leaving_Water_Temperature_Sensor\nFCU_HTG_RWT (FCU_HTG_RWT): A Leaving_Water_Temperature_Sensor in the building\n  Type: Leaving_Water_Temperature_Sensor\nFCU_DAT (FCU_DAT): A Discharge_Air_Temperature_Sensor in the building\n  Type: Discharge_Air_Temperature_Sensor\nFCU_MAT (FCU_MAT): A Mixed_Air_Temperature_Sensor in the building\n  Type: Mixed_Air_Temperature_Sensor\nFCU_OAT (FCU_OAT): A Outside_Air_Temperature_Sensor in the building\n  Type: Outside_Air_Temperature_Sensor\nFCU_RAT (FCU_RAT): A Return_Air_Temperature_Sensor in the building\n  Type: Return_Air_Temperature_Sensor"
+        },
+        {
+          "thought": "Enough context gathered, finishing.",
+          "action_name": "stop",
+          "action_argument": "",
+          "observation": "Stopping execution"
+        }
+      ]
+    },
+    "final": null
+  }
+}

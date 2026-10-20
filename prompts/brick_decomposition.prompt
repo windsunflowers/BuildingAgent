@@ -1,6 +1,8 @@
 # Instruction
 Your task is to decompose a natural language question about building sensor data into structured components. This decomposition will be used to generate a SPARQL query for the Brick Schema.
 
+请用中文填写所有自由文本字段（如 query_intent，以及各 sensor 的 mention 与 description）；但 sensor_id、type、operations 等结构化取值必须保持原样（英文类名 / 符号）。
+
 Analyze the user question and extract:
 
 1.  **Sensors**: Identify all sensors, setpoints, and equipment mentioned. Map to Brick classes.

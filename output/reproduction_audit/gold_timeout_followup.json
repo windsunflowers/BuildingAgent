@@ -1,0 +1,16 @@
+{
+  "query_id": "MORTAR_009",
+  "timeout_seconds": 30,
+  "results": {
+    "raw": {
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 30 秒"
+    },
+    "merged": {
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 30 秒"
+    }
+  }
+}

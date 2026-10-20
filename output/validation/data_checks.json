@@ -1,0 +1,421 @@
+{
+  "gold_queries": [
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_001",
+      "status": "success",
+      "rows": 1347,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_001",
+      "status": "success",
+      "rows": 1347,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_001",
+      "status": "success",
+      "rows": 1347,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_001",
+      "status": "success",
+      "rows": 1347,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_002",
+      "status": "success",
+      "rows": 222,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_002",
+      "status": "success",
+      "rows": 222,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_002",
+      "status": "success",
+      "rows": 222,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_002",
+      "status": "success",
+      "rows": 222,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_003",
+      "status": "success",
+      "rows": 103,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_003",
+      "status": "success",
+      "rows": 103,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_003",
+      "status": "success",
+      "rows": 103,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_004",
+      "status": "success",
+      "rows": 388,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_004",
+      "status": "success",
+      "rows": 388,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_004",
+      "status": "success",
+      "rows": 388,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_005",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_005",
+      "status": "success",
+      "rows": 205,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_006",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_006",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_006",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_007",
+      "status": "success",
+      "rows": 19,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_007",
+      "status": "success",
+      "rows": 19,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_007",
+      "status": "success",
+      "rows": 19,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_007",
+      "status": "success",
+      "rows": 19,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_008",
+      "status": "success",
+      "rows": 8,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_008",
+      "status": "success",
+      "rows": 8,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_008",
+      "status": "success",
+      "rows": 8,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_008",
+      "status": "success",
+      "rows": 8,
+      "error": null
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_009",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_009",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_009",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "bldg11",
+      "query_id": "MORTAR_009",
+      "status": "timed_out",
+      "rows": null,
+      "error": "查询超过 5 秒"
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_001",
+      "status": "success",
+      "rows": 18,
+      "error": null
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_002",
+      "status": "success",
+      "rows": 18,
+      "error": null
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_003",
+      "status": "success",
+      "rows": 18,
+      "error": null
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_004",
+      "status": "success",
+      "rows": 18,
+      "error": null
+    },
+    {
+      "building": "TUC_building",
+      "query_id": "TUC_005",
+      "status": "success",
+      "rows": 18,
+      "error": null
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_001",
+      "status": "success",
+      "rows": 1080,
+      "error": null
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_002",
+      "status": "success",
+      "rows": 5,
+      "error": null
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_003",
+      "status": "success",
+      "rows": 7,
+      "error": null
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_004",
+      "status": "success",
+      "rows": 1,
+      "error": null
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_005",
+      "status": "success",
+      "rows": 7,
+      "error": null
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "query_id": "DFLEXLIBS_006",
+      "status": "success",
+      "rows": 7,
+      "error": null
+    }
+  ],
+  "local_queries": [
+    {
+      "building": "bldg11",
+      "question": "楼里有哪些温度传感器？",
+      "rows": 512,
+      "first_result": [
+        {
+          "entity": "http://buildsys.org/ontologies/bldg11#bldg11.AHU.AHU01.Supply_Air_Temp"
+        }
+      ],
+      "elapsed_seconds": 0.063
+    },
+    {
+      "building": "bldg11",
+      "question": "有多少传感器？",
+      "rows": 1,
+      "first_result": [
+        {
+          "count": "709"
+        }
+      ],
+      "elapsed_seconds": 0.062
+    },
+    {
+      "building": "bldg11",
+      "question": "有哪些AHU？",
+      "rows": 11,
+      "first_result": [
+        {
+          "entity": "http://buildsys.org/ontologies/bldg11#AHU01"
+        }
+      ],
+      "elapsed_seconds": 0.031
+    },
+    {
+      "building": "TUC_building",
+      "question": "楼里有哪些温度传感器？",
+      "rows": 18,
+      "first_result": [
+        {
+          "entity": "http://openmetrics.eu/openmetrics#RC04N0047_TempSensingPoint"
+        }
+      ],
+      "elapsed_seconds": 0.062
+    },
+    {
+      "building": "TUC_building",
+      "question": "有多少传感器？",
+      "rows": 1,
+      "first_result": [
+        {
+          "count": "36"
+        }
+      ],
+      "elapsed_seconds": 0.063
+    },
+    {
+      "building": "TUC_building",
+      "question": "有哪些AHU？",
+      "rows": 0,
+      "first_result": [],
+      "elapsed_seconds": 0.047
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "question": "楼里有哪些温度传感器？",
+      "rows": 15,
+      "first_result": [
+        {
+          "entity": "urn:bldg/hvac_reaAhu_TMix_y"
+        }
+      ],
+      "elapsed_seconds": 0.032
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "question": "有多少传感器？",
+      "rows": 1,
+      "first_result": [
+        {
+          "count": "40"
+        }
+      ],
+      "elapsed_seconds": 0.047
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "question": "有哪些AHU？",
+      "rows": 1,
+      "first_result": [
+        {
+          "entity": "urn:bldg/hvac_ahu"
+        }
+      ],
+      "elapsed_seconds": 0.031
+    }
+  ],
+  "temporal_checks": [
+    {
+      "question": "室温最新值",
+      "actual": 60.62716666666667,
+      "csv_expected": 60.62716666666667,
+      "passed": true
+    },
+    {
+      "question": "室外温度最近24小时的最大值",
+      "actual": 37.5035,
+      "csv_expected": 37.5035,
+      "passed": true
+    },
+    {
+      "question": "室温最近24小时的平均值",
+      "actual": 63.42215277777777,
+      "csv_expected": 63.422152777777775,
+      "passed": true
+    }
+  ],
+  "summary": {
+    "gold_queries": 42,
+    "gold_errors": 8,
+    "local_queries": 9,
+    "temporal_checks": 3
+  }
+}

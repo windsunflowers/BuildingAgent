@@ -1,0 +1,178 @@
+{
+  "status": {
+    "graph": {
+      "building": "bldg11",
+      "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl",
+      "csv": null,
+      "triples": 62578,
+      "total_triples": 95601,
+      "sensors": 709,
+      "sample": false,
+      "timeseries": {
+        "rows": 0,
+        "available_rows": 0,
+        "truncated": false,
+        "unmatched_columns": []
+      },
+      "warnings": [],
+      "loaded_at": "2026-10-08T09:52:10.205130"
+    },
+    "running": false,
+    "active_task_id": null,
+    "evaluating": true,
+    "loading": false,
+    "llm_ready": true,
+    "model": "qwen-plus",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  "tasks": [],
+  "evaluations": {
+    "e8b8c1e483f794339ac0827b320128aba": {
+      "status": "error",
+      "summary": {
+        "total": 0,
+        "done": 0,
+        "em_sum": 0,
+        "f1_sum": 0.0,
+        "mm_count": 0,
+        "errors": 0
+      },
+      "results": [],
+      "error": "评测文件指定的 TTL 与当前建筑不一致，请加载基准对应的建筑后再评测"
+    },
+    "edf34d9f12aa343beaf8e6635ae3ee700": {
+      "status": "running",
+      "summary": {
+        "total": 76,
+        "done": 8,
+        "em_sum": 1,
+        "f1_sum": 1.2884000000000002,
+        "mm_count": 1,
+        "errors": 0
+      },
+      "results": [
+        {
+          "question": "What are the brick points in this graph?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?point WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . } LIMIT 100",
+          "exact_match": 0,
+          "f1": 0.0,
+          "gold_count": 1287,
+          "pred_count": 100,
+          "relation_mismatch": false,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.0,
+          "entity_set_f1": 0.1449
+        },
+        {
+          "question": "Can you find nodes that has information about an external reference?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX ref: <https://brickschema.org/schema/Brick/ref#> SELECT DISTINCT ?entity WHERE { ?entity ref:hasExternalReference ?extRef . }",
+          "exact_match": 0,
+          "f1": 0.0,
+          "gold_count": 1287,
+          "pred_count": 897,
+          "relation_mismatch": true,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.0,
+          "entity_set_f1": 0.813
+        },
+        {
+          "question": "What points does this graph have?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX bldg: <http://buildsys.org/ontologies/bldg11#> SELECT ?point WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . }",
+          "exact_match": 0,
+          "f1": 0.0,
+          "gold_count": 1287,
+          "pred_count": 1257,
+          "relation_mismatch": false,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.0,
+          "entity_set_f1": 0.9909
+        },
+        {
+          "question": "What data sources I have in my system?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX ref: <https://brickschema.org/schema/Brick/ref#> SELECT DISTINCT ?point ?tsId WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point ref:hasExternalReference/ref:hasTimeseriesId ?tsId . }",
+          "exact_match": 0,
+          "f1": 0.0,
+          "gold_count": 1287,
+          "pred_count": 889,
+          "relation_mismatch": false,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.0,
+          "entity_set_f1": 0.4132
+        },
+        {
+          "question": "Which entities that are instances of Point (including its subclasses) have which types?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nPREFIX brick: <https://brickschema.org/schema/Brick#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?entity ?type WHERE {\n    ?entity rdf:type/rdfs:subClassOf* brick:Point .\n    ?entity rdf:type ?type .\n}",
+          "exact_match": 1,
+          "f1": 1.0,
+          "gold_count": 1287,
+          "pred_count": 1287,
+          "relation_mismatch": false,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 1.0,
+          "entity_set_f1": 1.0
+        },
+        {
+          "question": "What point entities exist and what types are they assigned?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX bldg: <http://buildsys.org/ontologies/bldg11#> SELECT ?point ?type WHERE { ?point rdf:type ?type . ?type rdfs:subClassOf* brick:Point . FILTER(STRSTARTS(STR(?point), \"http://buildsys.org/ontologies/bldg11#\")) } LIMIT 100",
+          "exact_match": 0,
+          "f1": 0.1442,
+          "gold_count": 1287,
+          "pred_count": 100,
+          "relation_mismatch": false,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.1442,
+          "entity_set_f1": 0.1537
+        },
+        {
+          "question": "List all measurement points along with their categories.",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?point ?type WHERE { ?point rdf:type ?type . ?type rdfs:subClassOf* brick:Point . } LIMIT 100",
+          "exact_match": 0,
+          "f1": 0.1442,
+          "gold_count": 1287,
+          "pred_count": 100,
+          "relation_mismatch": false,
+          "steps": 2,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.1442,
+          "entity_set_f1": 0.1537
+        },
+        {
+          "question": "What data points are defined in the building model and how are they classified?",
+          "gold_sparql": "SELECT ?point ?point_type WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?point_type . }",
+          "pred_sparql": "PREFIX csvw: <http://www.w3.org/ns/csvw#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dcmitype: <http://purl.org/dc/dcmitype/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dcam: <http://purl.org/dc/dcam/>\nPREFIX doap: <http://usefulinc.com/ns/doap#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX odrl: <http://www.w3.org/ns/odrl/2/>\nPREFIX org: <http://www.w3.org/ns/org#>\nPREFIX prof: <http://www.w3.org/ns/dx/prof/>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX qb: <http://purl.org/linked-data/cube#>\nPREFIX schema: <https://schema.org/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ssn: <http://www.w3.org/ns/ssn/>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX vann: <http://purl.org/vocab/vann/>\nPREFIX void: <http://rdfs.org/ns/void#>\nPREFIX wgs: <https://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX xml: <http://www.w3.org/XML/1998/namespace>\nPREFIX bacnet: <http://data.ashrae.org/bacnet/2020#>\nPREFIX bsh: <https://brickschema.org/schema/BrickShape#>\nPREFIX ns3: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump1_Start/>\nPREFIX ns4: <http://buildsys.org/ontologies/bldg11#bldg11.CHW.Pump2_Start/>\nPREFIX qudt: <http://qudt.org/schema/qudt/>\nPREFIX qudtqk: <http://qudt.org/vocab/quantitykind/>\nPREFIX rec: <https://w3id.org/rec#>\nPREFIX ref: <https://brickschema.org/schema/Brick/ref#>\nPREFIX s223: <http://data.ashrae.org/standard223#>\nPREFIX sdo: <http://schema.org/>\nPREFIX tag: <https://brickschema.org/schema/BrickTag#>\nPREFIX unit: <http://qudt.org/vocab/unit/>\nPREFIX vcard: <http://www.w3.org/2006/vcard/ns#>\nPREFIX bldg: <http://buildsys.org/ontologies/bldg11#>\nPREFIX brick: <https://brickschema.org/schema/Brick#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?supertype ?subtype (COUNT(DISTINCT ?point) AS ?count) WHERE { ?point rdf:type/rdfs:subClassOf* brick:Point . ?point rdf:type ?type . ?type rdfs:subClassOf* ?supertype . FILTER(?supertype IN (brick:Sensor, brick:Setpoint, brick:Command, brick:Status)) . ?type rdfs:subClassOf ?subtype . FILTER(?subtype != ?supertype && ?subtype != brick:Point) } GROUP BY ?supertype ?subtype ORDER BY ?supertype DESC(?count) LIMIT 50",
+          "exact_match": 0,
+          "f1": 0.0,
+          "gold_count": 1287,
+          "pred_count": 13,
+          "relation_mismatch": false,
+          "steps": 5,
+          "status": "done",
+          "error": null,
+          "row_matching_f1": 0.0,
+          "entity_set_f1": 0.0031
+        }
+      ],
+      "error": null
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "upstream_source": {
+    "repository": "https://github.com/yun-dam/BrickQA",
+    "commit": "49d9e283c2a3958e9be110583be6575cbd40039b",
+    "file": "brick_utils.py",
+    "sha256": "ef07321b885be2abc85b8ec94a469e4df06f8f25363fc89e46ed184cd5406c4b",
+    "modified": false
+  },
+  "offline_tests": {
+    "passed": 58,
+    "model_calls": 0
+  },
+  "browser_checks": {
+    "author_default": true,
+    "fixed_requires_reload": true,
+    "language_preserves_loaded_graph": true,
+    "no_horizontal_overflow": true
+  },
+  "bundled_csv_check": {
+    "implementation_mode": "upstream",
+    "building": "lbnl_fdd_fcu",
+    "timeseries": {
+      "rows": 3,
+      "available_rows": 8760,
+      "truncated": true,
+      "start": "2018-12-31T21:00:00",
+      "end": "2018-12-31T23:00:00",
+      "selected_row_indices": [
+        8757,
+        8758,
+        8759
+      ],
+      "unmatched_columns": [],
+      "uri_mapping": "fixed bldg-59# plus CSV column; no entity matching",
+      "value_datatype": "http://www.w3.org/2001/XMLSchema#float"
+    },
+    "method_policy": {
+      "implementation_mode": "upstream",
+      "upstream_commit": "49d9e283c2a3958e9be110583be6575cbd40039b",
+      "scope": [
+        "search_brick",
+        "get_brick_entity",
+        "get_property_examples",
+        "csv_observations"
+      ],
+      "diagnostic_log": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\logs\\execution_policy_93b5838cfcb34051ad4226a9d3799e1d.jsonl"
+    }
+  },
+  "scope": "Only search/entity/property tools and CSV observation import restored. Existing ontology merge, TTL recovery, model adapter and general SPARQL validation retained."
+}

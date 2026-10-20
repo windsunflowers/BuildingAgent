@@ -1,3 +1,5 @@
+import threading
+from prompting import build_controller_prompt, validate_language, feedback
 """
 Brick Agent
 An iterative framework for converting natural language questions to Brick SPARQL queries.
@@ -19,6 +21,8 @@ if sys.platform == "win32":
 import json
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
+from implementation_policy import policy_metadata, evaluation_policy
+from third_party.brickqa_upstream import brick_temporal_handler as author_validation
 import pandas as pd
 
 from brick_utils import (
@@ -30,15 +34,12 @@ from brick_utils import (
     format_search_results,
     format_entity_info,
     SparqlExecutionStatus,
-    BRICK_PREFIXES
+    BRICK_PREFIXES, graph_prefixes, prepare_query, namespace_map, query_graph
 )
 from brick_decomposer import BrickQueryDecomposer, QueryDecomposition
 from brick_temporal_handler import (
     BrickTemporalHandler,
     TemporalApplication,
-    validate_sensor_coverage,
-    validate_aggregation,
-    validate_multi_sensor_joins,
     should_use_temporal_guide
 )
 
@@ -55,6 +56,7 @@ class BrickAction:
     action_argument: str
     observation: Optional[str] = None
     observation_raw: Optional[any] = None
+    diagnostics: Optional[dict] = None
 
     POSSIBLE_ACTIONS = [
         "search_brick",           # Search for entities/sensors
@@ -95,14 +97,15 @@ class BrickSparqlQuery:
     execution_result: Optional[List[Dict]] = None
     execution_status: Optional[SparqlExecutionStatus] = None
     result_limit: Optional[int] = None  # Limit results during execution
+    validation_warnings: List[str] = field(default_factory=list)
+    diagnostic_warnings: List[str] = field(default_factory=list)
+    error: Optional[str] = None
 
-    def execute(self):
+    def execute(self, isolated=True):
         """Execute the SPARQL query"""
-        self.execution_result, self.execution_status = execute_sparql(
-            self.sparql,
-            return_status=True,
-            result_limit=self.result_limit
-        )
+        timeout = evaluation_policy()['sparql_timeout_seconds']
+        data, self.execution_status, self.error = query_graph(self.sparql, isolated=isolated, timeout=timeout)
+        self.execution_result = data['rows'] if data else []
 
     def has_results(self) -> bool:
         """Check if query returned results"""
@@ -137,10 +140,19 @@ class AgentState:
     final_sparql: Optional[BrickSparqlQuery] = None
     max_iterations: int = 15
     decomposition: Optional[QueryDecomposition] = None  # Query decomposition results
+    decomposition_fallback: bool = False
     prompt_tokens: int = 0
     completion_tokens: int = 0
     total_tokens: int = 0
     cooldown_seconds: float = 0
+    mode: str = "paper"
+    language: str = "zh"
+    implementation_mode: str = 'upstream'
+    phase: str = "准备查询"
+    warnings: List[str] = field(default_factory=list)
+    stop_reason: Optional[str] = None
+    model_configuration: dict = field(default_factory=dict)
+    response_models: List[str] = field(default_factory=list)
 
     def get_action_history(self, last_n: int = 10, include_observation: bool = True) -> str:
         """Get formatted action history for context"""
@@ -175,7 +187,7 @@ class BrickAgent:
     Main agent class that implements the iterative approach for Brick SPARQL generation.
     """
 
-    def __init__(self, engine: str = "gemini-flash", use_decomposer: bool = True, use_temporal_handler: bool = True, use_aggregation: bool = True, use_fewshot: bool = False, ttl_schema_file: str = None, schema_description_file: str = None, result_limit: int = None):
+    def __init__(self, engine: str = "gemini-flash", use_decomposer: bool = True, use_temporal_handler: bool = True, use_aggregation: bool = True, use_fewshot: bool = False, ttl_schema_file: str = None, schema_description_file: str = None, result_limit: int = None, language: str = "zh"):
         """
         Initialize the agent.
 
@@ -190,7 +202,9 @@ class BrickAgent:
             result_limit: Limit results during query iterations (None = no limit)
         """
         self.engine = engine
+        self.language = validate_language(language)
         self.brick_graph = BrickGraph()
+        self.implementation_mode = 'upstream'
         self.use_decomposer = use_decomposer
         self.use_temporal_handler = use_temporal_handler
         self.use_aggregation = use_aggregation
@@ -199,6 +213,7 @@ class BrickAgent:
         self.ttl_schema_content = None
         self.schema_description = None
         self.result_limit = result_limit
+        self.cancel_event = threading.Event()
 
         # Initialize decomposer
         if use_decomposer:
@@ -262,7 +277,8 @@ class BrickAgent:
         log_dir = "logs"
         os.makedirs(log_dir, exist_ok=True)
 
-        self.log_file = os.path.join(log_dir, f"prompt_logs_{timestamp}.jsonl")
+        from uuid import uuid4
+        self.log_file = os.path.join(log_dir, f"prompt_logs_{timestamp}_{self.implementation_mode}_{uuid4().hex[:8]}.jsonl")
         print(f"📝 LLM logs will be saved to: {self.log_file}")
 
         # Dataset metadata (populated during initialization)
@@ -270,7 +286,7 @@ class BrickAgent:
         self.dataset_year = None
 
     def initialize_graph(self, ttl_file: str = None, csv_file: str = None, max_csv_rows: int = 100,
-                         use_cache: bool = False, start_date: str = None, end_date: str = None):
+                         start_date: str = None, end_date: str = None):
         """
         Initialize the Brick graph with data.
 
@@ -278,25 +294,9 @@ class BrickAgent:
             ttl_file: Path to Turtle file with Brick schema
             csv_file: Path to CSV file with timeseries data
             max_csv_rows: Maximum rows to load from CSV
-            use_cache: If True, try to load from cache first (default: False - always rebuild)
             start_date: Optional start date filter for timeseries (format: "YYYY-MM-DD")
             end_date: Optional end date filter for timeseries (format: "YYYY-MM-DD")
         """
-        import os
-
-        # Generate cache filename based on parameters
-        cache_file = f"brick_graph_cache_{max_csv_rows}rows.ttl"
-
-        # Try to load from cache if enabled (only if no date filtering)
-        if use_cache and not start_date and not end_date and os.path.exists(cache_file):
-            if self.brick_graph.load_from_cache(cache_file):
-                print(f"⚡ Loaded graph from cache in seconds (skipped CSV processing)!")
-                # Get date range after loading
-                self._extract_date_metadata()
-                return
-
-        # Cache not available or disabled, build from scratch
-        print("🔨 Building graph from scratch (cache disabled)...")
         self.brick_graph.initialize(ttl_file=ttl_file)
 
         if csv_file:
@@ -309,16 +309,49 @@ class BrickAgent:
         print(f"✅ Graph built successfully with {max_csv_rows} rows of data")
 
     def _extract_date_metadata(self):
-        """Extract and store date metadata from the dataset"""
-        # Hardcoded for LBNL FCU dataset (2018)
-        self.dataset_year = "2018"
-        self.dataset_date_range = ("2018-01-01", "2018-12-31")
-
-        print(f"📅 Dataset year: {self.dataset_year}")
-
-        # Update temporal handler with the default year
+        self.dataset_date_range = self.brick_graph.get_date_range()
+        self.dataset_year = self.dataset_date_range[1][:4] if self.dataset_date_range[1] else None
         if self.temporal_handler:
             self.temporal_handler.default_year = self.dataset_year
+
+    def _check_cancelled(self):
+        if self.cancel_event.is_set():
+            raise RuntimeError("查询已取消")
+
+    def fork_evaluation(self):
+        """Independent per-question state; the loaded graph stays read-only."""
+        from copy import copy, deepcopy
+        from uuid import uuid4
+        from pathlib import Path
+        worker = copy(self)
+        worker.decomposer = deepcopy(self.decomposer)
+        worker.temporal_handler = None
+        worker.use_temporal_handler = False
+        worker.use_aggregation = False
+        worker.cancel_event = threading.Event()
+        worker._current_state = None
+        worker.log_file = str(Path(self.log_file).with_name('eval_prompt_' + uuid4().hex + '.jsonl'))
+        return worker
+
+    def _assert_graph(self):
+        if self.brick_graph is not BrickGraph():
+            raise RuntimeError('Agent graph is no longer active; reload the graph before running')
+
+    def set_schema_context(self, size=0):
+        """Context size never changes the execution graph. Serialization is deterministic."""
+        if size not in (0, 100, 5000):
+            raise ValueError('上下文必须为 0、100 或 5000 triples')
+        if not size:
+            self.ttl_schema_content = None
+            return
+        from rdflib import Graph
+        source = self.brick_graph.source_graph
+        subset = Graph()
+        for prefix, uri in source.namespaces():
+            subset.bind(prefix, uri)
+        for triple in sorted(source, key=lambda t: tuple(map(str, t)))[:size]:
+            subset.add(triple)
+        self.ttl_schema_content = subset.serialize(format='turtle')
 
     def controller(self, state: AgentState) -> BrickAction:
         """
@@ -333,160 +366,60 @@ class BrickAgent:
         """
 
         try:
-            # Use Vertex AI directly instead of chainlite to avoid async issues
-            from vertexai.generative_models import GenerativeModel
-            import vertexai
+            # Use OpenAI-compatible API (Qwen via DashScope by default) instead of Vertex AI
+            from llm_client import get_client
             from datetime import datetime
             import time
+            import os as _os
 
-            # Rate limiting: Add delay to avoid 429 errors
-            state.cooldown_seconds += 6
-            time.sleep(6)
+            # Rate limiting: Add delay to avoid 429 errors.
+            # Cooldown is configurable via BRICK_COOLDOWN_PRE so the UI can run
+            # snappily; the default preserves the original 6s behavior.
+            pre_cd = float(_os.getenv("BRICK_COOLDOWN_PRE", "0"))
+            state.cooldown_seconds += pre_cd
+            if self.cancel_event.wait(pre_cd):
+                self._check_cancelled()
 
-            # Initialize Vertex AI - get project from environment or use default
-            import os
-            project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
-            if not project_id:
-                raise RuntimeError(
-                    "GOOGLE_CLOUD_PROJECT environment variable is not set. "
-                    "Set it to your GCP project ID before running."
-                )
-            location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
-            vertexai.init(project=project_id, location=location)
+            # Initialize shared LLM client (reads LLM_BASE_URL / LLM_API_KEY / LLM_MODEL)
+            client = get_client()
+            if not state.model_configuration:
+                state.model_configuration = {'model':client.model,
+                    'provider':getattr(client, 'provider', None), 'base_url':getattr(client, 'base_url', None)}
 
-            # Build prompt from template
-            action_history_str = "\n\n".join([
-                action.to_string(include_observation=True) for action in state.actions
-            ])
-
-            # Read prompt template
-            with open("prompts/brick_controller.prompt", "r", encoding="utf-8") as f:
-                template = f.read()
-
-            # Add schema description and TTL schema content if available
-            ttl_schema_str = ""
-
-            # Add schema description first (if available)
-            if self.schema_description:
-                ttl_schema_str += f"""
-BUILDING SCHEMA GUIDE:
-------------------------------------
-The following guide explains the structure, naming conventions, and query patterns for this building.
-
-{self.schema_description}
-------------------------------------
-
-"""
-
-            # Then add TTL schema content (if available)
-            if self.ttl_schema_content:
-                # Determine if this is a sample or complete schema based on size
-                is_sample = len(self.ttl_schema_content) < 1000000  # Assume sample if < 1MB
-                schema_label = "BRICK SCHEMA SAMPLE" if is_sample else "COMPLETE BRICK SCHEMA"
-                schema_note = "This is a representative sample of the building's schema. Use search_brick() and get_brick_entity() actions to explore additional entities." if is_sample else "This is the complete Brick schema for this building."
-
-                ttl_schema_str += f"""
-{schema_label} (Turtle/TTL Format):
-------------------------------------
-{schema_note}
-Use this to understand the structure, entities, relationships, and available sensors.
-
-{self.ttl_schema_content}
-------------------------------------
-
-"""
-
-            # Adaptive temporal guidance: only inject guide for complex patterns
-            temporal_guide_str = ""
-            using_temporal_guide = False
-            if state.decomposition and state.decomposition.temporal.has_constraint:
-                # Check if this temporal pattern is complex enough to need guide
-                if should_use_temporal_guide(state.decomposition):
-                    try:
-                        with open("prompts/brick_temporal_patterns.txt", "r", encoding="utf-8") as f:
-                            temporal_guide_str = "\n" + f.read() + "\n"
-                            using_temporal_guide = True
-                            print(f"[INFO] Using temporal patterns guide for '{state.decomposition.temporal.type}' (complex pattern)")
-                    except FileNotFoundError:
-                        print("[WARNING] brick_temporal_patterns.txt not found, skipping temporal guide")
-                else:
-                    print(f"[INFO] Skipping temporal guide for '{state.decomposition.temporal.type}' (simple pattern - handler will apply)")
-
-            # Add decomposition info to prompt if available
-            decomposition_str = ""
-            if state.decomposition:
-                decomp = state.decomposition
-                temporal_note = ""
-                if decomp.temporal.has_constraint:
-                    temporal_note = "\n  Follow the temporal patterns guide above to generate correct temporal SPARQL."
-
-                decomposition_str = f"""
-Query Decomposition (use this to guide your actions):
-- Sensors needed ({decomp.sensor_count}): {', '.join([s.sensor_id for s in decomp.sensors])}
-- Temporal constraint: {decomp.temporal.type}{temporal_note}
-- Aggregation: {', '.join(decomp.aggregation.operations) if self.use_aggregation and decomp.aggregation.required else 'None'}
-- Intent: {decomp.query_intent}
-
-"""
-
-            # Simple template rendering (replace variables)
-            prompt = template.replace("{{ question }}", state.question)
-
-            # Store flag for execute_action to know if temporal guide is being used
-            self._using_temporal_guide = using_temporal_guide
-
-            # Insert TTL schema, temporal guide and decomposition info
-            insert_str = ""
-            if ttl_schema_str:
-                insert_str += ttl_schema_str
-            if temporal_guide_str:
-                insert_str += temporal_guide_str
-            if decomposition_str:
-                insert_str += decomposition_str
-
-            # Insert before action history
-            if insert_str:
-                # Add after the question, before action history
-                prompt = prompt.replace("{% if action_history %}", insert_str + "\n{% if action_history %}")
-
-            prompt = prompt.replace("{% if action_history %}", "")
-            prompt = prompt.replace("{% for i in range(0, action_history|length) %}", "")
-            prompt = prompt.replace("{{ action_history[i] }}", action_history_str)
-            prompt = prompt.replace("{% endfor %}", "")
-            prompt = prompt.replace("{% endif %}", "")
-            prompt = prompt.replace("{% for i in range(0, conversation_history|length) %}", "")
-            prompt = prompt.replace("{% endfor %}", "")
-
-            # Call Gemini
-            model = GenerativeModel("gemini-2.5-flash")
-            response = model.generate_content(prompt)
+            prompt, self._using_temporal_guide = build_controller_prompt(self, state)
+            from prompting import save_prompt_snapshot
+            prompt_reference = save_prompt_snapshot(prompt)
+            self._log_to_jsonl(self.log_file, {'event':'model_request', 'language':self.language,
+                                              'model':client.model, **prompt_reference})
+            self._current_state.phase = '模型正在选择下一步'
+            self._check_cancelled()
+            controller_output = client.generate_text(prompt, cancel_event=self.cancel_event)
+            response_model = getattr(client, 'last_response_model', None) or client.model
+            if response_model not in state.response_models:
+                state.response_models.append(response_model)
+            self._check_cancelled()
 
             # Accumulate token usage
-            if hasattr(response, 'usage_metadata') and response.usage_metadata:
-                um = response.usage_metadata
-                state.prompt_tokens += getattr(um, 'prompt_token_count', 0) or 0
-                state.completion_tokens += getattr(um, 'candidates_token_count', 0) or 0
-                state.total_tokens += getattr(um, 'total_token_count', 0) or 0
+            if client.last_usage:
+                um = client.last_usage
+                state.prompt_tokens += um.get("prompt_tokens", 0) or 0
+                state.completion_tokens += um.get("completion_tokens", 0) or 0
+                state.total_tokens += um.get("total_tokens", 0) or 0
 
-            # Cooldown to avoid API quota limits (tracked separately from computation time)
-            state.cooldown_seconds += 60
-            time.sleep(60)
-
-            # Handle multiple content parts (LLM sometimes duplicates output)
-            try:
-                controller_output = response.text
-            except ValueError as e:
-                if "Multiple content parts" in str(e):
-                    # Extract text from first part only
-                    print("[WARNING] LLM returned duplicate content parts, using first part only")
-                    controller_output = response.candidates[0].content.parts[0].text
-                else:
-                    raise
+            # Cooldown to avoid API quota limits (tracked separately from computation time).
+            # Configurable via BRICK_COOLDOWN_POST; the default preserves the original 60s.
+            post_cd = float(_os.getenv("BRICK_COOLDOWN_POST", "0"))
+            state.cooldown_seconds += post_cd
+            if self.cancel_event.wait(post_cd):
+                self._check_cancelled()
 
             # Log to timestamped prompt_logs file
             self._log_to_jsonl(self.log_file, {
                 "timestamp": datetime.now().isoformat(),
-                "model": self.engine,
+                "model": client.model,
+                "response_model": response_model,
+                "language": self.language,
+                **prompt_reference,
                 "prompt": prompt[:500] + "..." if len(prompt) > 500 else prompt,
                 "response": controller_output
             })
@@ -516,14 +449,14 @@ Query Decomposition (use this to guide your actions):
             else:
                 # No explicit thought - check if output starts with Action directly
                 if cleaned_output.strip().startswith('Action:'):
-                    thought = "Proceeding with action"
+                    thought = "继续执行动作"
                 else:
                     # Try to extract any text before "Action:" as implicit thought
                     action_pos = cleaned_output.find('Action:')
                     if action_pos > 0:
                         thought = cleaned_output[:action_pos].strip()
                         if not thought:
-                            thought = "Proceeding with action"
+                            thought = "继续执行动作"
                     else:
                         raise ValueError(f"Could not find Thought or Action in output: {controller_output[:200]}...")
             # Try to extract action name and argument
@@ -588,7 +521,7 @@ Query Decomposition (use this to guide your actions):
 
                 return BrickAction(
                     thought=thought if thought_match else "Concluding analysis",
-                    action_name="finish",
+                    action_name="stop",
                     action_argument=answer
                 )
 
@@ -601,89 +534,9 @@ Query Decomposition (use this to guide your actions):
             raise
 
     def _validate_and_fix_sparql(self, sparql: str) -> str:
-        """
-        Validate and auto-correct common SPARQL syntax errors.
-
-        Args:
-            sparql: SPARQL query string
-
-        Returns:
-            Corrected SPARQL query
-        """
-        import re
-
-        original = sparql
-        fixed = sparql.strip()
-
-        # Fix 0a: Auto-prepend PREFIX declarations if missing
-        # Check if query starts with SELECT but has no PREFIX declarations
-        if not re.search(r'^\s*PREFIX\s+', fixed, re.IGNORECASE):
-            print(f"[INFO] Query missing PREFIX declarations - auto-prepending standard prefixes")
-            fixed = BRICK_PREFIXES.strip() + "\n\n" + fixed
-
-        # Fix 0b: Fix incorrect PREFIX URIs (LLM sometimes generates wrong namespaces)
-        # Common mistakes:
-        # - BrickRef# instead of Brick/ref#
-        # - Missing rdf: and rdfs: prefixes
-        correct_prefixes = {
-            'brick': 'https://brickschema.org/schema/Brick#',
-            'bldg': 'bldg-59#',
-            'ref': 'https://brickschema.org/schema/Brick/ref#',
-            'xsd': 'http://www.w3.org/2001/XMLSchema#',
-            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-            'rdfs': 'http://www.w3.org/2000/01/rdf-schema#'
-        }
-
-        for prefix_name, correct_uri in correct_prefixes.items():
-            # Match any PREFIX declaration for this prefix name and replace with correct URI
-            pattern = rf'PREFIX\s+{prefix_name}:\s+<[^>]+>'
-            replacement = f'PREFIX {prefix_name}: <{correct_uri}>'
-            if re.search(pattern, fixed, re.IGNORECASE):
-                old_match = re.search(pattern, fixed, re.IGNORECASE).group(0)
-                if correct_uri not in old_match:
-                    print(f"[INFO] Correcting PREFIX {prefix_name}: from {old_match} to {replacement}")
-                fixed = re.sub(pattern, replacement, fixed, flags=re.IGNORECASE)
-
-        # Fix 0c: Missing angle brackets in PREFIX declarations
-        # Pattern: PREFIX name: http... (without < >)
-        # Replace with: PREFIX name: <http...>
-        fixed = re.sub(
-            r'PREFIX\s+(\w+):\s+(https?://[^\s<>]+)',
-            r'PREFIX \1: <\2>',
-            fixed,
-            flags=re.IGNORECASE
-        )
-
-        # Fix 0d: Remove timezone 'Z' from timestamps
-        # Pattern: "2018-12-28T14:00:00Z"^^xsd:dateTime
-        # Should be: "2018-12-28T14:00:00"^^xsd:dateTime
-        # The Z suffix causes comparison issues with xsd:dateTime
-        before_z_fix = fixed
-        fixed = re.sub(
-            r'"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z"',
-            r'"\1"',
-            fixed
-        )
-        if fixed != before_z_fix:
-            print(f"[INFO] Removed timezone 'Z' from timestamp literals (required for xsd:dateTime)")
-
-        # Fix 1: DISABLED - Modern LLMs generate correct ORDER BY syntax
-        # (This regex was causing issues by incorrectly "fixing" already-correct queries)
-        # If you encounter ORDER BY DESC(?var without ), the LLM should be retrained
-        pass
-
-        # Fix 2: Add LIMIT if using ORDER BY DESC (for "latest" queries) and no LIMIT exists
-        if re.search(r'ORDER\s+BY\s+DESC', fixed, re.IGNORECASE) and \
-           not re.search(r'LIMIT\s+\d+', fixed, re.IGNORECASE):
-            fixed += ' LIMIT 1'
-            print(f"[INFO] Auto-added 'LIMIT 1' to query with ORDER BY DESC")
-
-        if fixed != original:
-            print(f"[INFO] SPARQL auto-corrected:")
-            print(f"  Before: {original[:100]}...")
-            print(f"  After:  {fixed[:100]}...")
-
-        return fixed
+        # Repair namespace/format only. ORDER BY does not imply LIMIT 1,
+        # and timezone offsets must retain their original meaning.
+        return prepare_query(sparql)
 
     def _extract_balanced_parens(self, text: str) -> Optional[str]:
         """
@@ -714,6 +567,7 @@ Query Decomposition (use this to guide your actions):
     def _log_to_jsonl(self, filename: str, data: dict):
         """Log data to a JSONL file"""
         import json
+        data = {**data, 'method_policy': policy_metadata(self.brick_graph)}
         with open(filename, "a", encoding="utf-8") as f:
             f.write(json.dumps(data, ensure_ascii=False) + "\n")
         print(f"📝 Logged to {filename}")
@@ -724,47 +578,53 @@ Query Decomposition (use this to guide your actions):
         dataset_context = ""
         if self.dataset_year:
             dataset_context = f"""
-IMPORTANT - Dataset Information:
-- This dataset contains data from {self.dataset_date_range[0]} to {self.dataset_date_range[1]}
-- If a date is mentioned WITHOUT a year (e.g., "November 15th", "June 1st"), assume year {self.dataset_year}
-- Example: "November 15th at 2pm" should be interpreted as "{self.dataset_year}-11-15T14:00:00Z"
+重要 - 数据集信息：
+- 本数据集包含从 {self.dataset_date_range[0]} 到 {self.dataset_date_range[1]} 的数据
+- 如果提到的日期没有年份（例如 "November 15th"、"June 1st"），请假定年份为 {self.dataset_year}
+- 示例："November 15th at 2pm" 应解释为 "{self.dataset_year}-11-15T14:00:00Z"
 """
 
-        prompt = f"""Your task is to write a Brick SPARQL query to answer the given question. Follow a step-by-step process:
+        prompt = f"""你的任务是编写 Brick SPARQL 查询来回答给定的问题。请遵循逐步推理过程：
 
-1. Start by constructing very simple fragments of the SPARQL query.
-2. Execute each fragment to verify its correctness. Adjust as needed based on observations.
-3. Confirm all your assumptions about the Brick schema structure before proceeding.
-4. Gradually build the complete SPARQL query by adding one piece at a time.
-5. Do NOT repeat the same action, as the results will be the same.
-6. Continue until you find the answer.
+1. 先构建非常简单的 SPARQL 查询片段。
+2. 执行每个片段以验证其正确性，并根据观察结果进行调整。
+3. 在继续之前，先确认你对 Brick 模式结构的所有假设。
+4. 一次添加一小块，逐步构建完整的 SPARQL 查询。
+5. 不要重复相同的动作，否则结果会一样。
+6. 持续推理直到找到答案。
 {dataset_context}
-REQUIRED SPARQL Prefixes and Schema:
+必需的 SPARQL 前缀与模式：
 ------------------------------------
-All SPARQL queries MUST start with these PREFIX definitions:
+所有 SPARQL 查询都必须以上述 PREFIX 声明开头：
 PREFIX brick: <https://brickschema.org/schema/Brick#>
 PREFIX bldg: <bldg-59#>
 PREFIX ref: <https://brickschema.org/schema/Brick/ref#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-Brick Schema Pattern:
-- Sensors are in the bldg: namespace (e.g., bldg:RM_TEMP, bldg:FCU_OAT)
-- Sensors have observations: ?sensor ref:hasObservation ?obs
-- Observations have timestamps: ?obs ref:hasTimestamp ?timestamp
-- Observations have values: ?obs ref:hasValue ?value
-- Timestamps are xsd:dateTime type (format: "2018-12-28T14:00:00"^^xsd:dateTime)
-  CRITICAL: Do NOT add timezone 'Z' suffix. Use "2018-12-28T14:00:00" NOT "2018-12-28T14:00:00Z"
+Brick 模式结构：
+- 传感器位于 bldg: 命名空间（例如 bldg:RM_TEMP, bldg:FCU_OAT）
+- 传感器有观测值：?sensor ref:hasObservation ?obs
+- 观测值有时间戳：?obs ref:hasTimestamp ?timestamp
+- 观测值有数值：?obs ref:hasValue ?value
+- 时间戳为 xsd:dateTime 类型（格式："2018-12-28T14:00:00"^^xsd:dateTime）
+  关键：不要添加时区 'Z' 后缀。使用 "2018-12-28T14:00:00"，而非 "2018-12-28T14:00:00Z"
 
-Form exactly one "Thought" and perform exactly one "Action", then wait for the "Observation".
+请严格按如下格式输出，每次只输出一个 "Thought" 和一个 "Action"，然后等待 "Observation"：
 
-CRITICAL: Every SPARQL query you generate MUST begin with the PREFIX declarations above. Never omit them.
+【格式要求，务必保留英文标签】
+Thought: （用中文写下你的推理过程）
+Action: 动作名(参数)
 
-Possible actions:
-- search_brick(string): Search for Brick entities (sensors, equipment) matching the string
-- get_brick_entity(entity_id): Get all properties and relationships of a Brick entity
-- get_property_examples(property_name): See examples of how a property is used
-- execute_sparql(SPARQL): Run a SPARQL query and get results. IMPORTANT: SPARQL MUST start with PREFIX declarations (see REQUIRED SPARQL Prefixes above)
-- stop(): Mark the last SPARQL query as final answer and end
+重要：Thought 部分请用中文撰写推理思路；Action 标签、动作名称（如 execute_sparql、search_brick、stop）以及参数内容必须保持原样（英文/原格式）。
+
+CRITICAL: 你生成的每个 SPARQL 查询都必须以上述 PREFIX 声明开头，绝不能省略。
+
+可用动作：
+- search_brick(string): 搜索匹配字符串的 Brick 实体（传感器、设备）
+- get_brick_entity(entity_id): 获取某个 Brick 实体的所有属性与关系
+- get_property_examples(property_name): 查看某属性的使用示例
+- execute_sparql(SPARQL): 运行 SPARQL 查询并获取结果。注意：SPARQL 必须以 PREFIX 声明开头（见上方"必需的 SPARQL 前缀"）
+- stop(): 将上一条 SPARQL 查询标记为最终答案并结束
 """
 
         # Add few-shot examples if enabled
@@ -776,11 +636,11 @@ Here are examples of Text-to-SPARQL conversions for reference:
 
 """
 
-        prompt += f"""User Question: {context['question']}
+        prompt += f"""用户问题：{context['question']}
 
 {context['action_history']}
 
-Output one "Thought" and one "Action":
+请输出一次 Thought 和一次 Action（遵循上面的格式要求）：
 """
         return prompt
 
@@ -794,16 +654,22 @@ Output one "Thought" and one "Action":
         Returns:
             Action with observation filled
         """
+        self._assert_graph()
+        self.brick_graph.last_tool_diagnostic = None
+        # Only controlled purposes are localized. Model-authored text stays in
+        # the original trace; the UI can show an explicitly labelled summary.
+        if action.action_name in ('stop', 'error'):
+            action.thought = feedback(action.thought, self.language)
         try:
             if action.action_name == "search_brick":
                 results = search_brick(action.action_argument)
                 action.observation_raw = results
-                action.observation = format_search_results(results)
+                action.observation = format_search_results(results, language=self.language)
 
             elif action.action_name == "get_brick_entity":
                 entity_info = get_brick_entity(action.action_argument)
                 action.observation_raw = entity_info
-                action.observation = format_entity_info(entity_info)
+                action.observation = format_entity_info(entity_info, language=self.language)
 
             elif action.action_name == "get_property_examples":
                 examples = get_property_examples(action.action_argument)
@@ -812,7 +678,7 @@ Output one "Thought" and one "Action":
                     lines = [f"{subj} -- {prop} --> {obj}" for subj, prop, obj in examples]
                     action.observation = "\n".join(lines)
                 else:
-                    action.observation = "No examples found"
+                    action.observation = "No examples found" if self.language == 'en' else "未找到示例"
 
             elif action.action_name == "execute_sparql":
                 print(f"\n[EXECUTE_SPARQL] Starting SPARQL query execution...")
@@ -820,77 +686,17 @@ Output one "Thought" and one "Action":
                 # Validate and fix SPARQL before execution
                 corrected_sparql = self._validate_and_fix_sparql(action.action_argument)
 
-                # Validate and apply temporal constraints using decomposition information
-                # This acts as both validator (when guide is used) and applicator (when guide not used)
-                if self.use_temporal_handler and self.temporal_handler and hasattr(self, '_current_state'):
-                    if self._current_state.decomposition and self._current_state.decomposition.temporal.has_constraint:
-                        temporal_type = self._current_state.decomposition.temporal.type
-
-                        # Validate the generated SPARQL against expected temporal constraints
-                        is_valid, validation_message = self.temporal_handler.validate_temporal_query(
-                            corrected_sparql,
-                            decomposition=self._current_state.decomposition
-                        )
-
-                        if hasattr(self, '_using_temporal_guide') and self._using_temporal_guide:
-                            # Temporal guide was used - validate LLM output
-                            if is_valid:
-                                print(f"[INFO] ✓ Temporal constraint '{temporal_type}' correctly applied by LLM")
-                            else:
-                                # Guide didn't work - apply handler as fallback
-                                print(f"[WARNING] ✗ Temporal validation failed: {validation_message}")
-                                print(f"[INFO] Applying temporal handler as fallback for '{temporal_type}'")
-                                temporal_result = self.temporal_handler.apply_temporal_constraint(
-                                    corrected_sparql,
-                                    decomposition=self._current_state.decomposition
-                                )
-                                if temporal_result.was_modified:
-                                    print(f"[INFO] ✓ SPARQL corrected with pattern: {temporal_result.pattern_applied}")
-                                    corrected_sparql = temporal_result.modified_sparql
-                        else:
-                            # No guide used - apply handler directly
-                            print(f"[INFO] Applying temporal constraint: {temporal_type}")
-                            temporal_result = self.temporal_handler.apply_temporal_constraint(
-                                corrected_sparql,
-                                decomposition=self._current_state.decomposition
-                            )
-                            if temporal_result.was_modified:
-                                print(f"[INFO] SPARQL modified with temporal pattern: {temporal_result.pattern_applied}")
-                                corrected_sparql = temporal_result.modified_sparql
-
-                # Validate sensor coverage using decomposition information
-                if hasattr(self, '_current_state') and self._current_state.decomposition:
-                    decomp = self._current_state.decomposition
-
-                    # Check sensor coverage
+                warnings = []
+                decomp = getattr(getattr(self, '_current_state', None), 'decomposition', None)
+                if decomp:
+                    checks = []
                     if decomp.sensors:
-                        sensor_valid, sensor_msg = validate_sensor_coverage(corrected_sparql, decomp)
-                        if sensor_valid:
-                            print(f"[INFO] ✓ {sensor_msg}")
-                        else:
-                            print(f"[WARNING] ✗ Sensor coverage issue: {sensor_msg}")
-                            # Could add automatic correction here in future
-                            # For now, just warn - LLM may fix in next iteration
-
-                    # Check aggregation requirements
+                        checks.append(author_validation.validate_sensor_coverage(corrected_sparql, decomp))
                     if self.use_aggregation and decomp.aggregation.required:
-                        agg_valid, agg_msg = validate_aggregation(corrected_sparql, decomp)
-                        if agg_valid:
-                            print(f"[INFO] ✓ {agg_msg}")
-                        else:
-                            print(f"[WARNING] ✗ Aggregation issue: {agg_msg}")
-                            # Could add automatic correction here in future
-                            # For now, just warn - LLM may fix in next iteration
-
-                    # Check multi-sensor timestamp joins
+                        checks.append(author_validation.validate_aggregation(corrected_sparql, decomp))
                     if len(decomp.sensors) > 1:
-                        join_valid, join_msg = validate_multi_sensor_joins(corrected_sparql, decomp)
-                        if join_valid:
-                            print(f"[INFO] ✓ {join_msg}")
-                        else:
-                            print(f"[WARNING] ✗ Multi-sensor join issue: {join_msg}")
-                            # This is critical for multi-sensor queries - warn prominently
-                            print(f"[WARNING] Multi-sensor queries MUST join all sensors on same ?timestamp")
+                        checks.append(author_validation.validate_multi_sensor_joins(corrected_sparql, decomp))
+                    warnings = [feedback(msg, self.language) for valid, msg in checks if not valid]
 
                 sparql_query = BrickSparqlQuery(sparql=corrected_sparql, result_limit=self.result_limit)
 
@@ -900,23 +706,32 @@ Output one "Thought" and one "Action":
                     # Catch execution errors and provide helpful feedback
                     error_msg = str(exec_error).lower()
                     if "prefix" in error_msg or "namespace" in error_msg:
-                        action.observation = f"PREFIX ERROR: {str(exec_error)}\n\nMake sure all PREFIX declarations are properly formatted with angle brackets.\nRequired prefixes: brick:, bldg:, ref:, xsd:"
+                        action.observation = f"PREFIX 错误：{str(exec_error)}\n\n请确保所有 PREFIX 声明都用尖括号正确书写。\n所需前缀：brick:、bldg:、ref:、xsd:"
                     else:
-                        action.observation = f"SPARQL Execution Error: {str(exec_error)}"
+                        action.observation = f"SPARQL 执行错误：{str(exec_error)}"
+                    action.observation = feedback(action.observation, self.language)
                     return action, None
 
+                sparql_query.diagnostic_warnings = warnings
+                if warnings:
+                    self._log_to_jsonl(self.log_file, {'event':'validation_diagnostic', 'warnings':warnings,
+                                                      'blocking':False, 'sparql':corrected_sparql})
                 action.observation_raw = sparql_query
 
                 if sparql_query.has_results():
                     action.observation = sparql_query.results_as_table()
                 else:
-                    action.observation = f"Query returned no results. Status: {sparql_query.execution_status.value}"
+                    prefix = 'No results. Status: ' if self.language == 'en' else '查询未返回任何结果。状态：'
+                    action.observation = prefix + sparql_query.execution_status.value
 
+                if sparql_query.error:
+                    label = '\nExecution error: ' if self.language == 'en' else '\n执行错误：'
+                    action.observation += label + feedback(sparql_query.error, self.language)
                 # Store the SPARQL query
                 return action, sparql_query
 
             elif action.action_name == "stop":
-                action.observation = "Stopping execution"
+                action.observation = "正在结束执行"
 
             elif action.action_name == "error":
                 # Error action for retry logic - observation already set
@@ -924,11 +739,17 @@ Output one "Thought" and one "Action":
                 pass
 
             else:
-                action.observation = f"Unknown action: {action.action_name}"
+                action.observation = f"未知动作：{action.action_name}"
 
         except Exception as e:
-            action.observation = f"Error executing action: {str(e)}"
+            action.observation = feedback(f"执行动作时出错：{str(e)}", self.language)
 
+        action.diagnostics = self.brick_graph.last_tool_diagnostic
+        if action.diagnostics:
+            self._log_to_jsonl(self.log_file, {'event': 'tool_diagnostic', 'diagnostic': action.diagnostics})
+        # Do not run replacements over result tables, RDF labels or values.
+        if action.observation and action.action_name not in ('search_brick', 'get_brick_entity', 'get_property_examples'):
+            action.observation = feedback(action.observation, self.language)
         return action, None
 
     def run(self, question: str, verbose: bool = True) -> Tuple[AgentState, Optional[BrickSparqlQuery]]:
@@ -942,7 +763,8 @@ Output one "Thought" and one "Action":
         Returns:
             (final_state, final_sparql) tuple
         """
-        state = AgentState(question=question)
+        self._assert_graph()
+        state = AgentState(question=question, mode='paper', language=self.language, implementation_mode='upstream')
 
         # Store state reference for temporal handler access
         self._current_state = state
@@ -951,6 +773,9 @@ Output one "Thought" and one "Action":
             print(f"\n{'='*80}")
             print(f"Question: {question}")
             print(f"{'='*80}\n")
+
+        self._check_cancelled()
+        state.phase = '分解查询'
 
         # Step 1: Decompose the query (if enabled and needed)
         if self.use_decomposer and self.decomposer:
@@ -961,8 +786,21 @@ Output one "Thought" and one "Action":
                 if verbose:
                     print("🔍 Step 1: Decomposing query (complex query detected)...\n")
 
-                decomposition = self.decomposer.decompose(question, verbose=verbose)
+                context = (f"Namespaces: {namespace_map()}; timeseries range: {self.dataset_date_range}" if self.language == 'en'
+                           else f"当前命名空间：{namespace_map()}；时序范围：{self.dataset_date_range}")
+                decomposition = self.decomposer.decompose(question, verbose=verbose, cancel_event=self.cancel_event, context=context, language=self.language)
                 state.decomposition = decomposition
+                state.decomposition_fallback = getattr(self.decomposer, 'last_fallback', False)
+                if not self.use_temporal_handler:
+                    decomposition.temporal.has_constraint = False
+                    decomposition.temporal.type = 'none'
+                if not self.use_aggregation:
+                    decomposition.aggregation.required = False
+                    decomposition.aggregation.operations = []
+                if self.decomposer.last_usage:
+                    state.prompt_tokens += self.decomposer.last_usage.get('prompt_tokens', 0)
+                    state.completion_tokens += self.decomposer.last_usage.get('completion_tokens', 0)
+                    state.total_tokens += self.decomposer.last_usage.get('total_tokens', 0)
                 state.cooldown_seconds += self.decomposer.cooldown_seconds
                 self.decomposer.cooldown_seconds = 0
 
@@ -983,6 +821,7 @@ Output one "Thought" and one "Action":
         parse_retry_count = 0
 
         while not state.should_stop():
+            self._check_cancelled()
             # Get next action from controller
             try:
                 action = self.controller(state)
@@ -996,17 +835,21 @@ Output one "Thought" and one "Action":
                         print("[WARNING] Retrying with clarification...")
 
                         error_action = BrickAction(
-                            thought="Previous output format was invalid",
+                            thought="上一次输出的格式无效",
                             action_name="error",
                             action_argument="Parse error"
                         )
                         error_action.observation = (
-                            "ERROR: Your previous response could not be parsed. "
-                            "You MUST use this exact format:\n"
-                            "Thought: [your reasoning here]\n"
-                            "Action: execute_sparql(query) OR finish(answer)\n\n"
-                            "Do NOT add extra text. Do NOT skip the Action: label."
+                            "错误：上一次的回复无法被解析。"
+                            "你必须使用如下精确格式（保留英文标签）：\n"
+                            "Thought: [你的推理过程，可用中文]\n"
+                            "Action: execute_sparql(查询) 或 stop()\n\n"
+                            "不要添加多余文本，也不要省略 Action: 标签。"
                         )
+                        if self.language == 'en':
+                            error_action.thought = 'The previous output had an invalid format'
+                            error_action.observation = ('ERROR: Reply with exactly one Thought: and one Action: label. '
+                                                        'Use Action: execute_sparql(query) or stop(). Do not include Observation:.')
                         state.actions.append(error_action)
 
                         if verbose:
@@ -1018,26 +861,33 @@ Output one "Thought" and one "Action":
                         # Max retries exceeded, force stop
                         print(f"[ERROR] Max parse retries exceeded. Stopping agent.")
                         action = BrickAction(
-                            thought="Unable to generate valid output format",
+                            thought="无法生成有效的输出格式",
                             action_name="stop",
                             action_argument=""
                         )
-                        action.observation = "Agent stopped due to repeated parse errors"
+                        action.observation = "Agent 因反复解析错误已停止"
                 else:
                     raise  # Re-raise if not a parse error
 
+            if self.language == 'en' and action.action_name == 'error':
+                action.observation = ('Please revise the query using the latest execution error or validation warnings. '
+                                      'Execute the corrected query before stopping; exploratory fragments are not final answers.')
+
             # Check for duplicates
             if state.is_duplicate_action(action):
+                state.stop_reason = 'duplicate_action'
                 if verbose:
                     print(f"[WARNING] Duplicate action detected: {action.action_name}({action.action_argument})")
                     print("   Skipping...\n")
                 # Force stop if repeating
                 action = BrickAction(
-                    thought="Detected duplicate action, stopping",
+                    thought="检测到重复动作，正在停止",
                     action_name="stop",
                     action_argument=""
                 )
 
+            self._check_cancelled()
+            state.phase = "执行 " + action.action_name
             # Execute action
             action, sparql_query = self.execute_action(action)
 
@@ -1057,7 +907,10 @@ Output one "Thought" and one "Action":
 
         # Set final SPARQL
         if state.generated_sparqls:
-            state.final_sparql = state.generated_sparqls[-1]
+            latest = state.generated_sparqls[-1]
+            state.final_sparql = latest
+        state.stop_reason = state.stop_reason or ('model_stop' if state.actions and state.actions[-1].action_name == 'stop' else 'max_iterations')
+        state.phase = '完成'
 
         if verbose:
             print(f"{'='*80}")

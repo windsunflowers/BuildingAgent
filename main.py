@@ -10,8 +10,8 @@ Usage:
 Requirements:
     - Python >= 3.9
     - pip install -r requirements.txt
-    - Google Cloud authentication (for Gemini API)
-      Set GOOGLE_CLOUD_PROJECT environment variable or run: gcloud auth application-default login
+    - LLM API configuration (OpenAI-compatible, Qwen via DashScope by default):
+      Set LLM_API_KEY (and optionally LLM_BASE_URL / LLM_MODEL) environment variables.
 """
 
 import argparse
@@ -69,7 +69,7 @@ Examples:
     parser.add_argument(
         "--project",
         default=None,
-        help="Google Cloud project ID (defaults to GOOGLE_CLOUD_PROJECT env var)"
+        help="Deprecated (legacy Google Cloud option). Ignored."
     )
     parser.add_argument(
         "--verbose", "-v",
@@ -83,11 +83,11 @@ Examples:
         help="Minimal output"
     )
 
+    parser.add_argument('--language', choices=('zh', 'en'), default='zh', help='Agent prompt language')
     args = parser.parse_args()
 
-    # Set Google Cloud project if provided
-    if args.project:
-        os.environ["GOOGLE_CLOUD_PROJECT"] = args.project
+    # Legacy Google Cloud option (kept for CLI compatibility, no longer used)
+    _ = args.project
 
     # Check if TTL file exists
     if not os.path.exists(args.ttl):
@@ -107,7 +107,8 @@ Examples:
         engine="gemini-flash",
         use_decomposer=not args.no_decomposer,
         use_temporal_handler=not args.no_temporal,
-        ttl_schema_file=args.schema_in_prompt
+        ttl_schema_file=args.schema_in_prompt,
+        language=args.language,
     )
 
     # Load Brick schema

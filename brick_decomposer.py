@@ -5,17 +5,17 @@ Decomposes natural language queries into structured components:
 """
 
 import json
+import os
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import time
 
 try:
-    from vertexai.generative_models import GenerativeModel
-    import vertexai
-    VERTEXAI_AVAILABLE = True
+    from llm_client import get_client
+    LLM_AVAILABLE = True
 except ImportError:
-    VERTEXAI_AVAILABLE = False
-    print("Warning: VertexAI not available. Decomposer will run in mock mode.")
+    LLM_AVAILABLE = False
+    print("Warning: llm_client not available. Decomposer will run in mock mode.")
 
 
 @dataclass
@@ -60,23 +60,18 @@ class BrickQueryDecomposer:
     This preprocessing step helps the main agent generate better SPARQL queries.
     """
 
-    def __init__(self, model: str = "gemini-2.5-flash", project: str = None):
+    def __init__(self, model: str = None, project: str = None):
         """
         Initialize the decomposer.
 
         Args:
-            model: Gemini model to use
-            project: GCP project ID. If None, read from GOOGLE_CLOUD_PROJECT env var.
+            model: Model name. If None, read from LLM_MODEL env var (default: qwen-plus).
+            project: Deprecated, kept for backward compatibility. Ignored.
         """
         import os
-        self.model_name = model
-        self.project = project or os.getenv("GOOGLE_CLOUD_PROJECT")
-        if not self.project:
-            raise RuntimeError(
-                "GCP project not provided and GOOGLE_CLOUD_PROJECT env var is not set."
-            )
-        self.location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
+        self.model_name = model or os.getenv("LLM_MODEL", "qwen-plus")
         self.cooldown_seconds = 0
+        self.last_usage = None
 
     def should_decompose(self, question: str) -> bool:
         """
@@ -94,7 +89,29 @@ class BrickQueryDecomposer:
         """
         import re
 
+        if any(k in question for k in ("昨天", "最近", "小时", "期间", "当前", "最新")):
+            return True
+
+        # 中文问题支持：基于中文字符数与中文关键词判断是否分解
+        # （原逻辑依赖空格分词与英文关键词，对无空格的中文整句会误判为简单查询）
+        if re.search(r'[一-鿿]', question):
+            cjk_multi = ["和", "与", "以及", "各个", "每个", "各", "都", "同时", "所有", "两者", "分别"]
+            cjk_compare = ["比较", "对比", "差异", "差值", "之比", "比率", "区别", "相对于"]
+            cjk_complex = ["超过", "低于", "高于", "小于", "大于", "之间", "如果", "当", "哪些", "哪个",
+                           "哪间", "哪里", "如何", "怎么", "为什么", "多少", "平均", "最大", "最小", "总计", "求和", "按"]
+            if any(k in question for k in cjk_multi):
+                return True
+            if any(k in question for k in cjk_compare):
+                return True
+            if any(k in question for k in cjk_complex):
+                return True
+            if len(re.findall(r'[一-鿿]', question)) > 20:
+                return True
+            return False
+
         question_lower = question.lower()
+        if any(k in question for k in ("平均", "最大", "最小", "比较", "超过", "昨天", "最近", "小时", "期间", "之间", "当前", "最新")):
+            return True
 
         # Helper function to check for whole word matches
         def has_word(text: str, word: str) -> bool:
@@ -156,7 +173,7 @@ class BrickQueryDecomposer:
         # Otherwise, simple query - no decomposition needed
         return False
 
-    def decompose(self, question: str, verbose: bool = True) -> QueryDecomposition:
+    def decompose(self, question: str, verbose: bool = True, cancel_event=None, context: str = "", language: str = "zh") -> QueryDecomposition:
         """
         Decompose a natural language question into structured components.
 
@@ -167,28 +184,34 @@ class BrickQueryDecomposer:
         Returns:
             QueryDecomposition object with extracted components
         """
-        if not VERTEXAI_AVAILABLE:
+        self.last_fallback = False
+        self.last_usage = None
+        self.last_prompt = None
+        if not LLM_AVAILABLE:
+            self.last_fallback = True
             return self._mock_decompose(question)
 
         try:
-            # Rate limiting
-            self.cooldown_seconds += 6.5
-            time.sleep(6.5)
+            # Rate limiting. Configurable via BRICK_DECOMP_COOLDOWN; default 6.5s.
+            dc = float(os.getenv("BRICK_DECOMP_COOLDOWN", "0"))
+            self.cooldown_seconds += dc
+            if cancel_event is not None and cancel_event.wait(dc):
+                raise RuntimeError("查询已取消")
+            if cancel_event is None:
+                time.sleep(dc)
 
-            # Initialize Vertex AI
-            vertexai.init(project=self.project, location=self.location)
-
-            # Load prompt template
-            with open("prompts/brick_decomposition.prompt", "r", encoding="utf-8") as f:
-                template = f.read()
+            from prompting import load_prompt, save_prompt_snapshot
+            template = load_prompt('brick_decomposition.prompt', language)
 
             # Simple template rendering
             prompt = template.replace("{{ question }}", question)
 
-            # Call Gemini
-            model = GenerativeModel(self.model_name)
-            response = model.generate_content(prompt)
-            response_text = response.text
+            # Call Qwen (or any configured OpenAI-compatible model)
+            client = get_client()
+            prompt += ("\nGraph context: " if language == "en" else "\n图谱上下文：") + context
+            self.last_prompt = save_prompt_snapshot(prompt)
+            response_text = client.generate_text(prompt, cancel_event=cancel_event)
+            self.last_usage = client.last_usage
 
             # Parse JSON response
             # Extract JSON from markdown code blocks if present
@@ -212,8 +235,11 @@ class BrickQueryDecomposer:
             return decomposition
 
         except Exception as e:
+            if cancel_event is not None and cancel_event.is_set():
+                raise RuntimeError("查询已取消") from e
             print(f"[ERROR] Decomposition failed: {e}")
             print("[INFO] Falling back to mock decomposition")
+            self.last_fallback = True
             return self._mock_decompose(question)
 
     def _json_to_decomposition(self, json_data: Dict) -> QueryDecomposition:

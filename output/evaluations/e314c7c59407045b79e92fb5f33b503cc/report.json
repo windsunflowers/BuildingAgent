@@ -1,0 +1,54 @@
+{
+  "status": "running",
+  "summary": {
+    "total": 5,
+    "done": 0,
+    "errors": 0,
+    "gold_errors": 0,
+    "model_errors": 0,
+    "valid": true,
+    "complete": false,
+    "metric_protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "entity_set_f1": null,
+    "row_matching_f1": null,
+    "exact_match_f1": null,
+    "by_building": {},
+    "building_macro": {
+      "entity_set_f1": null,
+      "row_matching_f1": null,
+      "exact_match_f1": null
+    }
+  },
+  "results": [],
+  "error": null,
+  "run_id": "e314c7c59407045b79e92fb5f33b503cc",
+  "metric_protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+  "configuration": {
+    "language": "en",
+    "context": 0,
+    "mode": "paper",
+    "model": "qwen-plus",
+    "benchmark": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\benchmarks\\TUC_building_human.jsonl",
+    "graph": {
+      "building": "TUC_building",
+      "ttl": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\TUC_building.ttl",
+      "csv": null,
+      "triples": 1855,
+      "total_triples": 51942,
+      "sensors": 36,
+      "sample": false,
+      "timeseries": {
+        "rows": 0,
+        "available_rows": 0,
+        "truncated": false,
+        "unmatched_columns": []
+      },
+      "warnings": [],
+      "loaded_at": "2026-10-20T14:31:58.103236"
+    },
+    "temporal": false,
+    "operations": false,
+    "timeout": 150
+  },
+  "report_path": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\output\\evaluations\\e314c7c59407045b79e92fb5f33b503cc\\report.json"
+}

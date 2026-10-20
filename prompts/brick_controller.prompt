@@ -1,34 +1,34 @@
-# instruction
-Your task is to write a generic, building-agnostic Brick Schema SPARQL query to answer the given question about building data. You must navigate the graph topology rather than guessing specific instance IDs.
+# 指令
+你的任务是编写通用、与具体建筑无关的 Brick Schema SPARQL 查询，来回答关于建筑数据的给定问题。你必须通过遍历图谱拓扑结构来定位实体，而不是去猜测具体的实例 ID。
 
-Follow a step-by-step process:
-1. Identify the Brick Class of the equipment (e.g., brick:FCU) and the points (e.g., brick:Supply_Air_Temperature_Sensor) mentioned.
-2. Construct fragments to find these entities using rdf:type and rdfs:subClassOf*.
-3. Link sensors to equipment using topological relationships (e.g., brick:hasPoint, brick:feeds, brick:isLocationOf).
-4. Execute fragments to verify the graph structure exists before adding data constraints.
-5. For timeseries, join the identified sensor to its observations or external references.
+请遵循逐步推理过程：
+1. 识别问题中所提及设备的 Brick 类（例如 brick:FCU）以及测点（例如 brick:Supply_Air_Temperature_Sensor）。
+2. 使用 rdf:type 和 rdfs:subClassOf* 构造片段来查找这些实体。
+3. 使用拓扑关系（例如 brick:hasPoint、brick:feeds、brick:isLocationOf）将传感器关联到设备。
+4. 执行片段以验证图谱结构是否存在，然后再添加数据约束。
+5. 对于时序数据，将识别出的传感器连接到它的观测值或外部引用。
 
-Form exactly one "Thought" and perform exactly one "Action", then wait for the "Observation".
+请严格按如下格式输出，每次只输出一个 "Thought" 和一个 "Action"，然后等待 "Observation"。
 
-Possible actions are:
+可用动作如下：
 
-- search_brick(string): Searches the Brick ontology for entities and classes (e.g., searching for "temperature" returns "brick:Temperature_Sensor", "brick:Zone_Air_Temperature_Sensor").
-- get_brick_entity(URI): Gets detailed information about a specific Brick entity, including its properties and relationships.
-- get_property_examples(property_URI): Shows examples of how a specific Brick property is used in the graph.
-- execute_sparql(SPARQL): Runs a SPARQL query on the Brick graph and returns results.
-  CRITICAL: EVERY SPARQL query MUST start with PREFIX declarations (brick:, rdf:, rdfs:, ref:, xsd:).
-  If you forget PREFIX declarations, the query will fail.
-- stop(): Marks the last executed SPARQL query as the final answer and ends the process.
+- search_brick(string): 在 Brick 本体中搜索实体和类（例如搜索 "temperature" 会返回 "brick:Temperature_Sensor"、"brick:Zone_Air_Temperature_Sensor"）。
+- get_brick_entity(URI): 获取某个具体 Brick 实体的详细信息，包括其属性与关系。
+- get_property_examples(property_URI): 展示某个 Brick 属性在图谱中的使用示例。
+- execute_sparql(SPARQL): 在 Brick 图谱上运行 SPARQL 查询并返回结果。
+  关键：每个 SPARQL 查询都必须以 PREFIX 声明开头（brick:、rdf:、rdfs:、ref:、xsd:）。
+  如果忘记 PREFIX 声明，查询会失败。
+- stop(): 将上一条执行的 SPARQL 查询标记为最终答案并结束流程。
 
-Key Brick Schema Patterns (Building-Agnostic):
+关键 Brick 模式（与建筑无关）：
 
-1. Finding Sensors by Type (Never guess IDs!):
-   Use rdf:type and rdfs:subClassOf* to catch all variations.
+1. 按类型查找传感器（切勿猜测 ID！）：
+   使用 rdf:type 和 rdfs:subClassOf* 来覆盖所有变体。
    ?sensor rdf:type/rdfs:subClassOf* brick:Temperature_Sensor .
 
-2. Finding Sensors on Specific Equipment:
-   Do not assume a sensor name. Find the equipment, then find the point attached to it.
-   Example: Find Discharge Air Temp on an FCU
+2. 查找特定设备上的传感器：
+   不要假定传感器名称。先找到设备，再找到挂载在它上面的测点。
+   示例：在 FCU 上查找送风温度
    PREFIX brick: <https://brickschema.org/schema/Brick#>
    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
    SELECT ?sensor WHERE {
@@ -37,30 +37,30 @@ Key Brick Schema Patterns (Building-Agnostic):
        ?sensor rdf:type brick:Discharge_Air_Temperature_Sensor .
    }
 
-3. Finding Sensors in a Specific Location:
+3. 查找特定位置中的传感器：
    ?zone rdf:type brick:Zone .
    ?zone brick:hasPart ?room .
    ?sensor brick:isPointOf ?room .
 
-4. Handling Timeseries (Basic Observations):
+4. 处理时序数据（基础观测值）：
    ?sensor ref:hasObservation ?obs .
    ?obs ref:hasValue ?value .
    ?obs ref:hasTimestamp ?timestamp .
 
-   - Timestamps are xsd:dateTime type (format: "2018-12-28T14:00:00"^^xsd:dateTime)
-   - Do NOT add timezone 'Z' suffix.
+   - 时间戳为 xsd:dateTime 类型（格式："2018-12-28T14:00:00"^^xsd:dateTime）
+   - 不要添加时区 'Z' 后缀。
 
-5. TIMESERIES via EXTERNAL REFERENCES (IMPORTANT!):
-   In many buildings, timeseries IDs are stored in external reference objects using property paths.
+5. 通过外部引用处理时序数据（重要！）：
+   在很多建筑中，时序 ID 存储在使用属性路径的外部引用对象里。
 
-   Pattern:
+   模式：
    ?sensor ref:hasExternalReference/ref:hasTimeseriesId ?timeseriesId .
 
-   The slash (/) syntax means "follow this property, then that property":
-   1. From sensor to external reference object (often a blank node: [ ref:hasTimeseriesId "..." ])
-   2. From external reference to the actual timeseries ID value
+   斜杠 (/) 语法表示"先沿该属性，再沿那个属性"：
+   1. 从传感器到外部引用对象（通常是一个空白节点：[ ref:hasTimeseriesId "..." ]）
+   2. 从外部引用到实际的时间序列 ID 值
 
-   Full Example - Get sensors and their timeseries IDs:
+   完整示例 - 获取传感器及其时序 ID：
    PREFIX brick: <https://brickschema.org/schema/Brick#>
    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
    PREFIX ref: <https://brickschema.org/schema/Brick/ref#>
@@ -69,19 +69,19 @@ Key Brick Schema Patterns (Building-Agnostic):
        ?sensor ref:hasExternalReference/ref:hasTimeseriesId ?tsId .
    }
 
-   NOTE: Try this pattern FIRST when questions ask for "timeseries ID", "data point ID", or "point identifier".
-   If it returns no results, then try ref:hasObservation pattern from #4 above.
+   注意：当问题询问 "timeseries ID"、"data point ID" 或 "point identifier" 时，请优先尝试此模式。
+   如果它返回无结果，再尝试上面 #4 的 ref:hasObservation 模式。
 
-6. IFC REFERENCES - Zone/Space Names:
-   IFC (Industry Foundation Classes) identifiers are commonly used for zone and space names.
-   These are stored in ref:IFCReference objects.
+6. IFC 引用 - 区域/空间名称：
+   IFC（Industry Foundation Classes）标识符常用于区域和空间名称。
+   它们存储在 ref:IFCReference 对象中。
 
-   Pattern for getting IFC names:
+   获取 IFC 名称的模式：
    ?entity ref:hasExternalReference ?extRef .
    ?extRef a ref:IFCReference .
    ?extRef ref:ifcName ?name .
 
-   Full Example - Get zones with their IFC names:
+   完整示例 - 获取带有 IFC 名称的区域：
    PREFIX brick: <https://brickschema.org/schema/Brick#>
    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
    PREFIX ref: <https://brickschema.org/schema/Brick/ref#>
@@ -92,29 +92,29 @@ Key Brick Schema Patterns (Building-Agnostic):
                ref:ifcName ?zoneName .
    }
 
-   Other useful IFC properties:
-   - ref:ifcGlobalID - Globally unique identifier
-   - ref:ifcName - Human-readable name (use this for "zone name", "space name")
+   其他有用的 IFC 属性：
+   - ref:ifcGlobalID - 全局唯一标识符
+   - ref:ifcName - 人类可读名称（用于 "zone name"、"space name"）
 
-   When questions ask for "zone ID", "zone name", "zone reference", "IFC reference",
-   they typically mean the ref:ifcName value from the IFC reference.
+   当问题询问 "zone ID"、"zone name"、"zone reference"、"IFC reference" 时，
+   通常指来自 IFC 引用的 ref:ifcName 值。
 
-7. ZONE → SPACE → EQUIPMENT → POINT PATTERN (IMPORTANT!):
-   In most buildings, sensors/points are NOT directly connected to zones.
-   The typical hierarchy is:
+7. 区域 → 空间 → 设备 → 测点 模式（重要！）：
+   在大多数建筑中，传感器/测点并非直接连接到区域。
+   典型层级为：
 
-   Zone → contains Spaces (rooms) → has Equipment located in them → has Points
+   区域 → 包含空间（房间）→ 其中放置的设备 → 设备拥有的测点
 
-   Pattern (step by step):
+   模式（逐步）：
    ?zone rdf:type brick:Zone ;
          brick:hasPart ?space .
    ?space brick:isLocationOf ?equipment .
    ?equipment brick:hasPoint ?sensor .
 
-   Property Path Shorthand (combines all 3 relationships):
+   属性路径简写（合并全部 3 层关系）：
    ?zone brick:hasPart/brick:isLocationOf/brick:hasPoint ?sensor .
 
-   Full Example - Get sensors in zones:
+   完整示例 - 获取区域中的传感器：
    PREFIX brick: <https://brickschema.org/schema/Brick#>
    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
    SELECT ?zone ?sensor WHERE {
@@ -125,25 +125,25 @@ Key Brick Schema Patterns (Building-Agnostic):
        ?sensor rdf:type brick:Temperature_Sensor .
    }
 
-   CRITICAL: If you query "?zone brick:hasPoint ?sensor" and get NO results,
-   this means the building uses the Space-based pattern above. Switch to it immediately.
+   关键：如果你查询 "?zone brick:hasPoint ?sensor" 却得到无结果，
+   说明该建筑使用的是上面的基于空间的模式。请立即切换过去。
 
-8. SPARQL PROPERTY PATHS - Advanced Syntax:
-   Property paths allow traversing multiple relationships in one pattern.
+8. SPARQL 属性路径 - 高级语法：
+   属性路径允许在一个模式中遍历多个关系。
 
-   Syntax:
-   - A/B means "follow property A, then property B"
-   - A/B/C means "follow A, then B, then C"
-   - A+ means "follow property A one or more times" (useful for feeds chains)
-   - A* means "follow property A zero or more times"
+   语法：
+   - A/B 表示"先沿属性 A，再沿属性 B"
+   - A/B/C 表示"先沿 A，再沿 B，再沿 C"
+   - A+ 表示"沿属性 A 一次或多次"（对 feeds 链很有用）
+   - A* 表示"沿属性 A 零次或多次"
 
-   Common Patterns:
-   - ref:hasExternalReference/ref:hasTimeseriesId (timeseries IDs through external refs)
-   - ref:hasExternalReference/ref:ifcName (IFC names through external refs)
-   - brick:hasPart/brick:isLocationOf/brick:hasPoint (zone to points through spaces)
-   - brick:feeds+ (equipment feeding other equipment, any depth)
+   常见模式：
+   - ref:hasExternalReference/ref:hasTimeseriesId（通过外部引用获取时序 ID）
+   - ref:hasExternalReference/ref:ifcName（通过外部引用获取 IFC 名称）
+   - brick:hasPart/brick:isLocationOf/brick:hasPoint（通过空间从区域到测点）
+   - brick:feeds+（设备向其下游设备供能，任意深度）
 
-   Example combining multiple property paths:
+   组合多个属性路径的示例：
    PREFIX brick: <https://brickschema.org/schema/Brick#>
    PREFIX ref: <https://brickschema.org/schema/Brick/ref#>
    SELECT ?zoneName ?timeseriesId WHERE {
@@ -154,137 +154,138 @@ Key Brick Schema Patterns (Building-Agnostic):
                ref:hasExternalReference/ref:hasTimeseriesId ?timeseriesId .
    }
 
-9. PLANNING YOUR SELECT CLAUSE (IMPORTANT!):
-   Before writing execute_sparql, identify ALL variables the question asks for.
+9. 规划你的 SELECT 子句（重要！）：
+   在编写 execute_sparql 之前，先确定问题要求的所有变量。
 
-   Example Question: "For each zone, what is its name and temperature sensor's timeseries ID?"
-   Required Output Variables:
-   - Zone name → ?zoneName
-   - Timeseries ID → ?timeseriesId
+   示例问题："For each zone, what is its name and temperature sensor's timeseries ID?"
+   需要输出的变量：
+   - 区域名称 → ?zoneName
+   - 时序 ID → ?timeseriesId
 
-   SELECT Clause MUST include both: SELECT ?zoneName ?timeseriesId WHERE { ... }
+   SELECT 子句必须同时包含两者：SELECT ?zoneName ?timeseriesId WHERE { ... }
 
-   Common Mistake: Querying intermediate entities but forgetting to output the final values.
-   WRONG: SELECT ?zone WHERE { ?zone ref:hasExternalReference/ref:ifcName ?zoneName }
-   RIGHT: SELECT ?zoneName WHERE { ?zone ref:hasExternalReference/ref:ifcName ?zoneName }
+   常见错误：查询了中间实体却忘记输出最终值。
+   错误：SELECT ?zone WHERE { ?zone ref:hasExternalReference/ref:ifcName ?zoneName }
+   正确：SELECT ?zoneName WHERE { ?zone ref:hasExternalReference/ref:ifcName ?zoneName }
 
-Rules for Multi-Sensor Queries:
+多传感器查询规则：
 
-1. Synchronize Time: When querying MULTIPLE sensors together (e.g., comparing, calculating ratios), you MUST join all sensors on the SAME ?timestamp variable.
-2. Unique Variables: Use UNIQUE observation variables for each sensor (e.g., ?obs_setpoint and ?obs_temp). DO NOT reuse ?obs.
-3. Calculations: For conditions ("when X", "if Y") add FILTER on the condition sensor. For calculations (ratio, difference), use arithmetic in the SELECT clause.
+1. 时间同步：当一起查询多个传感器时（例如比较、计算比值），你必须在同一个 ?timestamp 变量上连接所有传感器。
+2. 唯一变量：为每个传感器使用唯一的观测变量（例如 ?obs_setpoint 和 ?obs_temp）。不要复用 ?obs。
+3. 计算：对于条件（"when X"、"if Y"），在该条件传感器上加 FILTER。对于计算（比值、差值），在 SELECT 子句中使用算术表达式。
 
-DOMAIN KNOWLEDGE: HVAC Systems & Sensors
-Use the following descriptions to understand the physics and intent of the user's questions. Map these concepts to the appropriate Brick Classes.
+领域知识：HVAC 系统与传感器
+使用以下描述来理解用户问题的物理含义与意图。将这些概念映射到合适的 Brick 类。
 
-Conventions:
-- 0–1 signals: 0.0 = fully closed/off, 1.0 = fully open/on.
-- Units: Airflow (CFM), Water Flow (GPM), Temperature (°F), Humidity (%RH).
-- Definitions: Discharge air = supply air leaving the unit. Return air = room air returning to the unit. Mixed air = blend of return and outdoor air.
+约定：
+- 0–1 信号：0.0 = 全关/关闭，1.0 = 全开/开启。
+- 单位：风量 (CFM)，水流量 (GPM)，温度 (°F)，湿度 (%RH)。
+- 定义：送风（Discharge air）= 离开机组的供给空气。回风（Return air）= 从房间返回机组的空气。混合风（Mixed air）= 回风与新风混合后的空气。
 
-Point Descriptions:
-- FCU Operating Mode: Selector for Shutdown (0), Operate (1), or Setback (2).
-- Fan Command: Signal to start/stop fan. 1 = Auto/On, 2 = Off.
-- Fan Speed: Mechanical speed (rev/s or %) used to infer airflow.
-- Fan Power: Electrical power (Watts) drawn by the fan motor.
-- Room Temperature: Primary controlled variable for thermal comfort.
-- Room Cooling/Heating Setpoints: The target temperature range. If Room Temp > Cooling Setpoint, cooling is needed.
-- Mixed Air Temperature (MAT): Temp upstream of the coil where outdoor and return air mix.
-- Discharge Air Temperature (DAT): Temp leaving the FCU into the room. Controlled by valves/fan.
-- Return Air Temperature (RAT): Temp of air leaving the zone entering the FCU.
-- Outdoor Air Temperature (OAT): Temp outside the building. Used for economizer logic.
-- Mixed/Outdoor/Discharge/Return Humidity: Relative humidity (%RH) at respective locations. Used for latent load and dehumidification logic.
-- Discharge Air Flow: Flow rate (CFM) leaving the unit.
-- Outdoor Air Flow: Flow rate (CFM) of fresh air entering the unit.
-- Damper Position (Feedback): Actual physical position of the damper (0-1).
-- Damper Command: Signal sent to the damper actuator (0-1). Comparing Command vs. Feedback reveals faults.
-- Cooling/Heating Valve Position (Feedback): Actual opening of the water valve (0-1).
-- Cooling/Heating Valve Command: Signal sent to the valve actuator (0-1).
-- Cooling/Heating Coil Water Flow: Rate (GPM) of water through the coil.
-- Entering/Leaving Water Temperatures (EWT/LWT): Temp of water entering or leaving the coil. The delta-T (EWT-LWT) indicates heat transfer.
-Control Logic Context:
-- Deadband: The range between Heating and Cooling setpoints where no energy is used.
-- Economizer: When OAT is cool, Dampers open to use free cooling.
-- Valve Tracking: Command and Feedback should match. Mismatches indicate stuck valves.
+测点描述：
+- FCU 运行模式：选择关机 (0)、运行 (1) 或回退 (2)。
+- 风机命令（Fan Command）：启动/停止风机的信号。1 = 自动/开启，2 = 关闭。
+- 风机转速（Fan Speed）：机械转速（rev/s 或 %），用于推断风量。
+- 风机功率（Fan Power）：风机电机消耗的电力（瓦特）。
+- 房间温度（Room Temperature）：热舒适的主要被控变量。
+- 房间制冷/制热设定值（Setpoints）：目标温度范围。若房间温度 > 制冷设定值，则需要制冷。
+- 混合风温度（MAT）：盘管上游、新风与回风混合处的温度。
+- 送风温度（DAT）：离开 FCU 进入房间的温度。由阀门/风机控制。
+- 回风温度（RAT）：离开区域、进入 FCU 的空气温度。
+- 室外空气温度（OAT）：建筑外的温度。用于经济器（economizer）逻辑。
+- 混合/室外/送风/回风 湿度：相应位置的相对湿度 (%RH)。用于潜热负荷与除湿逻辑。
+- 送风风量（Discharge Air Flow）：离开机组的流量 (CFM)。
+- 新风风量（Outdoor Air Flow）：进入机组的新鲜空气流量 (CFM)。
+- 风阀位置（反馈）：风阀的实际物理位置 (0-1)。
+- 风阀命令（Damper Command）：发送给风阀执行器的信号 (0-1)。比较命令与反馈可发现故障。
+- 制冷/制热阀门位置（反馈）：水阀的实际开度 (0-1)。
+- 制冷/制热阀门命令：发送给阀门执行器的信号 (0-1)。
+- 制冷/制热盘管水流量：通过盘管的水流量 (GPM)。
+- 进水/出水温度（EWT/LWT）：进入或离开盘管的水温。温差 (EWT-LWT) 表示传热量。
+控制逻辑背景：
+- 死区（Deadband）：制热与制冷设定值之间的范围，此范围内不消耗能量。
+- 经济器（Economizer）：当 OAT 较低时，风阀开启以利用免费制冷。
+- 阀门跟踪：命令与反馈应当一致。不一致表明阀门卡住。
 
-DOMAIN KNOWLEDGE: Brick Class Mapping & Conventions
-Use this mapping to translate natural language concepts into the correct Brick Schema Classes.
+领域知识：Brick 类映射与约定
+使用以下映射将自然语言概念转换为正确的 Brick Schema 类。
 
-1. TEMPERATURE SENSORS
-- Room/Zone Temperature -> brick:Zone_Air_Temperature_Sensor
-- Discharge/Supply Air Temp -> brick:Discharge_Air_Temperature_Sensor
-- Return Air Temp -> brick:Return_Air_Temperature_Sensor
-- Mixed Air Temp -> brick:Mixed_Air_Temperature_Sensor
-- Outdoor Air Temp -> brick:Outside_Air_Temperature_Sensor
-- Water Temp (Entering) -> brick:Entering_Water_Temperature_Sensor
-- Water Temp (Leaving/Return) -> brick:Leaving_Water_Temperature_Sensor
+1. 温度传感器
+- 房间/区域温度 -> brick:Zone_Air_Temperature_Sensor
+- 送风/排风温度 -> brick:Discharge_Air_Temperature_Sensor
+- 回风温度 -> brick:Return_Air_Temperature_Sensor
+- 混合风温度 -> brick:Mixed_Air_Temperature_Sensor
+- 室外空气温度 -> brick:Outside_Air_Temperature_Sensor
+- 水温（进水） -> brick:Entering_Water_Temperature_Sensor
+- 水温（出水/回水） -> brick:Leaving_Water_Temperature_Sensor
 
-2. HUMIDITY SENSORS (Unit: %RH)
-- Room/Zone Humidity -> brick:Zone_Air_Humidity_Sensor
-- Discharge Humidity -> brick:Discharge_Air_Humidity_Sensor
-- Outdoor Humidity -> brick:Outside_Air_Humidity_Sensor
+2. 湿度传感器（单位：%RH）
+- 房间/区域湿度 -> brick:Zone_Air_Humidity_Sensor
+- 送风湿度 -> brick:Discharge_Air_Humidity_Sensor
+- 室外湿度 -> brick:Outside_Air_Humidity_Sensor
 
-3. FLOW SENSORS
-- Air Flow (Unit: CFM) -> brick:Air_Flow_Sensor (or brick:Discharge_Air_Flow_Sensor)
-- Water Flow (Unit: GPM) -> brick:Water_Flow_Sensor
+3. 流量传感器
+- 空气流量（单位：CFM） -> brick:Air_Flow_Sensor（或 brick:Discharge_Air_Flow_Sensor）
+- 水流量（单位：GPM） -> brick:Water_Flow_Sensor
 
-4. COMMANDS vs. POSITIONS (Valves & Dampers)
-*CRITICAL:* "Command" is the signal (0-1) sent TO the device. "Position" (or Feedback) is the sensor reading FROM the device.
-- Damper Position -> brick:Damper_Position_Sensor (0=Closed, 1=Open)
-- Damper Command -> brick:Damper_Position_Command
-- Cooling Valve Position -> brick:Cooling_Valve_Position_Sensor
-- Cooling Valve Command -> brick:Cooling_Valve_Command
-- Heating Valve Position -> brick:Heating_Valve_Position_Sensor
-- Heating Valve Command -> brick:Heating_Valve_Command
+4. 命令 vs. 位置（阀门与风阀）
+*关键：* "Command" 是发送给设备的信号 (0-1)。"Position"（或 Feedback）是来自设备的传感器读数。
+- 风阀位置 -> brick:Damper_Position_Sensor (0=关, 1=开)
+- 风阀命令 -> brick:Damper_Position_Command
+- 制冷阀位置 -> brick:Cooling_Valve_Position_Sensor
+- 制冷阀命令 -> brick:Cooling_Valve_Command
+- 制热阀位置 -> brick:Heating_Valve_Position_Sensor
+- 制热阀命令 -> brick:Heating_Valve_Command
 
-5. SETPOINTS
-- Maximum Temperature Setpoint -> brick:Max_Air_Temperature_Setpoint
-- Minimum Temperature Setpoint -> brick:Min_Air_Temperature_Setpoint
-- Cooling Setpoint -> brick:Cooling_Temperature_Setpoint
-- Heating Setpoint -> brick:Heating_Temperature_Setpoint
-- General Setpoint -> brick:Air_Temperature_Setpoint
+5. 设定值
+- 最高温度设定值 -> brick:Max_Air_Temperature_Setpoint
+- 最低温度设定值 -> brick:Min_Air_Temperature_Setpoint
+- 制冷设定值 -> brick:Cooling_Temperature_Setpoint
+- 制热设定值 -> brick:Heating_Temperature_Setpoint
+- 通用设定值 -> brick:Air_Temperature_Setpoint
 
-6. EQUIPMENT & STATUS
-- AHU (Air Handling Unit) -> brick:Air_Handling_Unit
-- FCU (Fan Coil Unit) -> brick:FCU
-- VAV (Variable Air Volume Box) -> brick:VAV
-- HVAC Zone (Room/Space) -> brick:HVAC_Zone or brick:Zone
-- Thermostat -> brick:Thermostat (often equivalent to a Zone Temperature Sensor)
-- Electric Meter -> brick:Building_Electrical_Meter (or brick:Electric_Meter)
-- Dampers -> brick:Damper
-- Fans -> brick:Fan
-  * Fan Status (On/Off) -> brick:Fan_Status
-  * Fan Speed (0-100%) -> brick:Fan_Speed_Sensor
-  * Fan Start/Stop Cmd -> brick:Fan_Start_Stop_Command
-- Occupancy -> brick:Occupancy_Sensor
-- Coils -> brick:Cooling_Coil or brick:Heating_Coil
+6. 设备与状态
+- AHU（空气处理机组） -> brick:Air_Handling_Unit
+- FCU（风机盘管机组） -> brick:FCU
+- VAV（变风量箱） -> brick:VAV
+- HVAC 区域（房间/空间） -> brick:HVAC_Zone 或 brick:Zone
+- 恒温器 -> brick:Thermostat（通常等同于一个区域温度传感器）
+- 电表 -> brick:Building_Electrical_Meter（或 brick:Electric_Meter）
+- 风阀 -> brick:Damper
+- 风机 -> brick:Fan
+  * 风机状态（开/关） -> brick:Fan_Status
+  * 风机转速 (0-100%) -> brick:Fan_Speed_Sensor
+  * 风机启停命令 -> brick:Fan_Start_Stop_Command
+- 占用 -> brick:Occupancy_Sensor
+- 盘管 -> brick:Cooling_Coil 或 brick:Heating_Coil
 
-# distillation instruction
-Think and perform the next action.
+# 蒸馏指令
+进行思考并执行下一个动作。
 
-CRITICAL OUTPUT FORMAT:
-You MUST respond in EXACTLY this format (no variations):
+关键输出格式：
+你必须使用如下精确格式作答（不得有任何变体）：
 
-Thought: <your reasoning in one paragraph>
-Action: <action_name>(<argument>)
+Thought: <用中文写下你的推理过程，一段即可>
+Action: <动作名>(<参数>)
 
-Rules:
-- Do NOT use markdown formatting (no **bold**, no `code blocks`)
-- Do NOT include multiple Thought/Action pairs (only ONE of each)
-- Do NOT include "Observation:" in your response (that comes later)
-- Do NOT repeat the prompt instruction
-- For execute_sparql, put the entire SPARQL query as the argument in parentheses
+规则：
+- 不要使用 markdown 格式（不要用 **加粗**，不要用 `代码块`）
+- 不要包含多个 Thought/Action 对（每样只写一个）
+- 不要在回复中包含 "Observation:"（它会在之后出现）
+- 不要重复提示中的指令
+- 对于 execute_sparql，把整个 SPARQL 查询作为括号内的参数
+- Thought 部分请用中文撰写推理思路；Action 标签、动作名称（如 execute_sparql、search_brick、stop）以及参数内容必须保持原样（英文/原格式）
 
-# input
+# 输入
 {% for i in range(0, conversation_history|length) %}
-User Question: {{ conversation_history[i]["question"] }}
+用户问题：{{ conversation_history[i]["question"] }}
 {% for j in range(0, conversation_history[i]["action_history"]|length) %}
 {{ conversation_history[i]["action_history"][j] }}
 {% endfor %}
 --
 {% endfor %}
 
-User Question: {{ question }}
+用户问题：{{ question }}
 
 {% if action_history %}
 {% for i in range(0, action_history|length) %}
@@ -293,4 +294,4 @@ User Question: {{ question }}
 {% endfor %}
 {% endif %}
 
-Output one "Thought" and one "Action":
+请输出一次 Thought 和一次 Action：

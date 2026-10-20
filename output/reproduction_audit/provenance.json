@@ -1,0 +1,23 @@
+{
+  "checked_on": "2026-10-20",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "packages": {
+    "rdflib": "7.6.0",
+    "pandas": "3.0.6",
+    "numpy": "2.5.3",
+    "openai": "3.26.0",
+    "fastapi": "0.142.2",
+    "uvicorn": "0.54.0",
+    "pytest": "9.1.1",
+    "httpx": "0.28.1"
+  },
+  "verified_upstream_brickqa_main": "49d9e283c2a3958e9be110583be6575cbd40039b",
+  "upstream_verified_via": "https://api.github.com/repos/yun-dam/BrickQA/commits/main",
+  "tests": {
+    "command": ".venv/Scripts/python.exe -m pytest -q",
+    "passed": 26,
+    "warnings": 2,
+    "meaning": "Engineering regression tests; not a paper accuracy benchmark"
+  },
+  "model_calls_in_this_audit": 0
+}

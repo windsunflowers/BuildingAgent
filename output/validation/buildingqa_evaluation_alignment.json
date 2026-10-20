@@ -1,0 +1,52 @@
+{
+  "verification": "Offline replay of stored final candidates only; not a new model run or revised historical score",
+  "original_report_sha256": "67616dd9643a2e733d90063a892f2cf94dcedc18debafb30a7003d6ac4f29f4a",
+  "original_report_unchanged": true,
+  "supplied_metrics_lines": 419,
+  "metrics_text_matches": true,
+  "metrics_ast_matches": true,
+  "replayed_queries": [
+    {
+      "query_id": "TUC_001",
+      "original_status": "error",
+      "replayed_status": "done",
+      "gold_count": 18,
+      "pred_count": 342,
+      "diagnostic_warnings": [
+        "Missing sensors: brick:Zone_Air_Temperature_Setpoint"
+      ],
+      "entity_set_f1": 0.9866666666666666,
+      "row_matching_f1": 0.1,
+      "exact_match_f1": 0.1
+    },
+    {
+      "query_id": "TUC_002",
+      "original_status": "error",
+      "replayed_status": "done",
+      "gold_count": 18,
+      "pred_count": 18,
+      "diagnostic_warnings": [
+        "Missing sensors: brick:Zone_Air_Temperature_Setpoint"
+      ],
+      "entity_set_f1": 1.0,
+      "row_matching_f1": 1.0,
+      "exact_match_f1": 1.0
+    },
+    {
+      "query_id": "TUC_005",
+      "original_status": "error",
+      "replayed_status": "done",
+      "gold_count": 18,
+      "pred_count": 0,
+      "diagnostic_warnings": [
+        "Missing sensors: brick:Zone_Air_Temperature_Sensor"
+      ],
+      "entity_set_f1": 0.0,
+      "row_matching_f1": 0.0,
+      "exact_match_f1": 0.0
+    }
+  ],
+  "offline_tests_passed": 72,
+  "live_backend": "BuildingQA-acceptance-20261020-v2",
+  "historical_report_unchanged_after_restart": true
+}

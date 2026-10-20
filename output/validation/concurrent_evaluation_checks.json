@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-20",
+  "upstream_commit": "49d9e283c2a3958e9be110583be6575cbd40039b",
+  "default_workers": 3,
+  "allowed_workers": [1, 8],
+  "offline_tests_passed": 86,
+  "verified": [
+    "parallel Agent trajectories, tokens and prompt logs are isolated",
+    "thread-local model clients",
+    "different real Windows SPARQL worker processes and cleanup",
+    "out-of-order completion saved in original question order",
+    "single cancel reaches all active questions and prevents queue replenishment",
+    "CLI process pool and official metric regression checks"
+  ],
+  "offline_browser_check": {
+    "workers": 3,
+    "simultaneously_active": 3,
+    "cancelled_questions": [1, 2, 3],
+    "started_after_cancel": 0,
+    "model_calls": 0
+  },
+  "preserved_serial_checkpoint": {
+    "run_id": "ef8569a8ec0b2444ba6017262b478dc83",
+    "completed_questions": 12,
+    "sha256": "a12d0458b1061d7fae61be887de231f8fbaca0fa88dba3f634e229ea08011236"
+  },
+  "live_model_speedup_measured": false,
+  "automatically_restarted_benchmark": false
+}

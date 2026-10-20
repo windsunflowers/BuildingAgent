@@ -1,0 +1,14 @@
+{
+  "Backend": "BuildingQA-acceptance-20261020-v2",
+  "Building": "TUC_building",
+  "Mode": "upstream",
+  "Policy": {
+    "validation": "diagnostic_only",
+    "final_query": "last_generated",
+    "stop": "model_stop_or_duplicate_or_15_actions",
+    "sparql_timeout_seconds": 180
+  },
+  "HistoryRestored": true,
+  "HistoricalScore": 0.2,
+  "LlmReady": true
+}

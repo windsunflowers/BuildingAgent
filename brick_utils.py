@@ -6,9 +6,52 @@ Provides Brick-specific operations analogous to SPINACH's Wikidata utilities.
 from enum import Enum
 from typing import List, Dict, Tuple, Optional
 from rdflib import Graph, Namespace, Literal, URIRef
-from rdflib.namespace import RDF, RDFS, XSD
+from rdflib.namespace import RDF, RDFS, XSD, OWL
 import json
-from functools import lru_cache
+import os
+import threading
+from implementation_policy import call_author_tool, import_author_csv, record_event
+
+_query_parse_lock = threading.RLock()
+
+
+# --- Official Brick ontology (class hierarchy) for rdfs:subClassOf* reasoning ---
+# The sampled building TTLs only contain instance data and concrete types, but NOT
+# the Brick class inheritance chain. Merging the official ontology makes queries
+# like `?s rdf:type/rdfs:subClassOf* brick:Temperature_Sensor` resolve in one shot.
+def _locate_brick_ontology() -> str | None:
+    """
+    Locate the official brick.ttl to merge into the graph.
+    Search order:
+      1. $BRICK_ONTOLOGY_PATH (explicit override)
+      2. <module_dir>/ontology/brick.ttl   (recommended, shipped with repo)
+      3. <module_dir>/brick.ttl
+    Returns the absolute path or None if not found.
+    """
+    candidates = [
+        os.environ.get("BRICK_ONTOLOGY_PATH"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "ontology", "brick.ttl"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "brick.ttl"),
+    ]
+    for p in candidates:
+        if p and os.path.exists(p):
+            return p
+    return None
+
+
+def _merge_brick_ontology(graph: Graph) -> bool:
+    """Parse the official Brick ontology into `graph` in-place. Returns True if merged."""
+    onto = _locate_brick_ontology()
+    if not onto:
+        print("Warning: Brick ontology (brick.ttl) not found; "
+              "rdfs:subClassOf* reasoning may return empty results. "
+              "Set $BRICK_ONTOLOGY_PATH or place brick.ttl under ontology/.")
+        return False
+    before = len(graph)
+    graph.parse(onto, format="turtle")
+    print(f"Merged Brick ontology from {onto} "
+          f"(+{len(graph) - before} triples, {len(graph)} total)")
+    return True
 
 
 # Brick Schema Namespaces
@@ -37,13 +80,13 @@ class SparqlExecutionStatus(Enum):
 
     def get_message(self) -> str:
         messages = {
-            self.SUCCESS: "Query executed successfully",
-            self.EMPTY_RESULT: "Query returned no results",
-            self.SYNTAX_ERROR: "Query has syntax error",
-            self.TIMED_OUT: "Query execution timed out",
-            self.OTHER_ERROR: "Query execution encountered an error"
+            self.SUCCESS: "查询执行成功",
+            self.EMPTY_RESULT: "查询未返回任何结果",
+            self.SYNTAX_ERROR: "查询存在语法错误",
+            self.TIMED_OUT: "查询执行超时",
+            self.OTHER_ERROR: "查询执行出错"
         }
-        return messages.get(self, "Unknown status")
+        return messages.get(self, "未知状态")
 
 
 class BrickGraph:
@@ -59,6 +102,20 @@ class BrickGraph:
             cls._instance = super(BrickGraph, cls).__new__(cls)
         return cls._instance
 
+    @property
+    def implementation_mode(self):
+        return 'upstream'
+
+    @property
+    def last_tool_diagnostic(self):
+        return getattr(getattr(self, '_tool_diagnostics', None), 'value', None)
+
+    @last_tool_diagnostic.setter
+    def last_tool_diagnostic(self, value):
+        if not hasattr(self, '_tool_diagnostics'):
+            self._tool_diagnostics = threading.local()
+        self._tool_diagnostics.value = value
+
     def initialize(self, ttl_file: str = None, graph: Graph = None):
         """
         Initialize the Brick graph from TTL file or existing graph.
@@ -71,19 +128,43 @@ class BrickGraph:
             print("Warning: BrickGraph already initialized. Skipping.")
             return
 
+        self._method_lock = _query_parse_lock
+        self._tool_diagnostics = threading.local()
+        search_brick.cache_clear()
+        get_brick_entity.cache_clear()
+        for attribute in ('_author_functions', '_author_observed', 'diagnostic_log', 'last_tool_diagnostic'):
+            self.__dict__.pop(attribute, None)
+
         if graph is not None:
             self._graph = graph
         elif ttl_file:
-            self._graph = Graph()
-            self._graph.parse(ttl_file, format="turtle")
+            from building_data import load_building_graph
+            self._graph, self.data_warnings = load_building_graph(ttl_file)
             print(f"Loaded {len(self._graph)} triples from {ttl_file}")
         else:
             self._graph = Graph()
             print("Initialized empty Brick graph")
 
+        self.source_graph = Graph()
+        for triple in self._graph:
+            self.source_graph.add(triple)
+        for prefix, uri in self._graph.namespaces():
+            self.source_graph.bind(prefix, uri, replace=True)
+        self.source_triples = len(self.source_graph)
+        self.timeseries_meta = {"rows": 0, "available_rows": 0, "truncated": False, "unmatched_columns": []}
+
+        # Merge the official Brick ontology so rdfs:subClassOf* reasoning works
+        # in a single query (sampled building TTLs lack the class hierarchy).
+        _merge_brick_ontology(self._graph)
+
         # Bind common namespaces
         self._graph.bind("brick", BRICK)
-        self._graph.bind("bldg", BLDG)
+        # Preserve the building namespace parsed from its TTL.
+        ns = dict(self._graph.namespaces())
+        if "bldg" not in ns:
+            building_ns = ns.get("ns2")
+            if building_ns:
+                self._graph.bind("bldg", building_ns)
         self._graph.bind("ref", REF)
 
     def get_graph(self) -> Graph:
@@ -94,64 +175,8 @@ class BrickGraph:
 
     def add_timeseries_data(self, csv_file: str, max_rows: int = 100,
                             start_date: str = None, end_date: str = None):
-        """
-        Load timeseries data from CSV into the graph.
+        return import_author_csv(self, csv_file, max_rows, start_date, end_date)
 
-        Args:
-            csv_file: Path to CSV file
-            max_rows: Maximum rows to load (loads LAST N rows to get recent data)
-            start_date: Optional start date filter (format: "YYYY-MM-DD")
-            end_date: Optional end date filter (format: "YYYY-MM-DD")
-        """
-        import pandas as pd
-        from datetime import datetime
-
-        # Load CSV
-        df_full = pd.read_csv(csv_file)
-
-        # Parse datetime column
-        df_full['_parsed_dt'] = pd.to_datetime(df_full['Datetime'], format="%m/%d/%Y %H:%M")
-
-        # Apply date range filter if specified
-        if start_date or end_date:
-            if start_date:
-                start_dt = datetime.strptime(start_date, "%Y-%m-%d")
-                df_full = df_full[df_full['_parsed_dt'] >= start_dt]
-            if end_date:
-                end_dt = datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-                df_full = df_full[df_full['_parsed_dt'] <= end_dt]
-            print(f"Filtered to date range: {start_date or 'start'} to {end_date or 'end'}")
-            print(f"Rows after date filter: {len(df_full)}")
-
-        # Take last N rows
-        df = df_full.tail(max_rows)
-        print(f"Loading last {len(df)} rows from {csv_file} (total after filter: {len(df_full)} rows)")
-        print(f"Date range: {df['Datetime'].iloc[0]} to {df['Datetime'].iloc[-1]}")
-
-        for idx, row in df.iterrows():
-            timestamp_str = row['Datetime']
-
-            # Convert timestamp from "12/31/2018 23:59" to ISO format for proper sorting
-            from datetime import datetime
-            dt = datetime.strptime(timestamp_str, "%m/%d/%Y %H:%M")
-            timestamp_iso = dt.strftime("%Y-%m-%dT%H:%M:%S")
-
-            for column_name in df.columns:
-                if column_name in ('Datetime', '_parsed_dt'):
-                    continue
-
-                value = row[column_name]
-                if pd.isna(value):
-                    continue
-
-                obs_uri = BLDG[f"obs_{column_name}_{idx}"]
-                sensor_uri = BLDG[column_name]
-
-                self._graph.add((sensor_uri, REF.hasObservation, obs_uri))
-                self._graph.add((obs_uri, REF.hasTimestamp, Literal(timestamp_iso, datatype=XSD.dateTime)))
-                self._graph.add((obs_uri, REF.hasValue, Literal(float(value), datatype=XSD.float)))
-
-        print(f"Added timeseries data. Total triples: {len(self._graph)}")
 
     def save_graph(self, output_file: str = "brick_graph_cache.ttl"):
         """
@@ -165,39 +190,11 @@ class BrickGraph:
 
         print(f"💾 Saving graph with {len(self._graph)} triples to {output_file}...")
         self._graph.serialize(destination=output_file, format='turtle')
+        from pathlib import Path
+        from implementation_policy import policy_metadata
+        Path(str(output_file) + '.policy.json').write_text(json.dumps(policy_metadata(self), indent=2), encoding='utf-8')
         print(f"✅ Graph saved successfully!")
 
-    def load_from_cache(self, cache_file: str = "brick_graph_cache.ttl") -> bool:
-        """
-        Load graph from a cached file instead of rebuilding from CSV.
-
-        Args:
-            cache_file: Path to cached graph file
-
-        Returns:
-            True if loaded successfully, False otherwise
-        """
-        import os
-
-        if self._graph is not None:
-            print("Warning: BrickGraph already initialized. Skipping cache load.")
-            return True
-
-        if not os.path.exists(cache_file):
-            print(f"❌ Cache file {cache_file} not found. Will need to build graph from scratch.")
-            return False
-
-        print(f"📂 Loading cached graph from {cache_file}...")
-        self._graph = Graph()
-        self._graph.parse(cache_file, format="turtle")
-
-        # Bind common namespaces
-        self._graph.bind("brick", BRICK)
-        self._graph.bind("bldg", BLDG)
-        self._graph.bind("ref", REF)
-
-        print(f"✅ Loaded {len(self._graph)} triples from cache!")
-        return True
 
     @classmethod
     def reset_singleton(cls):
@@ -206,11 +203,15 @@ class BrickGraph:
             cls._instance._graph = None
             cls._graph = None
             print("🔄 Graph singleton reset")
+        search_brick.cache_clear()
+        get_brick_entity.cache_clear()
 
     def reset(self):
         """Reset the graph (useful for rebuilding cache)"""
         BrickGraph._graph = None
         self._graph = None
+        search_brick.cache_clear()
+        get_brick_entity.cache_clear()
         print("🔄 Graph reset")
 
     def get_date_range(self) -> tuple:
@@ -248,273 +249,127 @@ class BrickGraph:
         return (None, None)
 
 
-def execute_sparql(query: str, return_status: bool = False, timeout: int = 180, result_limit: int = None):
-    """
-    Execute a SPARQL query on the Brick graph with timeout enforcement.
+def local_name(uri):
+    text = str(uri)
+    if '#' in text or '/' in text:
+        return text.rsplit('#', 1)[-1].rsplit('/', 1)[-1]
+    return text.rsplit(':', 1)[-1]
 
-    Args:
-        query: SPARQL query string
-        return_status: If True, return (results, status) tuple
-        timeout: Query timeout in seconds (default: 180 seconds = 3 minutes)
-        result_limit: Limit number of results (adds LIMIT clause if not present)
 
-    Returns:
-        Query results or (results, status) tuple if return_status=True
-    """
-    import time
+def namespace_map(graph=None):
+    graph = graph if graph is not None else BrickGraph().get_graph()
+    ns = {p: str(u) for p, u in graph.namespaces() if p}
+    ns.update(brick=str(BRICK), ref=str(REF), rdf=str(RDF), rdfs=str(RDFS), xsd=str(XSD), owl=str(OWL))
+    return ns
+
+
+def graph_prefixes(graph=None):
+    return '\n'.join(f'PREFIX {p}: <{u}>' for p, u in namespace_map(graph).items())
+
+
+def prepare_query(query, graph=None):
+    """Complete prefixes from the loaded graph without guessing a building URI."""
+    import re
+    query = query.strip().removesuffix(';')
+    ns = namespace_map(graph)
+    query = re.sub(r'PREFIX\s+(\w+):\s+(https?://[^\s<>]+)', r'PREFIX \1: <\2>', query, flags=re.I)
+    declared = set(re.findall(r'PREFIX\s+([\w-]+):', query, flags=re.I))
+    # The loaded graph is authoritative for known namespace aliases.
+    for p, uri in ns.items():
+        query = re.sub(rf'PREFIX\s+{re.escape(p)}:\s*<[^>]+>',
+                       lambda m, p=p, uri=uri: f'PREFIX {p}: <{uri}>', query, flags=re.I)
+    missing = '\n'.join(f'PREFIX {p}: <{u}>' for p, u in ns.items() if p not in declared)
+    return missing + '\n' + query
+
+
+def query_graph(query, graph=None, timeout=30, display_limit=None, isolated=True):
+    """Read-only execution; parsing AND lazy result materialization share one deadline."""
     import threading
     import re
+    graph = graph if graph is not None else BrickGraph().get_graph()
+    query = prepare_query(query, graph)
+    holder = {}
 
-    try:
-        graph = BrickGraph().get_graph()
+    def run():
+        try:
+            from rdflib.plugins.sparql.parser import parseQuery
+            # Parent-process validation shares the author tools' parser lock.
+            with _query_parse_lock:
+                parsed = parseQuery(query)
+            if parsed[1].name not in ('SelectQuery', 'AskQuery'):
+                raise ValueError('仅支持 SELECT 和 ASK 只读查询')
+            if re.search(r'\bSERVICE\b', query, re.I):
+                raise ValueError('本地图谱查询不支持远程 SERVICE')
+            if isolated and isinstance(graph, Graph):
+                from sparql_worker import run_isolated
+                kind, payload = run_isolated(graph, query, display_limit, timeout)
+                if kind == 'timeout':
+                    holder['timeout'] = True
+                elif kind == 'error':
+                    holder['error'] = payload
+                else:
+                    holder['data'] = payload
+                return
+            with _query_parse_lock:
+                result = graph.query(query)
+                if result.type == 'ASK':
+                    holder['data'] = {"ask": True, "value": bool(result.askAnswer),
+                                      "rows": [{"ASK": bool(result.askAnswer)}], "vars": ['ASK'], "total": 1}
+                else:
+                    rows = [{str(v): str(row[v]) if row[v] is not None else None
+                             for v in result.vars} for row in result]
+                    holder['data'] = {"ask": False, "rows": rows if display_limit is None else rows[:display_limit],
+                                      "vars": [str(v) for v in result.vars], "total": len(rows)}
+        except Exception as exc:
+            holder['error'] = str(exc)
 
-        # Add LIMIT clause if result_limit is set and query doesn't have one
-        if result_limit and not re.search(r'LIMIT\s+\d+', query, re.IGNORECASE):
-            query = query.rstrip().rstrip(';') + f' LIMIT {result_limit}'
-            print(f"[SPARQL] Auto-added LIMIT {result_limit} to query")
-
-        # Add prefixes if not present
-        if "PREFIX" not in query.upper():
-            query = BRICK_PREFIXES + query
-
-        # Log query execution start
-        query_preview = query[:150].replace('\n', ' ') + "..." if len(query) > 150 else query.replace('\n', ' ')
-        print(f"[SPARQL] Executing query: {query_preview}")
-        print(f"[SPARQL] Graph size: {len(graph)} triples")
-        print(f"[SPARQL] Timeout: {timeout} seconds")
-
-        start_time = time.time()
-        print(f"[SPARQL] Query started at {time.strftime('%H:%M:%S')}")
-
-        # Execute query in a separate thread with timeout
-        query_result = [None]
-        query_exception = [None]
-
-        def run_query():
-            try:
-                query_result[0] = graph.query(query)
-            except Exception as e:
-                query_exception[0] = e
-
-        query_thread = threading.Thread(target=run_query, daemon=True)
-        query_thread.start()
-        query_thread.join(timeout=timeout)
-
-        execution_time = time.time() - start_time
-
-        # Check if query timed out
-        if query_thread.is_alive():
-            print(f"[SPARQL] ❌ Query TIMEOUT after {timeout} seconds!")
-            print(f"[SPARQL] The query is too complex or the graph is too large.")
-            print(f"[SPARQL] Consider adding LIMIT clauses or simplifying the query.")
-
-            status = SparqlExecutionStatus.TIMED_OUT
-            if return_status:
-                return [], status
-            return []
-
-        # Check if query raised an exception
-        if query_exception[0]:
-            raise query_exception[0]
-
-        results = query_result[0]
-        print(f"[SPARQL] Query completed in {execution_time:.2f} seconds")
-
-        # Convert results to simple list of dicts (optimized - no unnecessary nesting)
-        print(f"[SPARQL] Converting results to list...")
-        start_convert = time.time()
-
-        # Fast list comprehension - simple flat structure
-        result_list = [
-            {str(var): str(row[var]) for var in results.vars if row[var] is not None}
-            for row in results
-        ]
-        # Remove empty dicts
-        result_list = [r for r in result_list if r]
-
-        convert_time = time.time() - start_convert
-        print(f"[SPARQL] Converted {len(result_list)} results in {convert_time:.2f}s")
-        status = SparqlExecutionStatus.SUCCESS if result_list else SparqlExecutionStatus.EMPTY_RESULT
-
-        if return_status:
-            return result_list, status
-        return result_list
-
-    except Exception as e:
-        error_msg = str(e).lower()
-        if "syntax" in error_msg or "parse" in error_msg:
-            status = SparqlExecutionStatus.SYNTAX_ERROR
-        elif "timeout" in error_msg:
-            status = SparqlExecutionStatus.TIMED_OUT
-        else:
-            status = SparqlExecutionStatus.OTHER_ERROR
-
-        print(f"[SPARQL] ❌ Execution error: {e}")
-
-        if return_status:
-            return [], status
-        return []
+    # Carry the per-question RDF worker session into the timeout wrapper thread.
+    from contextvars import copy_context
+    query_context = copy_context()
+    worker = threading.Thread(target=lambda: query_context.run(run), daemon=True)
+    worker.start()
+    # Process startup/pickling is separate from the execution budget.
+    worker.join(timeout + (10 if isolated and isinstance(graph, Graph) else 0))
+    if worker.is_alive() or holder.get('timeout'):
+        return None, SparqlExecutionStatus.TIMED_OUT, f'查询超过 {timeout} 秒'
+    if 'error' in holder:
+        return None, SparqlExecutionStatus.SYNTAX_ERROR, holder['error']
+    data = holder['data']
+    status = SparqlExecutionStatus.SUCCESS if data['total'] else SparqlExecutionStatus.EMPTY_RESULT
+    return data, status, None
 
 
-@lru_cache(maxsize=1000)
+def execute_sparql(query: str, return_status: bool = False, timeout: int = 30, result_limit: int = None):
+    import re
+    if result_limit and not re.search(r'LIMIT\s+\d+', query, re.I) and re.search(r'\bSELECT\b', query, re.I):
+        query = query.rstrip().rstrip(';') + f' LIMIT {int(result_limit)}'
+    data, status, error = query_graph(query, timeout=timeout)
+    rows = data['rows'] if data else []
+    if error:
+        print(f'[SPARQL] {error}')
+    return (rows, status) if return_status else rows
+
+
 def search_brick(search_term: str, limit: int = 8, search_type: str = "all") -> List[Dict]:
-    """
-    Search for Brick entities (sensors, equipment, points) matching the search term.
-
-    Args:
-        search_term: Term to search for
-        limit: Maximum number of results
-        search_type: 'sensor', 'equipment', 'point', or 'all'
-
-    Returns:
-        List of dicts with 'id', 'label', 'type', 'description'
-    """
-    graph = BrickGraph().get_graph()
-    results = []
-
-    search_lower = search_term.lower()
-
-    # Query for entities matching the search term
-    query = f"""
-    SELECT DISTINCT ?entity ?type ?label
-    WHERE {{
-        ?entity rdf:type ?type .
-        OPTIONAL {{ ?entity rdfs:label ?label }}
-        FILTER(CONTAINS(LCASE(STR(?entity)), "{search_lower}") ||
-               CONTAINS(LCASE(STR(?type)), "{search_lower}") ||
-               CONTAINS(LCASE(STR(?label)), "{search_lower}"))
-    }}
-    LIMIT {limit}
-    """
-
-    try:
-        qresults = graph.query(BRICK_PREFIXES + query)
-
-        for row in qresults:
-            entity_uri = str(row.entity)
-            entity_type = str(row.type)
-            label = str(row.label) if row.label else entity_uri.split('#')[-1]
-
-            # Extract local name
-            local_name = entity_uri.split('#')[-1]
-
-            results.append({
-                "id": local_name,
-                "uri": entity_uri,
-                "label": label,
-                "type": entity_type.split('#')[-1],
-                "description": f"A {entity_type.split('#')[-1]} in the building"
-            })
-
-    except Exception as e:
-        print(f"Search error: {e}")
-
-    return results[:limit]
+    return call_author_tool(BrickGraph(), 'search_brick', search_term, limit, search_type)
 
 
-@lru_cache(maxsize=1000)
 def get_brick_entity(entity_id: str, compact: bool = True) -> Dict:
-    """
-    Get all outgoing edges (properties and relationships) for a Brick entity.
-
-    Args:
-        entity_id: Entity identifier (e.g., 'RM_TEMP', 'FCU_OAT')
-        compact: If True, return simplified format
-
-    Returns:
-        Dict with entity properties and relationships
-    """
-    graph = BrickGraph().get_graph()
-
-    # Construct entity URI
-    if entity_id.startswith("http"):
-        entity_uri = URIRef(entity_id)
-    else:
-        entity_uri = BLDG[entity_id]
-
-    # Get all outgoing edges
-    properties = {}
-
-    for pred, obj in graph.predicate_objects(subject=entity_uri):
-        pred_name = str(pred).split('#')[-1]
-        obj_str = str(obj)
-
-        if pred_name not in properties:
-            properties[pred_name] = []
-
-        # Format object based on type
-        if isinstance(obj, Literal):
-            properties[pred_name].append({
-                "value": obj_str,
-                "datatype": str(obj.datatype) if obj.datatype else "string"
-            })
-        else:
-            obj_local = obj_str.split('#')[-1]
-            properties[pred_name].append({
-                "value": obj_local,
-                "uri": obj_str,
-                "type": "uri"
-            })
-
-    # Get entity type
-    entity_types = []
-    for obj in graph.objects(subject=entity_uri, predicate=RDF.type):
-        entity_types.append(str(obj).split('#')[-1])
-
-    result = {
-        "entity": entity_id,
-        "uri": str(entity_uri),
-        "types": entity_types,
-        "properties": properties
-    }
-
-    return result
+    return call_author_tool(BrickGraph(), 'get_brick_entity', entity_id, compact)
 
 
 def get_property_examples(property_name: str, limit: int = 5) -> List[Tuple[str, str, str]]:
-    """
-    Get examples of how a property is used in the Brick graph.
+    return call_author_tool(BrickGraph(), 'get_property_examples', property_name, limit)
 
-    Args:
-        property_name: Property name (e.g., 'hasObservation', 'feeds')
-        limit: Number of examples to return
 
-    Returns:
-        List of (subject, property, object) tuples
-    """
-    graph = BrickGraph().get_graph()
-    examples = []
+def _clear_author_caches():
+    for tool in getattr(BrickGraph(), '_author_functions', {}).values():
+        if hasattr(tool, 'cache_clear'):
+            tool.cache_clear()
 
-    # Construct property URI
-    if property_name.startswith("http"):
-        prop_uri = URIRef(property_name)
-    elif ":" in property_name:
-        # Already has namespace prefix
-        prop_uri = property_name
-    else:
-        # Try REF namespace first, then BRICK
-        prop_uri = REF[property_name]
 
-    query = f"""
-    SELECT ?subject ?object
-    WHERE {{
-        ?subject <{prop_uri}> ?object .
-    }}
-    LIMIT {limit}
-    """
-
-    try:
-        results = graph.query(query)
-
-        for row in results:
-            subj = str(row.subject).split('#')[-1]
-            obj = str(row.object).split('#')[-1]
-            examples.append((subj, property_name, obj))
-
-    except Exception as e:
-        print(f"Error getting property examples: {e}")
-
-    return examples
+search_brick.cache_clear = _clear_author_caches
+get_brick_entity.cache_clear = _clear_author_caches
 
 
 def get_all_sensor_types() -> List[str]:
@@ -544,7 +399,7 @@ def get_all_sensor_types() -> List[str]:
     return sorted(sensor_types)
 
 
-def format_search_results(results: List[Dict]) -> str:
+def format_search_results(results: List[Dict], language: str = "zh") -> str:
     """
     Format search results for display to LLM.
 
@@ -555,23 +410,22 @@ def format_search_results(results: List[Dict]) -> str:
         Formatted string
     """
     if not results:
-        return "No results found."
+        return "No results found." if language == "en" else "未找到结果。"
 
     lines = []
     for item in results:
         label = item.get("label", item.get("id", ""))
-        id_ = item.get("id", "")
+        id_ = item.get("uri", item.get("id", ""))
         type_ = item.get("type", "")
         desc = item.get("description", "")
-
         lines.append(f"{label} ({id_}): {desc}")
         if type_:
-            lines.append(f"  Type: {type_}")
+            lines.append(f"  {'Type' if language == 'en' else '类型'}: {type_}")
 
     return "\n".join(lines)
 
 
-def format_entity_info(entity_info: Dict) -> str:
+def format_entity_info(entity_info: Dict, language: str = "zh") -> str:
     """
     Format entity information for display to LLM.
 
@@ -581,12 +435,15 @@ def format_entity_info(entity_info: Dict) -> str:
     Returns:
         Formatted string
     """
-    lines = [f"Entity: {entity_info['entity']}"]
+    if entity_info.get("error"):
+        from prompting import feedback
+        return feedback(entity_info["error"], language)
+    lines = [f"Entity: {entity_info['entity']} ({entity_info.get('uri', '')})"]
 
     if entity_info.get('types'):
-        lines.append(f"Types: {', '.join(entity_info['types'])}")
+        lines.append(f"{'Types' if language == 'en' else '类型'}: {', '.join(entity_info['types'])}")
 
-    lines.append("\nProperties:")
+    lines.append("\nProperties:" if language == "en" else "\n属性:")
     for prop_name, values in entity_info.get('properties', {}).items():
         lines.append(f"  {prop_name}:")
         for val in values[:3]:  # Limit to first 3 values

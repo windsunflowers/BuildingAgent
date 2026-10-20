@@ -1,0 +1,41 @@
+{
+  "offlineTests": 47,
+  "evaluationOptions": [
+    {
+      "text": "NoKG · 动态探索",
+      "value": ""
+    },
+    {
+      "text": "buildings/bldg11.ttl",
+      "value": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl"
+    },
+    {
+      "text": "prompts/bldg11_sample_100.ttl",
+      "value": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\prompts\\bldg11_sample_100.ttl"
+    },
+    {
+      "text": "prompts/bldg11_sample_5000.ttl",
+      "value": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\prompts\\bldg11_sample_5000.ttl"
+    }
+  ],
+  "pageOverflow": false,
+  "queryOptions": [
+    {
+      "text": "NoKG · 动态探索",
+      "value": ""
+    },
+    {
+      "text": "buildings/bldg11.ttl",
+      "value": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\data\\buildings\\bldg11.ttl"
+    },
+    {
+      "text": "prompts/bldg11_sample_100.ttl",
+      "value": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\prompts\\bldg11_sample_100.ttl"
+    },
+    {
+      "text": "prompts/bldg11_sample_5000.ttl",
+      "value": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\prompts\\bldg11_sample_5000.ttl"
+    }
+  ],
+  "selected": "prompts/bldg11_sample_100.ttl"
+}

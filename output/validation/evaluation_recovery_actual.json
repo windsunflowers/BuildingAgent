@@ -1,0 +1,10 @@
+{
+  "task_id": "e697b6fbc509a47d1840c270b28e1ec6b",
+  "status": "done",
+  "done": 5,
+  "total": 5,
+  "errors": 3,
+  "backend": "legacy, not author-method mode",
+  "recovery": "Existing task only; no evaluation submitted by this fix",
+  "tests_passed": 61
+}

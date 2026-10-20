@@ -2,3 +2,11 @@ logs/
 .vscode/
 __pycache__/
 *.pyc
+.venv/
+.uv-cache/
+.pytest_cache/
+tmp/
+_paper_text.txt
+app_server.log
+.env
+.local/
