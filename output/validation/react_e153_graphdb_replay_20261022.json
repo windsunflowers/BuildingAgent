@@ -1,0 +1,871 @@
+{
+  "kind": "offline_saved_query_graphdb_replay_no_model_calls",
+  "source_report": "output\\evaluations\\e15354bfb31034bfea00e322a530d7b25\\report.json",
+  "source_sha256": "5105f8f6f0435e1d16b065d48529a552f3dd8ead6f5ac942c94eed09c0013adc",
+  "endpoint": "http://CHINAMI-42UOT9U:7200/repositories/TUC_building_test",
+  "model": "qwen-plus-2025-12-01",
+  "actual_saved_backend": "rdflib",
+  "rows": [
+    {
+      "question_index": 1,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 2,
+      "saved_status": "success",
+      "saved_pred_count": 18,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 3,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 4,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 5,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "error": "HTTP 400 : MALFORMED QUERY: BIND clause alias 'timeseriesId' was previously used",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 6,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "error": "HTTP 400 : MALFORMED QUERY: QName 'ref:hasExternalReference' uses an undefined prefix",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 7,
+      "saved_status": "success",
+      "saved_pred_count": 18,
+      "first": {
+        "rows": 0,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 18,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      }
+    },
+    {
+      "question_index": 8,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 9,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 10,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 11,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 12,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 13,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 14,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 15,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 16,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 17,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "error": "HTTP 400 : MALFORMED QUERY: BIND clause alias 'zone_name' was previously used",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 18,
+      "saved_status": "syntax_error",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 5,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "error": "Expected SelectQuery, found 'UNION'  (at char 472), (line:15, col:3)",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 19,
+      "saved_status": "success",
+      "saved_pred_count": 18,
+      "first": {
+        "rows": 0,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 18,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 20,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 36,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.9866666666666666,
+          "row_matching_f1": 0.6666666666666666,
+          "exact_match_f1": 0.6666666666666666,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.6666666666666666
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 21,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 22,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 23,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 24,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "error": "HTTP 400 : MALFORMED QUERY: BIND clause alias 'timeseriesId' was previously used",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 25,
+      "saved_status": "success",
+      "saved_pred_count": 18,
+      "first": {
+        "rows": 18,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 18,
+        "columns": 3,
+        "scores": {
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 26,
+      "saved_status": "success",
+      "saved_pred_count": 18,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      }
+    },
+    {
+      "question_index": 27,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 28,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "rows": 36,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 0.9866666666666666,
+          "row_matching_f1": 0.6666666666666666,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.6666666666666666
+        }
+      },
+      "final": {
+        "error": "HTTP 400 : MALFORMED QUERY: BIND clause alias 'zone_name' was previously used",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      }
+    },
+    {
+      "question_index": 29,
+      "saved_status": "success",
+      "saved_pred_count": 18,
+      "first": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      },
+      "final": {
+        "rows": 18,
+        "columns": 2,
+        "scores": {
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      }
+    },
+    {
+      "question_index": 30,
+      "saved_status": "empty_result",
+      "saved_pred_count": 0,
+      "first": {
+        "error": "HTTP 400 : MALFORMED QUERY: QName 'ref:hasExternalReference' uses an undefined prefix",
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0
+        }
+      },
+      "final": {
+        "rows": 0,
+        "columns": 4,
+        "scores": {
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      }
+    }
+  ],
+  "first_means": {
+    "entity_set_f1": 0.6657777777777778,
+    "row_matching_f1": 0.5777777777777777,
+    "exact_match_f1": 0.3222222222222222
+  },
+  "first_empty": 6,
+  "first_errors": 2,
+  "final_means": {
+    "entity_set_f1": 0.15,
+    "row_matching_f1": 0.1,
+    "exact_match_f1": 0.06666666666666667
+  },
+  "final_empty": 19,
+  "final_errors": 5,
+  "row_f1_decreased_after_critic": 16,
+  "class_counts": {
+    "Max_Air_Temperature_Setpoint": 23,
+    "Maximum_Air_Temperature_Setpoint": 0
+  }
+}

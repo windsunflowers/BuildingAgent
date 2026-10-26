@@ -1,0 +1,284 @@
+{
+  "kind": "offline_author_workflow_replay_not_model_rerun",
+  "report": "output\\evaluations\\e15354bfb31034bfea00e322a530d7b25\\report.json",
+  "report_sha256": "5105f8f6f0435e1d16b065d48529a552f3dd8ead6f5ac942c94eed09c0013adc",
+  "verified_questions": 30,
+  "total": 30,
+  "verified_calls": 178,
+  "actual_backend": "rdflib",
+  "actual_model": "qwen-plus-2025-12-01",
+  "feedback_adaptation": "upstream_rdflib_row_count_only_v1",
+  "paper_environment_verified": false,
+  "results": [
+    {
+      "question_index": 1,
+      "query_id": "TUC_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 2,
+      "query_id": "TUC_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 3,
+      "query_id": "TUC_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 4,
+      "query_id": "TUC_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 5,
+      "query_id": "TUC_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 6,
+      "query_id": "TUC_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 7,
+      "query_id": "TUC_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 8,
+      "query_id": "TUC_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 9,
+      "query_id": "TUC_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 10,
+      "query_id": "TUC_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 11,
+      "query_id": "TUC_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 12,
+      "query_id": "TUC_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 13,
+      "query_id": "TUC_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 14,
+      "query_id": "TUC_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 15,
+      "query_id": "TUC_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 16,
+      "query_id": "TUC_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 17,
+      "query_id": "TUC_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 18,
+      "query_id": "TUC_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 19,
+      "query_id": "TUC_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 20,
+      "query_id": "TUC_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 21,
+      "query_id": "TUC_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 22,
+      "query_id": "TUC_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 23,
+      "query_id": "TUC_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 24,
+      "query_id": "TUC_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 25,
+      "query_id": "TUC_005",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 26,
+      "query_id": "TUC_005",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 27,
+      "query_id": "TUC_005",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 28,
+      "query_id": "TUC_005",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 29,
+      "query_id": "TUC_005",
+      "verified_calls": 4,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 30,
+      "query_id": "TUC_005",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    }
+  ]
+}

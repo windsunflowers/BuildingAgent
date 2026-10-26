@@ -1,0 +1,32 @@
+[
+  {
+    "query_id": "TUC_001",
+    "status": "success",
+    "count": 18,
+    "error": null
+  },
+  {
+    "query_id": "TUC_002",
+    "status": "success",
+    "count": 18,
+    "error": null
+  },
+  {
+    "query_id": "TUC_003",
+    "status": "success",
+    "count": 18,
+    "error": null
+  },
+  {
+    "query_id": "TUC_004",
+    "status": "success",
+    "count": 18,
+    "error": null
+  },
+  {
+    "query_id": "TUC_005",
+    "status": "success",
+    "count": 18,
+    "error": null
+  }
+]

@@ -1,0 +1,3 @@
+# Hash-pinned reference files must keep their original bytes on Windows.
+third_party/user_react_baseline/react_baseline_implementation.md -text
+third_party/user_react_baseline/sparql_refinement_agent.py -text

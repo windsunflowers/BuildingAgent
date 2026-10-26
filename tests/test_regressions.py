@@ -101,13 +101,14 @@ def test_lazy_result_materialization_is_timed_out(building):
     assert time.monotonic() - start < .15
 
 
-def test_order_by_does_not_lose_rows_or_timezones(building):
+def test_author_preprocessor_preserves_upstream_limit_and_timestamp_rules(building):
     a = app.agent
     fixed = a._validate_and_fix_sparql('SELECT ?s WHERE { ?s a brick:Zone_Air_Temperature_Sensor } ORDER BY DESC(?s)')
-    assert 'LIMIT' not in fixed
-    assert len(utils.execute_sparql(fixed)) == 2
+    assert fixed.endswith('LIMIT 1')
+    assert len(utils.execute_sparql(fixed)) == 1
     fixed = a._validate_and_fix_sparql('SELECT ?t WHERE { VALUES ?t { "2025-01-01T00:00:00Z"^^xsd:dateTime } }')
-    assert '00:00:00Z' in fixed
+    assert '00:00:00Z' not in fixed
+    assert '00:00:00' in fixed
 
 
 

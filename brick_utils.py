@@ -153,9 +153,8 @@ class BrickGraph:
         self.source_triples = len(self.source_graph)
         self.timeseries_meta = {"rows": 0, "available_rows": 0, "truncated": False, "unmatched_columns": []}
 
-        # Merge the official Brick ontology so rdfs:subClassOf* reasoning works
-        # in a single query (sampled building TTLs lack the class hierarchy).
-        _merge_brick_ontology(self._graph)
+        # Pinned BrickQA executes the supplied building TTL without extra ontology triples.
+        # Keep the source and execution graphs equal at initialization.
 
         # Bind common namespaces
         self._graph.bind("brick", BRICK)
@@ -282,12 +281,13 @@ def prepare_query(query, graph=None):
     return missing + '\n' + query
 
 
-def query_graph(query, graph=None, timeout=30, display_limit=None, isolated=True):
+def query_graph(query, graph=None, timeout=30, display_limit=None, isolated=True, prepare_prefixes=True, include_bindings=False):
     """Read-only execution; parsing AND lazy result materialization share one deadline."""
     import threading
     import re
     graph = graph if graph is not None else BrickGraph().get_graph()
-    query = prepare_query(query, graph)
+    if prepare_prefixes:
+        query = prepare_query(query, graph)
     holder = {}
 
     def run():
@@ -297,31 +297,26 @@ def query_graph(query, graph=None, timeout=30, display_limit=None, isolated=True
             with _query_parse_lock:
                 parsed = parseQuery(query)
             if parsed[1].name not in ('SelectQuery', 'AskQuery'):
-                raise ValueError('仅支持 SELECT 和 ASK 只读查询')
+                raise ValueError('Only read-only SELECT and ASK queries are supported')
             if re.search(r'\bSERVICE\b', query, re.I):
-                raise ValueError('本地图谱查询不支持远程 SERVICE')
+                raise ValueError('Remote SERVICE clauses are not supported for the local graph')
             if isolated and isinstance(graph, Graph):
                 from sparql_worker import run_isolated
-                kind, payload = run_isolated(graph, query, display_limit, timeout)
+                kind, payload = run_isolated(graph, query, display_limit, timeout, include_bindings)
                 if kind == 'timeout':
                     holder['timeout'] = True
-                elif kind == 'error':
+                elif kind in ('error', 'worker_error'):
                     holder['error'] = payload
+                    if kind == 'worker_error':
+                        holder['status'] = SparqlExecutionStatus.OTHER_ERROR
                 else:
                     holder['data'] = payload
                 return
             with _query_parse_lock:
-                result = graph.query(query)
-                if result.type == 'ASK':
-                    holder['data'] = {"ask": True, "value": bool(result.askAnswer),
-                                      "rows": [{"ASK": bool(result.askAnswer)}], "vars": ['ASK'], "total": 1}
-                else:
-                    rows = [{str(v): str(row[v]) if row[v] is not None else None
-                             for v in result.vars} for row in result]
-                    holder['data'] = {"ask": False, "rows": rows if display_limit is None else rows[:display_limit],
-                                      "vars": [str(v) for v in result.vars], "total": len(rows)}
+                from sparql_worker import _execute
+                holder['data'] = _execute(graph, query, display_limit, include_bindings)
         except Exception as exc:
-            holder['error'] = str(exc)
+            holder['error'] = str(exc) or f'{type(exc).__name__}: no exception message'
 
     # Carry the per-question RDF worker session into the timeout wrapper thread.
     from contextvars import copy_context
@@ -331,9 +326,9 @@ def query_graph(query, graph=None, timeout=30, display_limit=None, isolated=True
     # Process startup/pickling is separate from the execution budget.
     worker.join(timeout + (10 if isolated and isinstance(graph, Graph) else 0))
     if worker.is_alive() or holder.get('timeout'):
-        return None, SparqlExecutionStatus.TIMED_OUT, f'查询超过 {timeout} 秒'
+        return None, SparqlExecutionStatus.TIMED_OUT, f'Query exceeded {timeout} seconds'
     if 'error' in holder:
-        return None, SparqlExecutionStatus.SYNTAX_ERROR, holder['error']
+        return None, holder.get('status', SparqlExecutionStatus.SYNTAX_ERROR), holder['error']
     data = holder['data']
     status = SparqlExecutionStatus.SUCCESS if data['total'] else SparqlExecutionStatus.EMPTY_RESULT
     return data, status, None
@@ -436,8 +431,7 @@ def format_entity_info(entity_info: Dict, language: str = "zh") -> str:
         Formatted string
     """
     if entity_info.get("error"):
-        from prompting import feedback
-        return feedback(entity_info["error"], language)
+        return entity_info["error"]
     lines = [f"Entity: {entity_info['entity']} ({entity_info.get('uri', '')})"]
 
     if entity_info.get('types'):

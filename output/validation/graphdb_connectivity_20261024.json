@@ -1,0 +1,11 @@
+{
+  "kind": "read_only_connectivity_and_gold_check_no_model_calls",
+  "time": "2026-10-24T15:32:19.538973",
+  "endpoint": "http://CHINAMI-42UOT9U:7200/repositories/TUC_building_test",
+  "gold_columns": [
+    "ZoneID",
+    "point"
+  ],
+  "gold_count": 18,
+  "backend_fallback": false
+}

@@ -48,8 +48,8 @@ class QueryDecomposition:
     """Complete decomposition of a user query"""
     sensors: List[SensorMention]
     sensor_count: int
-    temporal: TemporalConstraint  # Kept for backward compatibility but always returns no constraint
-    aggregation: AggregationRequirement  # Kept for backward compatibility but always returns not required
+    temporal: TemporalConstraint  # Empty when the temporal module is disabled
+    aggregation: AggregationRequirement  # Empty when the operations module is disabled
     query_intent: str
     raw_json: Dict  # Original JSON response
 
@@ -173,7 +173,7 @@ class BrickQueryDecomposer:
         # Otherwise, simple query - no decomposition needed
         return False
 
-    def decompose(self, question: str, verbose: bool = True, cancel_event=None, context: str = "", language: str = "zh") -> QueryDecomposition:
+    def decompose(self, question: str, verbose: bool = True, cancel_event=None, context: str = "", language: str = "zh", *, use_temporal: bool = True, use_aggregation: bool = True) -> QueryDecomposition:
         """
         Decompose a natural language question into structured components.
 
@@ -184,6 +184,9 @@ class BrickQueryDecomposer:
         Returns:
             QueryDecomposition object with extracted components
         """
+        from prompting import validate_language, MODEL_PROMPT_LANGUAGE
+        validate_language(language)
+        language = MODEL_PROMPT_LANGUAGE
         self.last_fallback = False
         self.last_usage = None
         self.last_prompt = None
@@ -200,15 +203,12 @@ class BrickQueryDecomposer:
             if cancel_event is None:
                 time.sleep(dc)
 
-            from prompting import load_prompt, save_prompt_snapshot
-            template = load_prompt('brick_decomposition.prompt', language)
-
-            # Simple template rendering
-            prompt = template.replace("{{ question }}", question)
+            from prompting import build_decomposition_prompt, save_prompt_snapshot
+            prompt = build_decomposition_prompt(question, language, context,
+                                                use_temporal=use_temporal, use_aggregation=use_aggregation)
 
             # Call Qwen (or any configured OpenAI-compatible model)
             client = get_client()
-            prompt += ("\nGraph context: " if language == "en" else "\n图谱上下文：") + context
             self.last_prompt = save_prompt_snapshot(prompt)
             response_text = client.generate_text(prompt, cancel_event=cancel_event)
             self.last_usage = client.last_usage
@@ -227,7 +227,8 @@ class BrickQueryDecomposer:
             decomp_json = json.loads(response_text)
 
             # Convert to structured objects
-            decomposition = self._json_to_decomposition(decomp_json)
+            decomposition = self._json_to_decomposition(decomp_json, use_temporal=use_temporal,
+                                                         use_aggregation=use_aggregation)
 
             if verbose:
                 self._print_decomposition(decomposition)
@@ -242,8 +243,14 @@ class BrickQueryDecomposer:
             self.last_fallback = True
             return self._mock_decompose(question)
 
-    def _json_to_decomposition(self, json_data: Dict) -> QueryDecomposition:
+    def _json_to_decomposition(self, json_data: Dict, *, use_temporal=True, use_aggregation=True) -> QueryDecomposition:
         """Convert JSON response to QueryDecomposition object"""
+        # Enforce the requested modules even if a model emits extra fields.
+        json_data = dict(json_data)
+        if not use_temporal:
+            json_data.pop('temporal', None)
+        if not use_aggregation:
+            json_data.pop('aggregation', None)
 
         # Parse sensors
         sensors = [

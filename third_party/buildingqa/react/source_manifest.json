@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/INFERLab/BuildingQA",
+  "commit": "b792a627419dfb679ad1f26e4d3dc325a758e95b",
+  "files": {
+    "sparql_refinement_agent.py": {
+      "path": "ReAct_agent/sparql_refinement_agent.py",
+      "sha256": "91f3409b15df57d652895fa0b94b7668cc6cdafaeb0cecb1c17784e4bbdcd52e"
+    },
+    "utils.py": {
+      "path": "ReAct_agent/utils.py",
+      "sha256": "ea9e0dd6dd20f6ed78f63433cf027663a61ad7b2fedb20153fb10db9e8cf1084"
+    },
+    "ReAct_demo.ipynb": {
+      "path": "ReAct_demo.ipynb",
+      "sha256": "fec11c4493009eab57ebf4cecd1f66cf6cc44604d3cab3f1604bfc4d06e4f2a9"
+    }
+  },
+  "runner_max_iterations": 3,
+  "class_default_max_iterations": 5,
+  "source_of_iteration_setting": "ReAct_demo.ipynb explicit max_iterations=3",
+  "prompt_extraction": "Only the four reviewed prompt/message expressions are loaded by AST; the vendored module is not imported."
+}

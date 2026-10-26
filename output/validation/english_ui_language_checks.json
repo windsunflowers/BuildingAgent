@@ -1,0 +1,21 @@
+{
+  "alignment": "BrickQA-author-only-20261020-v5-english-prompts",
+  "language_policy": "english-prompts-ui-only-v1",
+  "prompt_language": "en",
+  "tests_passed": 126,
+  "real_model_calls": 0,
+  "module_profiles": {
+    "buildingqa": {
+      "display_languages_produce_identical_prompts": true,
+      "sha256": "f94992709736f4b1644072299f3c84d11d40f30cfab7cf4c45a6dc906b2bb7d2"
+    },
+    "full": {
+      "display_languages_produce_identical_prompts": true,
+      "sha256": "730a9615f49b38d6c10a5011bd225d2a96fb5aaa6220ee8393278d3b187d77f4"
+    }
+  },
+  "upstream_templates_unchanged": {
+    "brick_controller.prompt": true,
+    "brick_decomposition.prompt": true
+  }
+}

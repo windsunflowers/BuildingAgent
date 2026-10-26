@@ -1,8 +1,136 @@
+## 2026-10-26 BuildingQA ReAct 方法 + 固定 Qwen 的最终口径
+
+用户再次明确：对齐 BuildingQA 的 ReAct 方法，模型继续 qwen-plus-2025-12-01。本轮不再将“必须改 Gemini”作为方法对齐条件；metadata 将误导性的 paper_model_required 改为 caller-selected model policy，并将 Gemini 仅标作 BrickQA 论文历史模型。未自动更换模型。
+
+联网核验：BuildingQA 当前官方 main 为 b792a627419dfb679ad1f26e4d3dc325a758e95b；官方原 ReAct SHA256=91f3409b15df57d652895fa0b94b7668cc6cdafaeb0cecb1c17784e4bbdcd52e，metrics SHA256=d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b，与本地固定源码一致。
+
+两轮分数：e0d61c67fd4ff4e58a045f47a983cc6c4 为 GraphDB 0.277778/0.277778/0.138889；e8658797f887647a9bd505e1b8f7ef412 为 RDFLib 0.342593/0.291667/0.138889。均 DFLEX 36 题、同上下文哈希、固定 Qwen；629 条提示图与建筑源图同构。RDFLib 36/36 题、168 次请求通过原循环回放；GraphDB 35/36、200 次请求通过，另第30题是 Writer 首轮连接失败，缺少模型响应，不可冒称已完成回放。两轮各2题错误；GraphDB 27题、RDFLib 22题耗尽三轮，其余停止类型另在原报告保存。出现非空中间结果后末次为空并不允许事后选最佳候选。
+
+实际修正：原 Notebook 的 client=OpenAI(...) 不设置 max_retries，当前所用 SDK 默认2；本地却显式关闭 SDK 重试。现仅 ReAct 通过 with_options(max_retries=2) 恢复该行为，应用层仍只调用一次，不叠加外层重试。BrickQA 原客户端 retry 配置不变。请求日志和 baseline_reference 写明 SDK retries=2；保留用户批准的300秒网络等待预算。离线 HTTP MockTransport 返回503、503、200，确认单次角色调用的SDK发起3次尝试并成功，基础共享客户端仍max_retries=0。该修正针对临时网络失败，不声称能把语义准确率提升至某个历史数值。
+
+已对齐并保持：原英文 Writer/Critic 提示及历史追加、Notebook最多3轮、temperature=0、JSON object、不设输出token上限、Critic FINAL提前结束、末次查询、默认GraphDB前十行反馈、显式RDFLib行数反馈、gold/pred同后端与全量bindings官方评分。用户自定Qwen、300秒、并发调度、冻结TTL文件及执行器等条件保持显式；不改变金标准、注入测试规则、替换末次答案或强制Exact归零。
+
+验证：213 项完整离线回归通过（2 个已有 FastAPI 弃用警告），服务空闲重启生效，恢复 DFLEX；实际 SDK 选项仅本地构造核验，不请求模型。
+
+本轮新审计产物：output/validation/react_e8658797f887647a9bd505e1b8f7ef412_audit_20261026.json 与 react_e0d61c67fd4ff4e58a045f47a983cc6c4_audit_20261026.json。旧分数不重算覆盖，无真实模型调用。
+
+## 2026-10-26 英文模型链路与原文历史
+
+按用户要求，将解析失败后的固定 Thought/Action 格式重试提示、解析耗尽与重复动作提示、缺失 Thought 的补充文案及动作异常包装统一为英文。不再根据界面语言生成这些消息；删除未调用的中文 _build_controller_prompt 备用入口，实际控制器仍唯一使用作者英文模板及既有消融派生。
+
+历史 observation 保留工具/模型数据原文：取消 execute_action 对整段观察或异常详情的 feedback() 替换；SPARQL 异常仅加英文固定包装，原始异常内容保持不变；结果表、RDF 字面值、URI 不替换。移除对 error 动作 observation 的额外重写。底层平台自有 SELECT/ASK、SERVICE 拒绝和查询超时错误在源头用英文生成。原文为中文的数据或第三方异常仍作为原始数据保留，不能为追求字符集纯英文而丢弃/翻译原始证据。中文问题不翻译；本次按用户英文问题场景验证。
+
+中文展示只由 ui/app.js recordedFeedback 派生，补齐重试、PREFIX、未知动作及超时消息展示；需要翻译时提供原文折叠项。旧报告仅展示，不重写原记录。新 LANGUAGE_POLICY=english-prompts-verbatim-history-ui-only-v2，区分历史条件；不改变模型、三轮、原模板、gold 和官方三项 F1。
+
+验证：211 项完整离线回归通过；随后增加的展示层测试连同两项模型历史测试 3/3 通过。两个界面语言在解析重试、空搜索、工具异常、SPARQL 和停止路径的完整请求逐字一致；英文问题及英文工具内容下请求不含中文。独立测试确认特意含中文的 RDF 值/第三方错误原文不被改写。测试没有真实模型调用。服务空闲后重启启用，不自动重跑评测。
+
+## 2026-10-26 宽表官方评分阶段显示修正
+
+e055fffde2d90446494951b6835260f81 已完成 33/36，剩余 DFLEXLIBS_001 三个问题变体。Agent state.phase 已为“完成”，但评测还在执行 score_rows；旧 UI 仅有 gold/model 阶段，误显示“完成”并持续计时。这不是 LLM 网络等待。该标准查询投影 16 列、1080 行，其中首行实际绑定 10 列；固定作者 scorer 从首行 keys 决定映射列数，并枚举候选预测列的一对一排列，每种映射执行嵌套逐行比较，搜索默认 timeout=1200 秒，在映射之间检查，非强制整题截止时间。
+
+修改：evaluate_question 在评分前发送 scoring 阶段、保留评分后的轨迹，并在评分前后检查取消事件；app 记录阶段开始时间与阶段耗时，状态接口支持评分阶段；UI 支持新 scoring 状态，同时将旧运行的 model/phase=完成显示为“计算官方 F1（列匹配可能耗时）”，中英文一致。静态资源版本更新，当前运行刷新即可正确显示；服务不重启，既有运行不打断。新后台阶段字段在下次正常服务重启后启用。
+
+未修改作者评分源码、列映射、1200 秒预算或结果选择；未将未完成题计零。99 项定向回归通过，含新旧阶段显示、评分前事件顺序、轨迹/token 保留。当前问题没有被描述为“已加速”：严格保留原评分实现仍可能耗时较长，取消也不能中断已进入的原始单次评分函数。
+
+## 2026-10-26 LLM 请求超时从 30 秒调整为 300 秒
+
+按用户要求增加长请求等待时间。llm_client.llm_timeout_seconds() 统一解析 LLM_TIMEOUT（默认 300 秒，校验有限正数），传给 SDK；ReAct baseline_reference、网页/CLI 总配置和逐题记录同一实际超时值。错误提示包含当前超时秒数；状态接口提供 model_timeout_seconds。保留原模型、提示、生成参数、三轮上限与重试次数，此为运行环境变更，不归因于论文算法提升；旧报告原环境值不重标。
+
+用户明确选择“现在中断本轮并重启”。已先请求取消 edd549ee2929b4f0fb3e7225ebadeff45，再将保存报告备份至 output/validation/llm_timeout_pre_restart_20261026.json 后重启；原报告不重算。重启后旧轮显示 interrupted，保留 23 条结果，未自动补跑。恢复 dflexlibs_multizone 图谱；状态与真实 SDK 均确认 timeout=300，无真实模型请求。115 项相关离线回归通过（含默认值、600 秒覆盖、非法值、SDK/元数据一致性）。模型仍 qwen-plus-2025-12-01。
+
+网络等待上限不是整题总时限；显式整题预算可提前取消。客户端创建后读取配置，修改环境变量需重启。增加等待时间不能保证上游故障、断网或服务端主动超时时成功。
+
+## 2026-10-25 两后端差异与官方评分复核
+
+核对最新 TUC/DFLEX 两后端四轮报告（132 题、706 次模型请求），原作者循环、停止与评分回放均通过。将 GraphDB 保存的最终查询在 RDFLib 重放，TUC/DFLEX 三项均值分别仍为 0.316667/0.300000/0.200000、0.194444/0.194444/0.083333，与原 GraphDB 记录一致。两组真实模型运行的最终查询不同，不能把原均值差直接归因于执行引擎。Exact 非零符合固定 scorer 的按列位置结果匹配定义；不强制归零。模型仍是用户固定 Qwen，作者历史 Exact CSV 差异仍未解决，未宣称论文定量复现完成。本次无新的模型调用、无历史结果覆盖、无算法改动。
+
+详细证据与限制见 output/validation/REACT_BACKEND_COMPARISON_20261025.md；新增离线循环审计与同查询重放 JSON。当前 GraphDB 未运行，重放比较历史远程结果与当前本地执行，并非今天新的远程模型实验。
+
+## 2026-10-24 统一 Notebook 默认 GraphDB / 最多三轮
+
+原始固定 ReAct_demo.ipynb 明确 USE_LOCAL_TTL_FILE=False、max_iterations=3。按用户要求，API EvalRequest、后台入口、CLI --react-backend、evaluate_item 兼容参数、evaluation_agent 工厂、ReActBaselineAgent 与 reference 元数据默认均统一为 graphdb。网页已有 GraphDB 默认选择，不改变旧报告实际后端。显式 rdflib 保留为作者本地分支，不在远程失败时回退。最多三轮为原固定常量，Critic FINAL 可以提前结束；耗尽后仍提交最后生成查询。
+
+GraphDB 继续使用用户原有三个仓库地址、作者前十行 bindings 反馈、原英文 Writer/Critic、temperature=0 和官方评分。模型/上下文未自动更换，未自动重跑任何评测。新增回归从默认工厂构造 GraphDB Agent，模拟三次 Writer 与三次 Critic IMPROVE，断言六次模型调用后结束及三轮元数据；原 RDFLib 测试改成显式选本地，避免把默认值变化误当算法变化。
+
+## 2026-10-24 GraphDB 连接拒绝修复
+
+实际原因：本机 GraphDB 未运行，127.0.0.1 与 CHINAMI-42UOT9U:7200 均实测 WinError 10061，无监听进程。这是传输层故障，不能据此判断 gold 查询语法有误。使用原安装 GraphDB Desktop 恢复服务，保留现有 Roaming/GraphDB 数据目录及 TUC_building_test、DFLEX、bldg11 仓库；未修改端点、数据或推理设置。
+
+react_graphdb.py 区分 HTTP 查询错误与 URLError/OSError 传输异常；传输异常包含仓库地址及检查提示。网页启动 GraphDB ReAct 评测前执行只读 SELECT (1 AS ?ready) WHERE {}，失败返回 HTTP 503，中英文提示“评测尚未启动”，不创建评测任务、不调用模型、不回退 RDFLib。运行中断线仍按原 gold_error 规则阻止可比较汇总，历史报告不修改。
+
+验证：三个配置仓库均成功返回 ready=1；TUC 第一条原始 gold 返回 ZoneID/point 两列、18 行。证据 output/validation/graphdb_connectivity_20261024.json。完整离线回归 200 passed，2 个已有弃用警告。空闲工作台重启后恢复 TUC 建筑，未自动发起模型评测。GraphDB 必须在使用远程后端时持续运行。
+
+## 2026-10-24 评测结果宽表格显示修正
+
+截图中的标准答案有多列，通用 table-layout:fixed 与 overflow-wrap:anywhere 将列平均压缩并逐字断行。本次仅调整 evaluation-comparison 内的表格：自动列布局、内容宽度、最小列宽 120px、保持表头/单元格/URI 按钮不拆行，由各自 table-wrap 横向滚动。标准和预测面板仍分别占据可用宽度，小屏按已有规则上下排列。更新静态资源版本使刷新加载新样式；数据、评分和查询不改变。验证范围为样式与页面结构静态检查，未启动新模型评测。
+
+## 2026-10-23 作者协议复核与修正
+
+结论：已实现 BrickQA Agent 和独立 BuildingQA ReAct，并完成多项源码对齐；仍不能宣称论文完整定量复现。基准固定 BrickQA 49d9e283c2a3958e9be110583be6575cbd40039b、BuildingQA b792a627419dfb679ad1f26e4d3dc325a758e95b。下述新规则取代本文旧的本体合并/本地修复说明，历史报告不改写。
+
+### 本次已修正
+
+- prompting.py：删除控制器尾部本地命名空间、类路径、时间范围与输出指令；分解器不再接收从执行图提取的额外命名空间/时间范围。保留作者英文模板、已有模块消融和空会话模板渲染适配。
+- app.py：标准评测禁用交互界面的 schema_description，结束/失败均恢复；CLI 本来不加载此描述。NoKG 不再从该描述获得静态建筑知识。报告记录 schema_description_in_prompt=false。
+- brick_utils.py：不再自动合并独立 Brick 本体。新加载的执行图按作者使用建筑 TTL；源图与执行图初始化三元组一致。远程 GraphDB 仓库数据不作改动，仍须核实其推理/导入设置。
+- brick_agent.py / implementation_policy.py：从校验 SHA256 的原始作者文件 AST 提取并执行原 _validate_and_fix_sparql；恢复固定 bldg-59#、去除时间戳 Z、DESC 无 LIMIT 自动补 LIMIT 1 等作者行为。执行层只在没有 PREFIX 时补原常量，不再调用本地 namespace 重写。作者这些行为未必适合所有建筑，但不以本地改良冒充复现。
+- llm_client.py：BrickQA controller/decomposer 不再强制 temperature=0 和 max_tokens=2048；像作者 generate_content 一样不显式指定。所选 API 的默认值不保证等于 Vertex AI；模型与供应商仍是独立差异。ReAct 继续显式 temperature=0、JSON object、不设 token 上限。
+- BrickQA 与 ReAct 均保存全量 SPARQL JSON bindings，并交给同一固定官方三项 F1。显示用字符串行不再作为 BrickQA 评分入口；这不改变官方归一化函数，也不承诺必然改变得分。
+
+### 已验证与结果解释
+
+- 完整离线回归：197 passed；2 个已有 FastAPI on_event 弃用警告。新检查覆盖原始图无本体追加、RDF 类型/未绑定变量、执行层不改声明命名空间；已有用例核对作者 LIMIT/Z 行为、标准评测上下文隔离及恢复、中英文模型输入分离、ReAct 源码循环和评分。
+- 重新审计 e15354bfb31034bfea00e322a530d7b25：30/30 题、178/178 次调用与原 ReAct 循环相符，见 output/validation/react_workflow_reaudit_20261023.json。这是保存响应回放，不是新模型实验；报告原 SHA256 保持不变。
+- 论文第 4.1.3 节使用 Gemini 2.5 Flash；当前用户固定 Qwen，不能将它标作同模型复现。标准 BuildingQA 关闭 Temporal/Operations，ReAct 为 Notebook 3 轮而非类默认 5 轮；GraphDB 给前十行 bindings，RDFLib 仅给行数。低分不能作为擅自改变 Critic 提示、停止规则或选择最佳历史查询的理由。
+- 既有诊断显示 Critic 可能将正确类型改为不存在的类型，导致可执行但零行；语法合法不代表语义正确。详见 output/validation/REACT_TUC_E153_DIAGNOSIS_20261022.md。
+- 既有作者 CSV 查询回放中，TUC 5000T Entity/Row 逐题一致，但 Exact 历史 0 与固定源码重算 0.444444 不一致；缺少作者当时 bindings/环境，原因未解决，不改 scorer 凑分。
+
+### 尚未完成 / 阻塞完整复现
+
+- 尚未按论文模型与相同 API/数据条件重跑三个建筑 × NoKG/100T/5000T × 两种方法；未测量本轮修正后的新 F1。Table 2 Total 要使用建筑宏平均，不能比较单个 TUC 或题目加权均值。
+- GraphDB 数据版本/推理配置、论文采样上下文字节、作者历史 Exact 评分环境尚未全部核实。保留已有 TTL 样本而不重新随机取样。
+- SDK/解析器/隔离执行器、修复过的输入 TTL、模块消融提示派生、失败处理和供应商默认生成参数仍须作为工程适配披露。LBNL 时序案例不属于本次已完成定量实验。
+- 本次没有模型调用、没有重算覆盖历史报告；检查时 8123 没有运行服务，新代码在下次 npm run dev 启动后生效。
+
 # BrickQA 复现审计与项目边界
+
+2026-10-22 评测布局微调：设置与操作分为两行，并发题数标签/输入框保持同组，运行/取消/导出按钮和进度位于第二行。HTML 结构核验通过，静态资源版本更新；仅修改布局，无实验条件变化。
+
+2026-10-22 评测入口收敛：BrickQA 选择下隐藏 ReAct 后端标签/下拉框及 ReAct 专属说明，切到 ReAct 才显示；BrickQA 专属模块说明同样按方法显示。/api/benchmarks 根据当前实际加载 TTL 的规范化绝对路径筛选，排除其他建筑、混合建筑、无 TTL 声明及无效文件；建筑切换立即清空旧选项并重载，异步旧响应不会覆盖新建筑列表。无匹配题集时禁止启动评测；历史报告仍保持原样展示。新增两项回归验证匹配边界、建筑切换和界面显示/忙碌状态，连同既有报告显示测试共三项通过，Python/JS 语法通过。本次不改作者方法、模型或评分，也不调用模型。
+
+2026-10-22 低分复核：截图对应 e15354bfb31034bfea00e322a530d7b25，实际为 RDFLib + 固定 Qwen，并非控件当前显示的 GraphDB。30/30 题、178/178 次真实消息与固定作者循环一致，23 题合法空结果；首题 Critic 将实际存在的 Max_Air_Temperature_Setpoint 错改为无实例的 Maximum_Air_Temperature_Setpoint。保存查询 GraphDB 回放中 16 题修订后 Row F1 下降，最终三分与原报告一致。修复报告实际后端/模型显示、下一轮选择差异提示、服务端后端回执及空结果说明，更新静态资源版本；不修改作者算法或挑选更高分候选。作者公开 TUC 查询在当前仓库的 Entity/Row 逐题 30/30 复现；Exact 历史 0 与固定源码重算 0.444444 的差异仍待原始环境/bindings 核实。192 项回归通过。详细证据见 output/validation/REACT_TUC_E153_DIAGNOSIS_20261022.md，旧报告哈希不变；未调用模型重跑。
+
+2026-10-22 GraphDB 后端：已接入用户三个仓库；ReAct 远程分支使用作者前十行真实 bindings 摘要，本地分支保留行数摘要。网页显式选择，GraphDB 默认；兼容 API/CLI 默认 RDFLib。两分支的 gold/预测共用各自执行器，远程错误不回退，完整 bindings 送固定 scorer。报告区分 implementation_mode、endpoint、graph scope、feedback policy 及服务端默认推理未核实状态。191 项离线测试通过，包括直接执行作者远程函数对照、真实本机 HTTP、同仓库 gold/预测、15 行完整评分、远程错误正文与后端传参。未自动更换固定 Qwen 或调用模型；数据版本、GraphDB 推理配置和论文模型一致性仍须单独核验。远程取消等待当前 HTTP 返回/180 秒超时，未引入后台重试。
+
+实仓库只读验证：TUC 5/5、DFLEX 6/6、bldg11 的 human 文件中 31/31 条（含相同 query_id 的题目变体）gold 均成功执行。bldg11 的缺省前缀按既有 gold_query_text/作者 notebook 规则补源 TTL 声明，原 gold 不改写。TUC/DFLEX 的远程行数与本地源图逐题相同；bldg11 本地逐题对照耗时较长而中止，不宣称两边结果完全一致。默认计数和 infer=false 计数均为 101515/629/98592，这不能证明推理配置与作者相同。证据：output/validation/react_graphdb_live_checks_20261022.json。服务已重启，恢复 TUC 与固定 qwen-plus-2025-12-01，空闲且未自动重跑模型评测。
+
+2026-10-22 补充对齐及完整验证：ReAct 错误摘要改为直接使用执行器原始错误，避免界面翻译替换异常中引用的名称或数据；三项 F1 直接以全量类型化 SPARQL JSON bindings 输入固定作者 scorer，保留未绑定字段、重复行和列顺序。新增原始错误及带 datatype/lang、未绑定列、重复行的评分输入回归；全套 184 项测试通过（两个既有 FastAPI 弃用警告），Python/JavaScript 语法及 diff 空白检查通过。此前 52 项局部验证及 DPAPI 权限限制是历史状态，本轮在当前 Windows 用户权限下补齐网页/CLI 入口验证。未调用模型重跑；固定 Qwen、RDFLib 与原论文模型/远程后端仍属不同条件。
+
+2026-10-22 RDFLib 分支反馈对齐：按用户最新要求，ReAct 移除传给 Critic 的列名/总行数附加头与前十行预览，恢复作者本地 RDFLib 的成功行数、空结果及错误摘要。新 implementation_mode=buildingqa_react_rdflib_author_v1，feedback_policy=upstream_rdflib_row_count_only_v1。3 轮、固定模型、原始建筑执行图及完整结果的三项官方评分保留。旧报告不重写；模型替换、执行预算和 SDK 适配仍是剩余差异，不代表论文数值复现完成。52 项离线回归通过，包括作者 RDFLib 函数独立执行对照；网页/CLI 两项入口检查因当前 Windows 用户无法解密本机模型配置未通过，暂不计入验证。未重启服务或发起真实模型评测。
+
+2026-10-21 用户文件对齐：按 react_baseline_implementation.md 修正 ReAct 直接使用 TTL 源图，gold/pred 同图，完整 SPARQL JSON bindings 与结构化结果/辅助评测字段对齐；原始提示四段 AST 相同。用户确认保留 3 轮、列名/前十行反馈与固定 Qwen。新模式 buildingqa_react_document_v1，旧合并图实验保留。完整对照与剩余平台边界见 output/validation/REACT_USER_DOCUMENT_ALIGNMENT_20261021.md。
+
+2026-10-21 新反馈后的完整 30 题复核：报告 e041bd33988b847c1a8d67bc41278d9b9 为 0.308333/0.233333/0.166667，15 题合法空结果、3 题实际查询错误，10 题 Critic FINAL、20 题三轮结束。用该轮真实响应与保存的执行反馈，直接执行固定源码原循环：30/30 题、146/146 次消息、最终查询选择与保存的三项评分均一致，证据见 output/validation/react_actual_workflow_replay_20261021.json。本次纠正的是 ReAct 适配实现被记为 upstream 的标识错误，并加入独立回放工具；未发现可据以改变三轮原算法的新错误。Qwen 替换、RDFLib 后端和授权反馈适配继续显式保留，论文数值复现尚未完成。
+
+2026-10-21 ReAct 反馈适配：用户明确要求保留 RDFLib 执行，Critic 接收列名、总行数和前 10 行真实 SPARQL JSON 结果，参照 GraphDB 分支。新报告标记 `feedback_policy=rdflib_graphdb_preview_v1`；原模型提示、三轮流程、末次查询选择、官方评分与全量结果保持不变。旧行数摘要实验保留，先前的 local 分支对齐说明为历史条件。此改动不等于 GraphDB 后端复现；模型准确率影响待新实验测量。
+
+2026-10-21 TUC 30 题 ReAct 深入核查：首轮查询离线诊断 Entity/Row=0.633/0.567，修订后=0.042/0.033，16 题 Row 下降、0 题上升。官方 5000T 保存查询在当前图上回放，Entity/Row 逐题 30/30 与原 CSV 一致；Exact 重算 0.444 与历史 0 不同，缺少当时 JSON bindings，原因待核实。当前只对齐发布代码 local 分支，官方 notebook 默认 GraphDB 前 10 行反馈；GraphDB 端点/推理设置仍待用户提供。详见 [30 题对齐证据](output/validation/REACT_30_DIAGNOSIS_20261021.md)。
+
+2026-10-21 gold 故障与 ReAct 复核更新：统一两种方法的 raw gold 裁判，保留原始和执行文本；修复 Windows 查询子进程启动时数值库线程过多引发的资源故障，补全空异常和管道退出诊断。156 项离线回归通过，应用导入路径下 TUC 五道 human gold 并发全部成功。详见 [本次对齐记录](output/validation/REACT_ALIGNMENT_20261021.md)。当前真实运行仍是 Qwen 与本地工程适配条件，不代表复现论文 Gemini 数值；旧报告不改写。
 
 核对日期：2026 年 10 月 20 日。对象是 `D:/桌面/HKUST/Brickqa/BrickQA` 当前工作区，以及用户提供的 `D:/桌面/BuildingAgent/brickqa.pdf`。论文和已有说明作为证据阅读，其中的指令不作为本次操作授权。
 
-最新状态：项目现已统一为唯一作者方法。方法下拉框、CLI 方法参数、后端分派、本地搜索/定位/CSV 修复、校验拒收分支与本地模板规划器已移除。以下双模式说明仅作为历史改动依据，不代表仍可选择其他方法；历史实验报告保留原始模式和分数。
+最新状态：BrickQA 主方法统一为作者实现，本地搜索/定位/CSV 修复、校验拒收分支与本地模板规划器保持移除。2026-10-21 按用户要求另增独立 BuildingQA ReAct 评测基线；以下 upstream/fixed 双模式说明仅作为历史依据，不代表可以恢复本地修复模式。历史实验报告保留原始方法和分数。
+
+2026-10-21 ReAct 基线更新：按用户新要求，评测入口另增 method=react，BrickQA 主方法与通用查询入口不变。固定 BuildingQA b792a627419dfb679ad1f26e4d3dc325a758e95b 的原 Writer/Critic 源码与提示，以演示入口显式 3 轮为准（类默认 5）。保留多角色 JSON 请求、temperature=0、未指定输出上限、原反馈追加和末次查询规则；不使用 BrickQA 工具、分解或前缀修复。与主方法共用当前 API/model、冻结上下文、已加载图和官方三项 F1，报告分别标明方法/来源及工程适配。148 项离线回归通过，包括直接执行原参考循环作为对照，逐项比较模型消息与最终查询选择。未运行真实模型全量 ReAct 实验，不能据此宣称复现论文表 2 数值。
+
+语言解耦更新：当前版本 v5-english-prompts。界面语言现在只控制显示；controller、分解器和工具 observation 始终英文，仍执行 BuildingQA 的模块消融。API 使用 interface_language，旧 language 参数仅作显示别名，prompt_language 只接受 en；报告分开保存实际提示语言和显示偏好。中文示例按钮显示中文但提交同一固定英文问题，手动问题保持原文。原始英文模板和历史中文记录保留，显示适配不重写轨迹或追加模型调用。126 项离线回归通过，其中完整 Agent 流程验证两种显示语言的实际模型提示、observation 和最终 SPARQL 逐字一致。本次没有真实模型评测调用，Gemini 配额问题仍单独待处理。
+
+模块消融对齐更新：BuildingQA 网页与 CLI 评测现在将两个关闭开关传至分解提示和 JSON 解析，派生 sensors_only 提示时去掉 Temporal/Operations 指令、字段及混合示例，保留实体规则与领域映射。控制器关闭相关分解行、时序指南及日期范围指导，额外返回的关闭模块字段被忽略。LBNL 完整分解提示保留原样，`main.py --experiment lbnl_fdd` 显式启用完整模块，不能与禁用参数冲突使用。数据加载和时序答案核验仍是独立实验要求。新报告增加 decomposition_policy 与 experiment，提示版本为 v4-module-ablation；这是对论文模块消融要求的本地运行时适配，不宣称找到作者发布的专用 sensors_only 模板。原模板与官方 scorer 文件未改，历史报告未重算；本次不调用模型重跑。
+
+本次模块消融验证：119 项离线回归通过，覆盖中英文实际分解提示、关闭字段的额外/非法响应、控制器注入、并发子任务与父配置隔离、CLI 实验配置冲突，以及完整提示逐字保持。Python 编译、前端 JavaScript 和 diff 空白检查通过。Gemini 既有 HTTP 429 配额问题不属于模块开关修复，仍需另行处理请求调度或项目配额。
+
+模型选择更新：右侧滑动面板支持现有 Qwen 与 Google `gemini-2.5-flash`，密钥按供应商用 Windows 当前用户 DPAPI 加密保存，任务运行期间禁止切换。客户端按配置版本更新，新报告记录请求与响应模型标识。101 项测试通过，实际 Gemini 单次连接测试成功，响应模型为 `gemini-2.5-flash`；没有自动运行正式评测。保留温度与 token 上限，未额外覆盖 Gemini 默认思考配置。Google OpenAI 兼容接入仍是模型适配条件，不能等同作者 Vertex AI SDK 的完整环境；不同模型结果须单独报告，作者工具及 BuildingQA 指标未改。
 
 英文反馈与评测页面更新：修复英文异常分支漏译，避免对 RDF 数据值做文本替换；英文提示明确要求英文动作目的，作者英文模板原件不变。历史中文运行在英文界面以动作摘要展示并标注原语言，原文可展开；不将其冒充翻译后的原轨迹。评测页改为整页滚动。BuildingQA 源码和用户提供的 419 行代码 AST 一致，新报告固定源码哈希并记录评分协议。对最近完成的中文 30 题报告离线核查：24 题合法结果三项 F1 与官方实现差值为 0，6 题执行失败仍计零分；原文件哈希未变。未重跑模型、未修复或改写模型生成查询。证据见 `output/validation/buildingqa_language_layout_checks.json`。
 
@@ -88,7 +216,7 @@ local/auto 工作台另外作为应用扩展评估。**当前仅把 `LLM_MODEL` 
 | 中文自制题演示 | `evaluate_demo.json` 三题中两题 F1 为 0；第三题 gold/pred 都为空，被计 1 | 不能证明三题中有一道业务问题已正确回答；缺图导致的空答案需单列 |
 | 数据和本地模板验证 | 旧 `data_checks.json` 记录 9 个 local 查询和 3 个 CSV 数值核对 | 证明特定模板和数据链路；不能替代模型评测 |
 | 正式模型全量实验 | 未发现带固定配置和逐题轨迹的本地 426 题正式结果 | 未完成 |
-| ReAct 同条件对照 | 当前项目没有独立的 ReAct writer/critic 基线运行入口 | 未完成；不能用 `--no-decomposer` 冒充 ReAct |
+| ReAct 同条件对照 | 已接入固定版本的独立 Writer/Critic 网页、API 与 CLI 入口，离线原函数对照通过 | 运行入口完成；真实同条件全量实验仍未完成 |
 | 官方指标一致性 | 初始反例已覆盖；后续改为固定版本官方实现和统一适配层 | 本次已修正；仍需正式实验 |
 | 论文成本效率 | 有 token 计数，但缺乏正式逐题输入输出及计费记录 | 未完成；Qwen 价格不能直接验证 Gemini 的成本倍数 |
 | LBNL 的 10 个案例 | 有时序加载和单问入口，没有 10 题完整、独立核验的结果表 | 未完成 |
@@ -212,7 +340,7 @@ local/auto 工作台另外作为应用扩展评估。**当前仅把 `LLM_MODEL` 
 - [ ] 先用每栋少量官方问题验证模型、工具和记录链路，再执行完整矩阵。
 - [ ] 严格条件使用原模型、英文提示和已声明的发布实现；Qwen 变体单独运行并命名。
 - [ ] 三栋乘三上下文共 9 个条件、426 个 BrickQA 问题运行全部落盘；禁止 local 模板参与。
-- [ ] 引入 BuildingQA 的实际 ReAct writer/critic 基线，或明确仅对比作者公布结果；不能把原表抄写成自己的运行。
+- [x] 引入固定版本 BuildingQA 的独立 ReAct Writer/Critic 评测入口；离线对照已通过。真实同条件全量实验仍待运行，不能把作者原表当成本地重跑。
 - [ ] 输出分建筑、分上下文、分 Human/LLM_1 至 LLM_5 的三种官方 F1、执行失败和停止原因，并复建表 2。
 
 验收：每个汇总数字能定位到逐题记录；任何条件的模型、图、本体和提示词变化都明确标注。完成 Qwen 矩阵后，可称“不同模型条件下的复现评估”；补齐严格条件后，再讨论论文数值复现程度。分数不完全相等时报告差值和原因，不能通过改 gold 或挑题逼近论文。

@@ -9,6 +9,7 @@ import threading
 
 GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/'
 QWEN_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
+QWEN_MODEL = 'qwen-plus-2025-12-01'
 CONFIG_PATH = Path(__file__).resolve().parent / '.local/model_profiles.json'
 
 
@@ -64,11 +65,11 @@ class ModelRegistry:
         self.path = Path(path)
         self.lock = threading.RLock()
         self.revision = 0
-        model = os.getenv('LLM_MODEL', 'qwen-plus')
+        model = os.getenv('LLM_MODEL', QWEN_MODEL)
         url = os.getenv('LLM_BASE_URL', QWEN_URL)
         gemini_env = 'generativelanguage.googleapis.com' in url
         self.profiles = {
-            'qwen': {'provider':'Qwen / OpenAI-compatible', 'model':'qwen-plus' if gemini_env else model,
+            'qwen': {'provider':'Qwen / OpenAI-compatible', 'model':QWEN_MODEL if gemini_env else model,
                      'base_url':QWEN_URL if gemini_env else url},
             'gemini-2.5-flash': {'provider':'Google Gemini', 'model':'gemini-2.5-flash', 'base_url':GEMINI_URL},
         }
@@ -89,6 +90,10 @@ class ModelRegistry:
                 self.active_id = saved['active_id']
             except Exception:
                 raise RuntimeError('Local model settings could not be read/decrypted by this Windows user') from None
+        # Migrate the floating alias from environment or an older saved profile.
+        # Keep explicitly configured other models and the Gemini profile intact.
+        if self.profiles['qwen']['model'] == 'qwen-plus':
+            self.profiles['qwen']['model'] = QWEN_MODEL
         self._export_environment()
 
     def current(self):

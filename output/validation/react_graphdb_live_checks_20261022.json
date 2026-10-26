@@ -1,0 +1,351 @@
+{
+  "model_calls": 0,
+  "diagnostic_timeout_seconds": 8,
+  "evaluation_timeout_seconds": 180,
+  "inference": "repository_default_unverified",
+  "local_comparison": {
+    "TUC_building": {
+      "human_queries": 5,
+      "remote_local_row_counts": [
+        18,
+        18,
+        18,
+        18,
+        18
+      ]
+    },
+    "dflexlibs_multizone": {
+      "human_queries": 6,
+      "remote_local_row_counts": [
+        1080,
+        5,
+        7,
+        1,
+        7,
+        7
+      ]
+    },
+    "bldg11": "not_completed; expensive in-process local diagnostic stopped; production isolated RDFLib executor unchanged"
+  },
+  "buildings": [
+    {
+      "building": "TUC_building",
+      "endpoint": "http://CHINAMI-42UOT9U:7200/repositories/TUC_building_test",
+      "queries": [
+        {
+          "query_id": "TUC_001",
+          "status": "ok",
+          "rows": 18,
+          "columns": 2,
+          "seconds": 0.25
+        },
+        {
+          "query_id": "TUC_002",
+          "status": "ok",
+          "rows": 18,
+          "columns": 2,
+          "seconds": 0.062
+        },
+        {
+          "query_id": "TUC_003",
+          "status": "ok",
+          "rows": 18,
+          "columns": 2,
+          "seconds": 0.032
+        },
+        {
+          "query_id": "TUC_004",
+          "status": "ok",
+          "rows": 18,
+          "columns": 2,
+          "seconds": 0.062
+        },
+        {
+          "query_id": "TUC_005",
+          "status": "ok",
+          "rows": 18,
+          "columns": 2,
+          "seconds": 0.047
+        }
+      ],
+      "count_default": 101515,
+      "count_infer_false": 101515
+    },
+    {
+      "building": "dflexlibs_multizone",
+      "endpoint": "http://CHINAMI-42UOT9U:7200/repositories/DFLEX",
+      "queries": [
+        {
+          "query_id": "DFLEXLIBS_001",
+          "status": "ok",
+          "rows": 1080,
+          "columns": 16,
+          "seconds": 0.281
+        },
+        {
+          "query_id": "DFLEXLIBS_002",
+          "status": "ok",
+          "rows": 5,
+          "columns": 3,
+          "seconds": 0.047
+        },
+        {
+          "query_id": "DFLEXLIBS_003",
+          "status": "ok",
+          "rows": 7,
+          "columns": 2,
+          "seconds": 0.031
+        },
+        {
+          "query_id": "DFLEXLIBS_004",
+          "status": "ok",
+          "rows": 1,
+          "columns": 1,
+          "seconds": 0.047
+        },
+        {
+          "query_id": "DFLEXLIBS_005",
+          "status": "ok",
+          "rows": 7,
+          "columns": 1,
+          "seconds": 0.062
+        },
+        {
+          "query_id": "DFLEXLIBS_006",
+          "status": "ok",
+          "rows": 7,
+          "columns": 1,
+          "seconds": 0.047
+        }
+      ],
+      "count_default": 629,
+      "count_infer_false": 629
+    },
+    {
+      "building": "bldg11",
+      "endpoint": "http://CHINAMI-42UOT9U:7200/repositories/bldg11",
+      "queries": [
+        {
+          "query_id": "MORTAR_001",
+          "status": "ok",
+          "rows": 1347,
+          "columns": 2,
+          "seconds": 0.344
+        },
+        {
+          "query_id": "MORTAR_001",
+          "status": "ok",
+          "rows": 1347,
+          "columns": 2,
+          "seconds": 0.109
+        },
+        {
+          "query_id": "MORTAR_001",
+          "status": "ok",
+          "rows": 1347,
+          "columns": 2,
+          "seconds": 0.109
+        },
+        {
+          "query_id": "MORTAR_001",
+          "status": "ok",
+          "rows": 1347,
+          "columns": 2,
+          "seconds": 0.125
+        },
+        {
+          "query_id": "MORTAR_002",
+          "status": "ok",
+          "rows": 222,
+          "columns": 2,
+          "seconds": 0.078
+        },
+        {
+          "query_id": "MORTAR_002",
+          "status": "ok",
+          "rows": 222,
+          "columns": 2,
+          "seconds": 0.063
+        },
+        {
+          "query_id": "MORTAR_002",
+          "status": "ok",
+          "rows": 222,
+          "columns": 2,
+          "seconds": 0.109
+        },
+        {
+          "query_id": "MORTAR_002",
+          "status": "ok",
+          "rows": 222,
+          "columns": 2,
+          "seconds": 0.078
+        },
+        {
+          "query_id": "MORTAR_003",
+          "status": "ok",
+          "rows": 103,
+          "columns": 2,
+          "seconds": 0.078
+        },
+        {
+          "query_id": "MORTAR_003",
+          "status": "ok",
+          "rows": 103,
+          "columns": 2,
+          "seconds": 0.079
+        },
+        {
+          "query_id": "MORTAR_003",
+          "status": "ok",
+          "rows": 103,
+          "columns": 2,
+          "seconds": 0.078
+        },
+        {
+          "query_id": "MORTAR_004",
+          "status": "ok",
+          "rows": 388,
+          "columns": 2,
+          "seconds": 0.109
+        },
+        {
+          "query_id": "MORTAR_004",
+          "status": "ok",
+          "rows": 388,
+          "columns": 2,
+          "seconds": 0.094
+        },
+        {
+          "query_id": "MORTAR_004",
+          "status": "ok",
+          "rows": 388,
+          "columns": 2,
+          "seconds": 0.125
+        },
+        {
+          "query_id": "MORTAR_005",
+          "status": "ok",
+          "rows": 205,
+          "columns": 3,
+          "seconds": 0.109
+        },
+        {
+          "query_id": "MORTAR_005",
+          "status": "ok",
+          "rows": 205,
+          "columns": 3,
+          "seconds": 0.125
+        },
+        {
+          "query_id": "MORTAR_006",
+          "status": "ok",
+          "rows": 519,
+          "columns": 3,
+          "seconds": 0.266
+        },
+        {
+          "query_id": "MORTAR_006",
+          "status": "ok",
+          "rows": 519,
+          "columns": 3,
+          "seconds": 0.25
+        },
+        {
+          "query_id": "MORTAR_006",
+          "status": "ok",
+          "rows": 519,
+          "columns": 3,
+          "seconds": 0.203
+        },
+        {
+          "query_id": "MORTAR_007",
+          "status": "ok",
+          "rows": 19,
+          "columns": 3,
+          "seconds": 0.109
+        },
+        {
+          "query_id": "MORTAR_007",
+          "status": "ok",
+          "rows": 19,
+          "columns": 3,
+          "seconds": 0.094
+        },
+        {
+          "query_id": "MORTAR_007",
+          "status": "ok",
+          "rows": 19,
+          "columns": 3,
+          "seconds": 0.078
+        },
+        {
+          "query_id": "MORTAR_007",
+          "status": "ok",
+          "rows": 19,
+          "columns": 3,
+          "seconds": 0.078
+        },
+        {
+          "query_id": "MORTAR_008",
+          "status": "ok",
+          "rows": 8,
+          "columns": 2,
+          "seconds": 0.14
+        },
+        {
+          "query_id": "MORTAR_008",
+          "status": "ok",
+          "rows": 8,
+          "columns": 2,
+          "seconds": 0.297
+        },
+        {
+          "query_id": "MORTAR_008",
+          "status": "ok",
+          "rows": 8,
+          "columns": 2,
+          "seconds": 0.141
+        },
+        {
+          "query_id": "MORTAR_008",
+          "status": "ok",
+          "rows": 8,
+          "columns": 2,
+          "seconds": 0.235
+        },
+        {
+          "query_id": "MORTAR_009",
+          "status": "ok",
+          "rows": 470,
+          "columns": 3,
+          "seconds": 0.14
+        },
+        {
+          "query_id": "MORTAR_009",
+          "status": "ok",
+          "rows": 470,
+          "columns": 3,
+          "seconds": 0.125
+        },
+        {
+          "query_id": "MORTAR_009",
+          "status": "ok",
+          "rows": 470,
+          "columns": 3,
+          "seconds": 0.125
+        },
+        {
+          "query_id": "MORTAR_009",
+          "status": "ok",
+          "rows": 470,
+          "columns": 3,
+          "seconds": 0.109
+        }
+      ],
+      "count_default": 98592,
+      "count_infer_false": 98592,
+      "gold_prefix_policy": "gold_query_text; source TTL declarations only when absent, as in original notebook"
+    }
+  ]
+}

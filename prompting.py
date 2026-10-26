@@ -4,6 +4,8 @@ import re
 from brick_temporal_handler import should_use_temporal_guide
 
 ROOT = Path(__file__).resolve().parent
+MODEL_PROMPT_LANGUAGE = 'en'
+LANGUAGE_POLICY = 'english-prompts-verbatim-history-ui-only-v2'
 
 
 def save_prompt_snapshot(prompt):
@@ -29,12 +31,64 @@ def validate_language(language):
 
 def load_prompt(name, language='zh'):
     validate_language(language)
-    directory = ROOT / 'prompts' / 'en' if language == 'en' else ROOT / 'prompts'
+    directory = ROOT / 'prompts' / MODEL_PROMPT_LANGUAGE
     return (directory / name).read_text(encoding='utf-8')
 
 
+def decomposition_policy(agent=None, *, use_decomposer=True, use_temporal_handler=True, use_aggregation=True):
+    """Actual module configuration, shared by runtime and experiment records."""
+    if agent is not None:
+        use_decomposer, use_temporal_handler, use_aggregation = agent.use_decomposer, agent.use_temporal_handler, agent.use_aggregation
+    enabled = bool(use_decomposer)
+    temporal = bool(enabled and use_temporal_handler)
+    operations = bool(enabled and use_aggregation)
+    return {'version': 'module-ablation-v1', 'sensors': enabled,
+            'temporal': temporal, 'operations': operations,
+            'prompt_variant': ('disabled' if not enabled else
+                               'full' if temporal and operations else
+                               'sensors_only' if not temporal and not operations else 'partial'),
+            'disabled_modules': 'excluded_from_prompt_and_result'}
+
+
+def build_decomposition_prompt(question, language='zh', context='', *,
+                               use_temporal=True, use_aggregation=True):
+    """Derive module ablations without modifying the upstream template files."""
+    validate_language(language)
+    language = MODEL_PROMPT_LANGUAGE
+    template = load_prompt('brick_decomposition.prompt', language)
+    if not (use_temporal and use_aggregation):
+        # Mixed temporal/operation examples are excluded from ablated prompts:
+        # merely appending a disabling instruction would still expose them.
+        prefix, output = template.split('# Output Format', 1)
+        schema = output.split('```json', 1)[1].split('```', 1)[0]
+        if not use_temporal:
+            prefix = '\n'.join(line for line in prefix.splitlines()
+                               if '**Temporal Constraints**' not in line and '**Extract Temporal**' not in line)
+            schema = re.sub(r'  "temporal": \{.*?\n  \},\n', '', schema, flags=re.S)
+        if not use_aggregation:
+            prefix = '\n'.join(line for line in prefix.splitlines()
+                               if '**Aggregations**' not in line and '**Extract Aggregations**' not in line)
+            schema = re.sub(r'  "aggregation": \{.*?\n  \},\n', '', schema, flags=re.S)
+        # Keep the original active instructions, domain mappings and schema.
+        number = 0
+        def renumber(match):
+            nonlocal number
+            number += 1
+            return f'{number}. '
+        prefix = re.sub(r'^\d+\.\s+', renumber, prefix, flags=re.M)
+        if language == 'zh' and not use_aggregation:
+            prefix = prefix.replace('sensor_id、type、operations', 'sensor_id')
+        template = (prefix.rstrip() + '\n\n# Output Format\n'
+                    'Return a JSON object with the following structure:\n\n```json'
+                    + schema + '```\n\n' + '# Input' + template.rsplit('# Input', 1)[1])
+    prompt = template.replace('{{ question }}', question)
+    if context:
+        prompt += '\nGraph context: ' + context
+    return prompt
+
+
 def build_controller_prompt(agent, state):
-    en = agent.language == 'en'
+    en = True  # Interface language never changes model input.
     text = lambda zh, english: english if en else zh
     context = ''
     if agent.schema_description:
@@ -51,20 +105,23 @@ def build_controller_prompt(agent, state):
         usage = text('用它来理解结构、实体、关系以及可用的传感器。',
                      'Use this to understand the structure, entities, relationships, and available sensors.')
         context += f'\n{title} (Turtle/TTL Format):\n------------------------------------\n{note}\n{usage}\n\n{agent.ttl_schema_content}\n------------------------------------\n\n'
-    using_guide = bool(state.decomposition and state.decomposition.temporal.has_constraint
+    using_guide = bool(agent.use_temporal_handler and state.decomposition and state.decomposition.temporal.has_constraint
                        and should_use_temporal_guide(state.decomposition))
     if using_guide:
         context += '\n' + (ROOT / 'prompts/brick_temporal_patterns.txt').read_text(encoding='utf-8') + '\n'
     if state.decomposition:
         d = state.decomposition
         note = text('\n  请参考上面的时序模式指南来生成正确的时序 SPARQL。',
-                    '\n  Follow the temporal patterns guide above to generate correct temporal SPARQL.') if d.temporal.has_constraint else ''
+                    '\n  Follow the temporal patterns guide above to generate correct temporal SPARQL.') if agent.use_temporal_handler and d.temporal.has_constraint else ''
         sensors = ', '.join(s.sensor_id for s in d.sensors)
         aggregation = ', '.join(d.aggregation.operations) if agent.use_aggregation and d.aggregation.required else 'None'
-        if en:
-            context += f'\nQuery Decomposition (use this to guide your actions):\n- Sensors needed ({d.sensor_count}): {sensors}\n- Temporal constraint: {d.temporal.type}{note}\n- Aggregation: {aggregation}\n- Intent: {d.query_intent}\n\n'
-        else:
-            context += f'\n查询分解（用于指导你的动作）：\n- 所需传感器（共 {d.sensor_count} 个）：{sensors}\n- 时间约束：{d.temporal.type}{note}\n- 聚合：{aggregation}\n- 意图：{d.query_intent}\n\n'
+        context += text(f'\n查询分解（用于指导你的动作）：\n- 所需传感器（共 {d.sensor_count} 个）：{sensors}',
+                        f'\nQuery Decomposition (use this to guide your actions):\n- Sensors needed ({d.sensor_count}): {sensors}')
+        if agent.use_temporal_handler:
+            context += text(f'\n- 时间约束：{d.temporal.type}{note}', f'\n- Temporal constraint: {d.temporal.type}{note}')
+        if agent.use_aggregation:
+            context += text(f'\n- 聚合：{aggregation}', f'\n- Aggregation: {aggregation}')
+        context += text(f'\n- 意图：{d.query_intent}\n\n', f'\n- Intent: {d.query_intent}\n\n')
     template = load_prompt('brick_controller.prompt', agent.language)
     # This runner has no conversation history. Render that optional block empty,
     # rather than sending unexpanded template markers to the model.
@@ -78,16 +135,6 @@ def build_controller_prompt(agent, state):
                     '{% for i in range(0, conversation_history|length) %}': ''}
     for marker, value in replacements.items():
         prompt = prompt.replace(marker, value)
-    # Runtime adaptation for the loaded graph; these additions are explicitly
-    # distinct from the unchanged upstream English template.
-    from brick_utils import graph_prefixes
-    prompt += text('\n当前图谱命名空间（以此为准）：\n', '\nNamespaces in the loaded graph (authoritative):\n') + graph_prefixes()
-    prompt += text(f'\n可用时序范围：{agent.dataset_date_range}。相对时间以已加载数据的最新时间为基准。',
-                   f'\nAvailable timeseries range: {agent.dataset_date_range}. Resolve relative time against the latest timestamp in the loaded data.')
-    prompt += text('\n只输出简短的动作目的和一个动作。stop() 将最后生成的 SPARQL 标记为最终答案。',
-                   '\nWrite the brief action purpose in English, followed by one action. Keep RDF values, URIs and query literals unchanged. stop() marks the last generated SPARQL query as the final answer.')
-    prompt += text('\nBrick 类的别名通过 owl:equivalentClass 关联，如 AHU 与 Air_Handling_Unit。类型路径可使用 rdf:type/(rdfs:subClassOf|owl:equivalentClass)*；必须先确认实际建筑类型和路径。',
-                   '\nBrick class aliases use owl:equivalentClass, e.g. AHU and Air_Handling_Unit. Type paths may use rdf:type/(rdfs:subClassOf|owl:equivalentClass)*; verify actual building types and paths first.')
     return prompt, using_guide
 
 

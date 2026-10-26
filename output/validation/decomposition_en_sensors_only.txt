@@ -1,0 +1,58 @@
+# Instruction
+Your task is to decompose a natural language question about building sensor data into structured components. This decomposition will be used to generate a SPARQL query for the Brick Schema.
+
+Analyze the user question and extract:
+
+1. **Sensors**: Identify all sensors, setpoints, and equipment mentioned. Map to Brick classes.
+2. **Query Intent**: Briefly describe the goal.
+
+**Rules:**
+* **Be Building-Agnostic**: Do NOT use specific instance IDs (like `FCU_01`) unless explicitly named in the input.
+* **Use Brick Classes**: Always map terms to the ontology class (e.g., use `brick:Air_Handling_Unit`, not just "AHU").
+* **Infer Implicit Entities**: If the user asks "is the room too hot?", infer they need both `brick:Zone_Air_Temperature_Sensor` and `brick:Zone_Air_Temperature_Setpoint`.
+
+# Domain Knowledge: Brick Class Mappings
+Use this table to map common natural language terms to Brick classes.
+
+**1. Sensors & Setpoints**
+* "Room/Zone Temperature" -> `brick:Zone_Air_Temperature_Sensor`
+* "Room Setpoint" -> `brick:Zone_Air_Temperature_Setpoint`
+* "Supply/Discharge Air Temp" -> `brick:Discharge_Air_Temperature_Sensor`
+* "Return Air Temp" -> `brick:Return_Air_Temperature_Sensor`
+* "Outdoor/Outside Temp" -> `brick:Outside_Air_Temperature_Sensor`
+* "CO2" / "Air Quality" -> `brick:CO2_Sensor`
+* "Occupancy" -> `brick:Occupancy_Sensor`
+
+**2. Equipment**
+* "AHU" / "Air Handler" -> `brick:Air_Handling_Unit`
+* "VAV" / "Box" -> `brick:VAV`
+* "FCU" / "Fan Coil" -> `brick:FCU`
+* "Meter" -> `brick:Building_Electrical_Meter`
+
+**3. Commands vs. Sensors**
+* **Sensor**: "Reading", "Measurement", "Value" (e.g., `brick:Damper_Position_Sensor`).
+* **Command**: "Setting", "Signal", "Output" (e.g., `brick:Damper_Position_Command`).
+
+# Output Format
+Return a JSON object with the following structure:
+
+```json
+{
+  "sensors": [
+    {
+      "mention": "original text from question",
+      "sensor_id": "brick:ClassName",
+      "description": "what this sensor measures"
+    }
+  ],
+  "sensor_count": <number>,
+  "query_intent": "brief description of the goal"
+}
+```
+
+# Input
+User Question: List sensors
+
+# Output
+Return only the JSON object, no additional text.
+Graph context: Namespaces: urn:test:

@@ -23,6 +23,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, SecretStr
+from prompting import MODEL_PROMPT_LANGUAGE, LANGUAGE_POLICY
+from evaluation_methods import evaluation_agent, method_metadata
 from model_settings import get_registry
 from typing import Literal as Choice
 from uuid import uuid4
@@ -46,7 +48,12 @@ class AskRequest(BaseModel):
     question: str = Field(min_length=1, max_length=4000)
     context: Choice[0, 100, 5000] = 0
     context_ttl: Optional[str] = None
-    language: Choice['zh', 'en'] = 'zh'
+    interface_language: Choice['zh', 'en'] = 'zh'
+    language: Optional[Choice['zh', 'en']] = None  # Legacy display-only alias.
+    prompt_language: Choice['en'] = 'en'
+
+    def display_language(self):
+        return self.interface_language if 'interface_language' in self.model_fields_set else (self.language or self.interface_language)
 
 class LoadRequest(BaseModel):
     model_config = {'extra':'forbid'}
@@ -66,8 +73,15 @@ class EvalRequest(BaseModel):
     benchmark: str = 'benchmark_sample.jsonl'
     context: Choice[0, 100, 5000] = 0
     context_ttl: Optional[str] = None
-    language: Choice['zh', 'en'] = 'en'
+    interface_language: Choice['zh', 'en'] = 'en'
+    language: Optional[Choice['zh', 'en']] = None  # Legacy display-only alias.
+    prompt_language: Choice['en'] = 'en'
     workers: int = Field(default=3, ge=1, le=8, strict=True)
+    method: Choice['brickqa', 'react'] = 'brickqa'
+    react_backend: Choice['rdflib', 'graphdb'] = 'graphdb'
+
+    def display_language(self):
+        return self.interface_language if 'interface_language' in self.model_fields_set else (self.language or self.interface_language)
 
 
 class ModelSelectionRequest(BaseModel):
@@ -229,6 +243,7 @@ def _serialize_state(state, status, error=None):
         "status": status,
         "question": state.question,
         "model_configuration": state.model_configuration, "response_models":state.response_models,
+        "decomposition_policy": state.decomposition_policy,
         "actions": actions,
         "decomposition": _serialize_decomposition(state.decomposition),
         "generated_sparqls": gens,
@@ -237,6 +252,8 @@ def _serialize_state(state, status, error=None):
         "error": error,
         "phase": state.phase, "mode": state.mode, "warnings": state.warnings,
         "language": state.language,
+        "prompt_language": state.language, "interface_language": state.interface_language,
+        "language_policy": LANGUAGE_POLICY,
         "implementation_mode": state.implementation_mode,
         "stop_reason": state.stop_reason,
     }
@@ -299,8 +316,8 @@ def _do_load(ttl, description=None, csv_file=None, start_date=None, end_date=Non
 @app.get('/api/examples')
 def examples(language: Choice['zh', 'en'] = 'zh'):
     en = language == 'en'
-    questions = (['What temperature sensors are in the building?', 'List all equipment', 'How many sensors are in the building?']
-                 if en else ['楼里有哪些温度传感器？', '有哪些设备？', '有多少传感器？'])
+    model_questions = ['What temperature sensors are in the building?', 'List all equipment', 'How many sensors are in the building?']
+    display_questions = ['楼里有哪些温度传感器？', '有哪些设备？', '有多少传感器？']
     if agent:
         source = BrickGraph().source_graph
         for cls in ('AHU', 'VAV', 'FCU', 'Air_Handling_Unit'):
@@ -308,15 +325,16 @@ def examples(language: Choice['zh', 'en'] = 'zh'):
                                  if local_name(t) == cls and isinstance(s, URIRef)}, key=str)
             if candidates:
                 identifier = local_name(candidates[0])
-                questions.append(f'What points are associated with {identifier}?' if en else f'{identifier}关联了哪些测点？')
+                model_questions.append(f'What points are associated with {identifier}?')
+                display_questions.append(f'{identifier}关联了哪些测点？')
                 break
     if graph_meta.get('timeseries', {}).get('rows'):
-        questions.extend(['What is the latest room temperature?', 'Find the maximum outdoor air temperature observed during the last 24 hours.']
-                         if en else ['室温最新值', '室外温度最近24小时的最大值'])
+        model_questions.extend(['What is the latest room temperature?', 'Find the maximum outdoor air temperature observed during the last 24 hours.'])
+        display_questions.extend(['室温最新值', '室外温度最近24小时的最大值'])
     else:
-        questions.extend(['List all HVAC zones', 'Which equipment has zone air temperature setpoints?']
-                         if en else ['有哪些HVAC区域？', '哪些设备带有区域空气温度设定值？'])
-    return {'questions': questions}
+        model_questions.extend(['List all HVAC zones', 'Which equipment has zone air temperature setpoints?'])
+        display_questions.extend(['有哪些HVAC区域？', '哪些设备带有区域空气温度设定值？'])
+    return {'questions': model_questions if en else display_questions, 'model_questions':model_questions}
 
 def _run_task(tid, question, runner):
     global _active_tid
@@ -368,10 +386,13 @@ def buildings():
 
 @app.get("/api/status")
 def status():
+    from llm_client import llm_timeout_seconds
     model = get_registry().current()
     active_eval = next((tid for tid, run in reversed(list(eval_tasks.items())) if run['status'] == 'running'), None)
     return {
         "evaluation_alignment": EVALUATION_ALIGNMENT,
+        "evaluation_methods": ['brickqa', 'react'],
+        "prompt_language": MODEL_PROMPT_LANGUAGE, "language_policy": LANGUAGE_POLICY,
         "evaluation_cancellation": True,
         "evaluation_concurrency": {"default": 3, "maximum": 8},
         "graph": graph_meta,
@@ -379,6 +400,7 @@ def status():
         "active_task_id": _active_tid, "evaluating": _eval_running, "loading": _loading,
         "active_eval_task_id": active_eval,
         "llm_ready": bool(model.api_key),
+        "model_timeout_seconds": llm_timeout_seconds(),
         "model": model.model, "model_profile":model.profile_id, "model_provider":model.provider,
         "base_url": model.base_url,
     }
@@ -459,7 +481,7 @@ def ask(req: AskRequest):
         tid = 't' + uuid4().hex
         runner = agent
         context_snapshot = _prepare_ttl_context(req)
-        runner.language = req.language
+        runner.interface_language = req.display_language()
         if context_snapshot is not None:
             runner.ttl_schema_content = context_snapshot['content']
         else:
@@ -469,7 +491,8 @@ def ask(req: AskRequest):
         while len(tasks) >= 100:
             tasks.pop(next(iter(tasks)))
         tasks[tid] = {"status": "running", "question": question, "state": None,
-                      "final": None, "error": None, "runner": runner, "mode": "paper", "language": req.language,
+                      "final": None, "error": None, "runner": runner, "mode": "paper", "language": MODEL_PROMPT_LANGUAGE,
+                      "prompt_language": MODEL_PROMPT_LANGUAGE, "interface_language": req.display_language(),
                       "start": datetime.now().isoformat(), "started_at": time.monotonic(),
                       "graph": dict(graph_meta)}
         tasks[tid]['implementation_mode'] = runner.implementation_mode
@@ -489,6 +512,8 @@ def task(tid: str):
         state = getattr(info['runner'], '_current_state', None)
     data = _serialize_state(state, info['status'], info.get('error'))
     data.update(question=info['question'], task_id=tid, graph=info['graph'], language=info.get('language', 'zh'),
+                prompt_language=info.get('prompt_language', info.get('language', 'zh')),
+                interface_language=info.get('interface_language'),
                 context_ttl=info.get('context_ttl'),
                 implementation_mode=info.get('implementation_mode', 'legacy'),
                 elapsed_seconds=info.get('elapsed_seconds', round(time.monotonic() - info['started_at'], 2)))
@@ -668,13 +693,14 @@ def _validate_benchmark_graph(items):
         raise ValueError('基准与当前建筑不匹配，请先加载对应完整图谱：' + names)
 
 
-def _run_eval(tid, bench_path, context=0, language='en', context_snapshot=None, workers=1):
+def _run_eval(tid, bench_path, context=0, language='en', context_snapshot=None, workers=1, react_backend='graphdb', method='brickqa'):
     from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
     from sparql_worker import isolated_query_session
-    from llm_client import close_thread_client
+    from llm_client import close_thread_client, llm_timeout_seconds
     global _eval_running
     a = agent
-    previous = (a.use_temporal_handler, a.use_aggregation, a.ttl_schema_content, a.language, a.cancel_event)
+    baseline = a
+    previous = (a.use_temporal_handler, a.use_aggregation, a.ttl_schema_content, a.interface_language, a.cancel_event, a.schema_description)
     completed, interrupted, active = {}, {}, {}
     target = BASE_DIR / 'output' / 'evaluations' / tid / 'report.json'
     run = eval_tasks[tid]
@@ -693,7 +719,7 @@ def _run_eval(tid, bench_path, context=0, language='en', context_snapshot=None, 
         run['active_questions'] = [dict(active[i]) for i in sorted(active)]
         run['current'] = run['active_questions'][0] if active else None
     def evaluate(index, item):
-        question_agent = a.fork_evaluation() if workers > 1 else a
+        question_agent = baseline.fork_evaluation() if workers > 1 else baseline
         question_agent.cancel_event = threading.Event()
         question_agent._current_state = None
         with _lock:
@@ -707,6 +733,7 @@ def _run_eval(tid, bench_path, context=0, language='en', context_snapshot=None, 
         def progress(stage):
             with _lock:
                 active[index]['stage'] = stage
+                active[index]['stage_started_at'] = time.time()
                 update_active()
                 save()
         try:
@@ -727,30 +754,45 @@ def _run_eval(tid, bench_path, context=0, language='en', context_snapshot=None, 
     try:
         if not 1 <= workers <= 8:
             raise ValueError('Evaluation workers must be between 1 and 8')
+        selected_method = method_metadata(method, a.brick_graph)
         run.update(run_id=tid, metric_protocol=METRIC_PROTOCOL, report_path=str(target))
         run['metric_reference'] = metric_reference()
         timeout = evaluation_timeout(EVAL_PER_QUESTION_TIMEOUT)
-        run['configuration'] = {'language': language, 'context': context, 'mode': 'paper',
+        run['configuration'] = {'language': MODEL_PROMPT_LANGUAGE, 'prompt_language': MODEL_PROMPT_LANGUAGE,
+                                'interface_language': language, 'language_policy': LANGUAGE_POLICY, 'context': context, 'mode': 'react' if method == 'react' else 'paper',
                                 'workers': workers, 'scheduling': 'bounded_thread_pool',
-                                'method_policy': policy_metadata(a.brick_graph),
+                                **selected_method,
                                 'implementation_mode': a.implementation_mode,
                                 'context_ttl': _context_metadata(context_snapshot),
                                 'context_mode': 'existing_ttl' if context_snapshot else ('sampled' if context else 'NoKG'),
-                                'model': os.getenv('LLM_MODEL', 'qwen-plus'),
+                                'model': get_registry().current().model,
                                 'model_configuration':get_registry().current().public(),
+                                'model_timeout_seconds':llm_timeout_seconds(),
                                 'benchmark': str(bench_path), 'graph': dict(graph_meta),
                                 'temporal': False, 'operations': False, 'timeout': timeout}
         items = _read_benchmark(bench_path)
         _validate_benchmark_graph(items)
         a.use_temporal_handler = False
         a.use_aggregation = False
-        a.language = language
+        # Standard benchmark varies only the frozen TTL context; exclude the UI guide.
+        a.schema_description = None
+        run['configuration']['schema_description_in_prompt'] = False
+        from prompting import decomposition_policy
+        run['configuration']['experiment'] = 'buildingqa'
+        run['configuration']['decomposition_policy'] = decomposition_policy(a)
+        a.interface_language = language
         if context_snapshot is not None:
             a.ttl_schema_content = context_snapshot['content']
             target.parent.mkdir(parents=True, exist_ok=True)
             (target.parent / 'context.ttl').write_bytes(context_snapshot['raw'])
         else:
             a.set_schema_context(context)
+        baseline = evaluation_agent(a, method, backend=react_backend, building=graph_meta.get('building'))
+        run['configuration'].update(method_metadata(method, a.brick_graph, getattr(baseline, 'baseline_reference', None)))
+        if method == 'react':
+            run['configuration']['react_backend'] = react_backend
+        run['configuration']['implementation_mode'] = baseline.implementation_mode
+        run['configuration']['decomposition_policy'] = decomposition_policy(baseline)
         run['summary'] = summarize_results([], total=len(items))
         save()
         pool = ThreadPoolExecutor(max_workers=workers, thread_name_prefix='brickqa-eval')
@@ -788,7 +830,7 @@ def _run_eval(tid, bench_path, context=0, language='en', context_snapshot=None, 
     finally:
         if pool is not None:
             pool.shutdown(wait=True, cancel_futures=True)
-        a.use_temporal_handler, a.use_aggregation, a.ttl_schema_content, a.language, a.cancel_event = previous
+        a.use_temporal_handler, a.use_aggregation, a.ttl_schema_content, a.interface_language, a.cancel_event, a.schema_description = previous
         try:
             save()
         except Exception as exc:
@@ -894,10 +936,23 @@ def sparql(req: SparqlRequest):
 @app.get("/api/benchmarks")
 def benchmarks():
     files = set()
+    loaded_ttl = graph_meta.get('ttl')
+    if not loaded_ttl:
+        return {"benchmarks": [], "building": None, "ttl": None}
+    loaded = Path(loaded_ttl).resolve()
     for d in (BASE_DIR, PROMPTS_DIR, BASE_DIR / 'benchmarks'):
         for p in sorted(d.glob("*.jsonl")):
-            files.add(str(p.relative_to(BASE_DIR)).replace('\\', '/'))
-    return {"benchmarks": sorted(files)}
+            try:
+                items = _read_benchmark(p)
+                # Match the actual loaded file, not a partial filename such as
+                # bldg1/bldg11, and exclude mixed or unspecified building sets.
+                if all(item.get('ttl') for item in items) and {
+                    (BASE_DIR / item['ttl']).resolve() for item in items
+                } == {loaded}:
+                    files.add(str(p.relative_to(BASE_DIR)).replace('\\', '/'))
+            except (ValueError, OSError, TypeError):
+                continue
+    return {"benchmarks": sorted(files), "building": graph_meta.get('building'), "ttl": str(loaded)}
 
 
 @app.post("/api/evaluate")
@@ -920,8 +975,20 @@ def start_eval(req: EvalRequest):
     try:
         items = _read_benchmark(path)
         _validate_benchmark_graph(items)
+        if req.method == 'react' and req.react_backend == 'graphdb':
+            from react_graphdb import endpoint_for
+            endpoint_for(graph_meta.get('building'))
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if req.method == 'react' and req.react_backend == 'graphdb':
+        from react_graphdb import check_repository
+        try:
+            check_repository(endpoint_for(graph_meta.get('building')))
+        except Exception as exc:
+            message = ('GraphDB 仓库不可用，请启动 GraphDB 并确认仓库地址；评测尚未启动。'
+                       if req.display_language() == 'zh' else
+                       'GraphDB repository is unavailable. Start GraphDB and verify the endpoint; evaluation has not started.')
+            raise HTTPException(status_code=503, detail=f'{message}\n{exc}') from exc
     tid = "e" + uuid4().hex
     eval_tasks[tid] = {
         "status": "running",
@@ -939,8 +1006,9 @@ def start_eval(req: EvalRequest):
             raise
         _eval_running = True
         _eval_cancel_events[tid] = threading.Event()
-    threading.Thread(target=_run_eval, args=(tid, path, req.context, req.language, context_snapshot, req.workers), daemon=True).start()
-    return {"task_id": tid}
+    threading.Thread(target=_run_eval, args=(tid, path, req.context, req.display_language(), context_snapshot, req.workers, req.react_backend, req.method), daemon=True).start()
+    return {"task_id": tid, "method":req.method,
+            "react_backend":req.react_backend if req.method == 'react' else None}
 
 
 @app.post('/api/eval_task/{tid}/cancel')
@@ -989,9 +1057,10 @@ def eval_task(tid: str):
                 currents = [result['current']] if result.get('current') else []
             for current in currents:
                 current['elapsed_seconds'] = round(time.time() - current['started_at'], 1)
+                current['stage_elapsed_seconds'] = round(time.time() - current.get('stage_started_at', current['started_at']), 1)
                 runner = _eval_agents.get(tid, {}).get(current['index'] - 1)
                 state = getattr(runner, '_current_state', None)
-                if current.get('stage') == 'model' and state:
+                if current.get('stage') in ('model', 'scoring') and state:
                     current.update(phase=state.phase, steps=len(state.actions), tokens=state.total_tokens)
             result['active_questions'] = currents
             result['current'] = currents[0] if currents else None

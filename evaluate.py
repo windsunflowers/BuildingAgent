@@ -17,6 +17,10 @@ from evaluation_metrics import METRIC_KEYS, METRIC_PROTOCOL, metric_reference, s
 from evaluation_runner import evaluate_question
 from implementation_policy import evaluation_timeout, evaluation_policy
 from model_settings import get_registry
+from prompting import decomposition_policy, MODEL_PROMPT_LANGUAGE, LANGUAGE_POLICY
+from evaluation_methods import evaluation_agent, method_metadata
+from react_reference import reference as react_reference
+from llm_client import llm_timeout_seconds
 
 
 def evaluate_item(item, args):
@@ -34,16 +38,20 @@ def evaluate_item(item, args):
     agent = BrickAgent(use_temporal_handler=False, use_aggregation=False, language=args.language)
     agent._extract_date_metadata()
     agent.set_schema_context(args.context)
+    agent = evaluation_agent(agent, args.method, backend=getattr(args, 'react_backend', 'graphdb'), building=ttl)
     return evaluate_question(agent, item, timeout=args.timeout)
 
 
 def main():
     ap = argparse.ArgumentParser(description='BrickQA official BuildingQA evaluation')
     ap.add_argument('--benchmark', default='benchmark_sample.jsonl')
+    ap.add_argument('--method', choices=('brickqa', 'react'), default='brickqa', help='Independent benchmark baseline')
+    ap.add_argument('--react-backend', choices=('rdflib', 'graphdb'), default='graphdb',
+                    help='Explicit ReAct executor; GraphDB uses the configured repository for each building')
     ap.add_argument('--ttl', default=None)
     ap.add_argument('--only', default=None, help='Comma-separated question indices')
     ap.add_argument('--report', default=None, help='JSON report path; defaults to a new run directory')
-    ap.add_argument('--language', choices=('zh', 'en'), default='en', help='Agent prompt language')
+    ap.add_argument('--language', choices=('zh', 'en'), default='en', help='Display language only; model prompts always use upstream English')
     ap.add_argument('--context', type=int, choices=(0, 100, 5000), default=0,
                     help='Initial model context only; the execution graph remains complete')
     ap.add_argument('--timeout', type=float, default=None, help='Optional whole-question deadline; defaults to none; 0 disables it')
@@ -62,9 +70,16 @@ def main():
     target.parent.mkdir(parents=True, exist_ok=True)
     report = {'run_id': run_id, 'metric_protocol': METRIC_PROTOCOL,
               'metric_reference': metric_reference(),
-              'configuration': {'implementation_mode': 'upstream', 'evaluation_policy':evaluation_policy(), 'upstream_commit': '49d9e283c2a3958e9be110583be6575cbd40039b', 'language': args.language, 'context': args.context, 'mode': 'paper',
+              'configuration': {'implementation_mode': 'upstream', 'evaluation_policy':evaluation_policy(), 'upstream_commit': '49d9e283c2a3958e9be110583be6575cbd40039b', 'language': MODEL_PROMPT_LANGUAGE, 'prompt_language': MODEL_PROMPT_LANGUAGE,
+                                **method_metadata(args.method, baseline=(react_reference(args.react_backend)
+                                                                        if args.method == 'react' else None)),
+                                'react_backend':args.react_backend if args.method == 'react' else None,
+                                'interface_language':args.language, 'language_policy':LANGUAGE_POLICY, 'context': args.context, 'mode': 'react' if args.method == 'react' else 'paper',
+                                'experiment': 'buildingqa',
+                                'decomposition_policy': decomposition_policy(use_decomposer=args.method == 'brickqa', use_temporal_handler=False, use_aggregation=False),
                                 'model': get_registry().current().model, 'benchmark': args.benchmark,
                                 'model_configuration':get_registry().current().public(),
+                                'model_timeout_seconds':llm_timeout_seconds(),
                                 'temporal': False, 'operations': False, 'timeout': args.timeout,
                                 'workers': args.workers, 'scheduling': 'isolated_process_pool'},
               'results': []}

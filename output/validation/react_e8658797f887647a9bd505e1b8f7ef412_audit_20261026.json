@@ -1,0 +1,338 @@
+{
+  "kind": "offline_author_workflow_replay_not_model_rerun",
+  "report": "output\\evaluations\\e8658797f887647a9bd505e1b8f7ef412\\report.json",
+  "report_sha256": "45b6ab817136a1d66f2236104f89b35b3e0af21c76468db8ed302370d56faba1",
+  "verified_questions": 36,
+  "total": 36,
+  "verified_calls": 168,
+  "actual_backend": "rdflib",
+  "actual_model": "qwen-plus-2025-12-01",
+  "feedback_adaptation": "upstream_rdflib_row_count_only_v1",
+  "paper_environment_verified": false,
+  "results": [
+    {
+      "question_index": 1,
+      "query_id": "DFLEXLIBS_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 2,
+      "query_id": "DFLEXLIBS_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 3,
+      "query_id": "DFLEXLIBS_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 4,
+      "query_id": "DFLEXLIBS_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 5,
+      "query_id": "DFLEXLIBS_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 6,
+      "query_id": "DFLEXLIBS_001",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 7,
+      "query_id": "DFLEXLIBS_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 8,
+      "query_id": "DFLEXLIBS_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 9,
+      "query_id": "DFLEXLIBS_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 10,
+      "query_id": "DFLEXLIBS_002",
+      "verified_calls": 4,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 11,
+      "query_id": "DFLEXLIBS_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 12,
+      "query_id": "DFLEXLIBS_002",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 13,
+      "query_id": "DFLEXLIBS_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 14,
+      "query_id": "DFLEXLIBS_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 15,
+      "query_id": "DFLEXLIBS_003",
+      "verified_calls": 4,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 16,
+      "query_id": "DFLEXLIBS_003",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 17,
+      "query_id": "DFLEXLIBS_003",
+      "verified_calls": 4,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 18,
+      "query_id": "DFLEXLIBS_003",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 19,
+      "query_id": "DFLEXLIBS_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 20,
+      "query_id": "DFLEXLIBS_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 21,
+      "query_id": "DFLEXLIBS_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 22,
+      "query_id": "DFLEXLIBS_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 23,
+      "query_id": "DFLEXLIBS_004",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 24,
+      "query_id": "DFLEXLIBS_004",
+      "verified_calls": 4,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 25,
+      "query_id": "DFLEXLIBS_005",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 26,
+      "query_id": "DFLEXLIBS_005",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 27,
+      "query_id": "DFLEXLIBS_005",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 28,
+      "query_id": "DFLEXLIBS_005",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 29,
+      "query_id": "DFLEXLIBS_005",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 30,
+      "query_id": "DFLEXLIBS_005",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 31,
+      "query_id": "DFLEXLIBS_006",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 32,
+      "query_id": "DFLEXLIBS_006",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 33,
+      "query_id": "DFLEXLIBS_006",
+      "verified_calls": 6,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 34,
+      "query_id": "DFLEXLIBS_006",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 35,
+      "query_id": "DFLEXLIBS_006",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    },
+    {
+      "question_index": 36,
+      "query_id": "DFLEXLIBS_006",
+      "verified_calls": 2,
+      "messages_match": true,
+      "final_query_matches": true,
+      "stop_reason_matches": true,
+      "official_scores_match": true
+    }
+  ]
+}

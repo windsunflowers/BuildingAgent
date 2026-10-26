@@ -10,11 +10,11 @@ Configuration via environment variables:
                     (default: https://dashscope.aliyuncs.com/compatible-mode/v1)
     LLM_API_KEY   - API key (required for hosted APIs; any non-empty
                     string works for local Ollama/vLLM)
-    LLM_MODEL     - Model name (default: qwen-plus)
+    LLM_MODEL     - Model name (default: qwen-plus-2025-12-01)
 
 Examples:
     DashScope : LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-                LLM_MODEL=qwen-plus | qwen-turbo | qwen-max | qwen-flash
+                LLM_MODEL=qwen-plus-2025-12-01
     aihubmix  : LLM_BASE_URL=https://aihubmix.com/v1
                 LLM_MODEL=qwen-plus (or any available model)
     Ollama    : LLM_BASE_URL=http://localhost:11434/v1
@@ -22,6 +22,7 @@ Examples:
 """
 
 import os
+import math
 import time
 import threading
 from urllib.parse import urlsplit
@@ -33,7 +34,19 @@ except ImportError:
     OPENAI_SDK_AVAILABLE = False
 
 DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-DEFAULT_MODEL = "qwen-plus"
+DEFAULT_MODEL = "qwen-plus-2025-12-01"
+DEFAULT_LLM_TIMEOUT = 300.0
+
+
+def llm_timeout_seconds():
+    """Shared request timeout for clients and experiment metadata."""
+    try:
+        value = float(os.getenv('LLM_TIMEOUT', str(DEFAULT_LLM_TIMEOUT)))
+    except ValueError as exc:
+        raise ValueError('LLM_TIMEOUT must be a positive finite number of seconds') from exc
+    if not math.isfinite(value) or value <= 0:
+        raise ValueError('LLM_TIMEOUT must be a positive finite number of seconds')
+    return value
 
 
 def _network_access_denied(error: Exception) -> bool:
@@ -74,35 +87,45 @@ class LLMClient:
             )
 
         # Bound every request so a stalled upstream cannot block forever.
-        # Default: 30s per attempt and two attempts. The eval harness adds
-        # its own per-question wall-clock guard on top.
+        # Allow long prompts/generation to finish. Explicit whole-question
+        # deadlines are configured separately by the evaluation runner.
+        self.timeout_seconds = llm_timeout_seconds()
         self.client = OpenAI(base_url=self.base_url, api_key=self.api_key,
-                             timeout=float(os.getenv("LLM_TIMEOUT", "30")), max_retries=0)
+                             timeout=self.timeout_seconds, max_retries=0)
 
         # Token usage of the most recent call (dict), None before first call
         self.last_usage = None
         self.last_response_model = None
 
-    def generate_text(self, prompt: str, temperature: float = 0.0,
-                      max_retries: int = 2, max_tokens: int = 2048, cancel_event=None) -> str:
-        """Send one user prompt, return the assistant text.
+    def generate_text(self, prompt: str, temperature: float = None,
+                      max_retries: int = 2, max_tokens: int = None, cancel_event=None) -> str:
+        return self.generate_messages([{'role':'user', 'content':prompt}], temperature=temperature,
+                                     max_retries=max_retries, max_tokens=max_tokens, cancel_event=cancel_event)
+
+    def generate_messages(self, messages, temperature=0.0, max_retries=1, max_tokens=None,
+                          response_format=None, cancel_event=None, sdk_max_retries=None):
+        """Send role-preserving messages, return the assistant content.
 
         Retries with exponential backoff on failure.
         Updates self.last_usage with token counts when available.
         """
         self.last_usage = None
         self.last_response_model = None
+        sdk_client = (self.client if sdk_max_retries is None else
+                      self.client.with_options(max_retries=sdk_max_retries))
         last_err = None
         for attempt in range(1, max_retries + 1):
             if cancel_event is not None and cancel_event.is_set():
                 raise RuntimeError("查询已取消")
             try:
-                resp = self.client.chat.completions.create(
-                    model=self.model,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
+                request = {'model':self.model, 'messages':messages}
+                if temperature is not None:
+                    request['temperature'] = temperature
+                if max_tokens is not None:
+                    request['max_tokens'] = max_tokens
+                if response_format is not None:
+                    request['response_format'] = response_format
+                resp = sdk_client.chat.completions.create(**request)
                 # Record token usage if provided by the backend
                 self.last_response_model = getattr(resp, 'model', None) or self.model
                 usage = getattr(resp, "usage", None)
@@ -146,7 +169,7 @@ class LLMClient:
         host = urlsplit(self.base_url).hostname or "已配置的模型服务"
         if isinstance(last_err, APITimeoutError):
             raise RuntimeError(
-                f"模型服务请求超时（{host}，已尝试 {max_retries} 次）。"
+                f"模型服务请求超时（{host}，网络等待上限 {getattr(self, 'timeout_seconds', llm_timeout_seconds()):g} 秒，已尝试 {max_retries} 次）。"
                 "请检查网络或稍后重试；必要时调整 LLM_TIMEOUT。"
             ) from last_err
         if isinstance(last_err, APIConnectionError):

@@ -1,5 +1,5 @@
 import threading
-from prompting import build_controller_prompt, validate_language, feedback
+from prompting import build_controller_prompt, validate_language, feedback, MODEL_PROMPT_LANGUAGE
 """
 Brick Agent
 An iterative framework for converting natural language questions to Brick SPARQL queries.
@@ -101,11 +101,20 @@ class BrickSparqlQuery:
     diagnostic_warnings: List[str] = field(default_factory=list)
     error: Optional[str] = None
 
+    bindings: List[Dict] = field(default_factory=list)
+    execution_variables: List[str] = field(default_factory=list)
+
     def execute(self, isolated=True):
         """Execute the SPARQL query"""
         timeout = evaluation_policy()['sparql_timeout_seconds']
-        data, self.execution_status, self.error = query_graph(self.sparql, isolated=isolated, timeout=timeout)
+        from third_party.brickqa_upstream.brick_utils import BRICK_PREFIXES
+        # Author executor only prepends its fixed defaults when no PREFIX occurs.
+        query = self.sparql if 'PREFIX' in self.sparql.upper() else BRICK_PREFIXES + self.sparql
+        data, self.execution_status, self.error = query_graph(
+            query, isolated=isolated, timeout=timeout, include_bindings=True, prepare_prefixes=False)
         self.execution_result = data['rows'] if data else []
+        self.bindings = data.get('bindings', []) if data else []
+        self.execution_variables = list(data['vars']) if data else []
 
     def has_results(self) -> bool:
         """Check if query returned results"""
@@ -146,13 +155,15 @@ class AgentState:
     total_tokens: int = 0
     cooldown_seconds: float = 0
     mode: str = "paper"
-    language: str = "zh"
+    language: str = "en"
     implementation_mode: str = 'upstream'
     phase: str = "准备查询"
     warnings: List[str] = field(default_factory=list)
     stop_reason: Optional[str] = None
     model_configuration: dict = field(default_factory=dict)
     response_models: List[str] = field(default_factory=list)
+    decomposition_policy: dict = field(default_factory=dict)
+    interface_language: str = 'zh'
 
     def get_action_history(self, last_n: int = 10, include_observation: bool = True) -> str:
         """Get formatted action history for context"""
@@ -187,6 +198,15 @@ class BrickAgent:
     Main agent class that implements the iterative approach for Brick SPARQL generation.
     """
 
+    @property
+    def language(self):
+        """Actual model language is fixed; legacy assignments set display only."""
+        return MODEL_PROMPT_LANGUAGE
+
+    @language.setter
+    def language(self, value):
+        self.interface_language = validate_language(value)
+
     def __init__(self, engine: str = "gemini-flash", use_decomposer: bool = True, use_temporal_handler: bool = True, use_aggregation: bool = True, use_fewshot: bool = False, ttl_schema_file: str = None, schema_description_file: str = None, result_limit: int = None, language: str = "zh"):
         """
         Initialize the agent.
@@ -200,6 +220,7 @@ class BrickAgent:
             ttl_schema_file: Path to .ttl schema file to include in prompt (optional)
             schema_description_file: Path to schema description .txt file (optional)
             result_limit: Limit results during query iterations (None = no limit)
+            language: Display preference only; model prompts always use upstream English.
         """
         self.engine = engine
         self.language = validate_language(language)
@@ -449,14 +470,14 @@ class BrickAgent:
             else:
                 # No explicit thought - check if output starts with Action directly
                 if cleaned_output.strip().startswith('Action:'):
-                    thought = "继续执行动作"
+                    thought = "Continue with the next action"
                 else:
                     # Try to extract any text before "Action:" as implicit thought
                     action_pos = cleaned_output.find('Action:')
                     if action_pos > 0:
                         thought = cleaned_output[:action_pos].strip()
                         if not thought:
-                            thought = "继续执行动作"
+                            thought = "Continue with the next action"
                     else:
                         raise ValueError(f"Could not find Thought or Action in output: {controller_output[:200]}...")
             # Try to extract action name and argument
@@ -534,9 +555,8 @@ class BrickAgent:
             raise
 
     def _validate_and_fix_sparql(self, sparql: str) -> str:
-        # Repair namespace/format only. ORDER BY does not imply LIMIT 1,
-        # and timezone offsets must retain their original meaning.
-        return prepare_query(sparql)
+        from implementation_policy import author_query_preprocessor
+        return author_query_preprocessor()(self, sparql)
 
     def _extract_balanced_parens(self, text: str) -> Optional[str]:
         """
@@ -572,78 +592,6 @@ class BrickAgent:
             f.write(json.dumps(data, ensure_ascii=False) + "\n")
         print(f"📝 Logged to {filename}")
 
-    def _build_controller_prompt(self, context: Dict) -> str:
-        """Build the prompt for the controller LLM"""
-        # Build dataset context
-        dataset_context = ""
-        if self.dataset_year:
-            dataset_context = f"""
-重要 - 数据集信息：
-- 本数据集包含从 {self.dataset_date_range[0]} 到 {self.dataset_date_range[1]} 的数据
-- 如果提到的日期没有年份（例如 "November 15th"、"June 1st"），请假定年份为 {self.dataset_year}
-- 示例："November 15th at 2pm" 应解释为 "{self.dataset_year}-11-15T14:00:00Z"
-"""
-
-        prompt = f"""你的任务是编写 Brick SPARQL 查询来回答给定的问题。请遵循逐步推理过程：
-
-1. 先构建非常简单的 SPARQL 查询片段。
-2. 执行每个片段以验证其正确性，并根据观察结果进行调整。
-3. 在继续之前，先确认你对 Brick 模式结构的所有假设。
-4. 一次添加一小块，逐步构建完整的 SPARQL 查询。
-5. 不要重复相同的动作，否则结果会一样。
-6. 持续推理直到找到答案。
-{dataset_context}
-必需的 SPARQL 前缀与模式：
-------------------------------------
-所有 SPARQL 查询都必须以上述 PREFIX 声明开头：
-PREFIX brick: <https://brickschema.org/schema/Brick#>
-PREFIX bldg: <bldg-59#>
-PREFIX ref: <https://brickschema.org/schema/Brick/ref#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-
-Brick 模式结构：
-- 传感器位于 bldg: 命名空间（例如 bldg:RM_TEMP, bldg:FCU_OAT）
-- 传感器有观测值：?sensor ref:hasObservation ?obs
-- 观测值有时间戳：?obs ref:hasTimestamp ?timestamp
-- 观测值有数值：?obs ref:hasValue ?value
-- 时间戳为 xsd:dateTime 类型（格式："2018-12-28T14:00:00"^^xsd:dateTime）
-  关键：不要添加时区 'Z' 后缀。使用 "2018-12-28T14:00:00"，而非 "2018-12-28T14:00:00Z"
-
-请严格按如下格式输出，每次只输出一个 "Thought" 和一个 "Action"，然后等待 "Observation"：
-
-【格式要求，务必保留英文标签】
-Thought: （用中文写下你的推理过程）
-Action: 动作名(参数)
-
-重要：Thought 部分请用中文撰写推理思路；Action 标签、动作名称（如 execute_sparql、search_brick、stop）以及参数内容必须保持原样（英文/原格式）。
-
-CRITICAL: 你生成的每个 SPARQL 查询都必须以上述 PREFIX 声明开头，绝不能省略。
-
-可用动作：
-- search_brick(string): 搜索匹配字符串的 Brick 实体（传感器、设备）
-- get_brick_entity(entity_id): 获取某个 Brick 实体的所有属性与关系
-- get_property_examples(property_name): 查看某属性的使用示例
-- execute_sparql(SPARQL): 运行 SPARQL 查询并获取结果。注意：SPARQL 必须以 PREFIX 声明开头（见上方"必需的 SPARQL 前缀"）
-- stop(): 将上一条 SPARQL 查询标记为最终答案并结束
-"""
-
-        # Add few-shot examples if enabled
-        if self.fewshot_examples:
-            prompt += f"""
-Here are examples of Text-to-SPARQL conversions for reference:
-
-{self.fewshot_examples}
-
-"""
-
-        prompt += f"""用户问题：{context['question']}
-
-{context['action_history']}
-
-请输出一次 Thought 和一次 Action（遵循上面的格式要求）：
-"""
-        return prompt
-
     def execute_action(self, action: BrickAction) -> BrickAction:
         """
         Execute an action and populate its observation.
@@ -656,20 +604,18 @@ Here are examples of Text-to-SPARQL conversions for reference:
         """
         self._assert_graph()
         self.brick_graph.last_tool_diagnostic = None
-        # Only controlled purposes are localized. Model-authored text stays in
-        # the original trace; the UI can show an explicitly labelled summary.
-        if action.action_name in ('stop', 'error'):
-            action.thought = feedback(action.thought, self.language)
+        # Preserve model-authored text and tool output verbatim in history.
+        # All framework-owned feedback is English; localization belongs to the UI.
         try:
             if action.action_name == "search_brick":
                 results = search_brick(action.action_argument)
                 action.observation_raw = results
-                action.observation = format_search_results(results, language=self.language)
+                action.observation = format_search_results(results, language='en')
 
             elif action.action_name == "get_brick_entity":
                 entity_info = get_brick_entity(action.action_argument)
                 action.observation_raw = entity_info
-                action.observation = format_entity_info(entity_info, language=self.language)
+                action.observation = format_entity_info(entity_info, language='en')
 
             elif action.action_name == "get_property_examples":
                 examples = get_property_examples(action.action_argument)
@@ -678,7 +624,7 @@ Here are examples of Text-to-SPARQL conversions for reference:
                     lines = [f"{subj} -- {prop} --> {obj}" for subj, prop, obj in examples]
                     action.observation = "\n".join(lines)
                 else:
-                    action.observation = "No examples found" if self.language == 'en' else "未找到示例"
+                    action.observation = "No examples found"
 
             elif action.action_name == "execute_sparql":
                 print(f"\n[EXECUTE_SPARQL] Starting SPARQL query execution...")
@@ -706,10 +652,9 @@ Here are examples of Text-to-SPARQL conversions for reference:
                     # Catch execution errors and provide helpful feedback
                     error_msg = str(exec_error).lower()
                     if "prefix" in error_msg or "namespace" in error_msg:
-                        action.observation = f"PREFIX 错误：{str(exec_error)}\n\n请确保所有 PREFIX 声明都用尖括号正确书写。\n所需前缀：brick:、bldg:、ref:、xsd:"
+                        action.observation = f"PREFIX error: {exec_error}\n\nWrite every PREFIX URI inside angle brackets.\nRequired prefixes: brick:, bldg:, ref:, xsd:"
                     else:
-                        action.observation = f"SPARQL 执行错误：{str(exec_error)}"
-                    action.observation = feedback(action.observation, self.language)
+                        action.observation = f"SPARQL execution error: {exec_error}"
                     return action, None
 
                 sparql_query.diagnostic_warnings = warnings
@@ -721,17 +666,17 @@ Here are examples of Text-to-SPARQL conversions for reference:
                 if sparql_query.has_results():
                     action.observation = sparql_query.results_as_table()
                 else:
-                    prefix = 'No results. Status: ' if self.language == 'en' else '查询未返回任何结果。状态：'
+                    prefix = 'No results. Status: '
                     action.observation = prefix + sparql_query.execution_status.value
 
                 if sparql_query.error:
-                    label = '\nExecution error: ' if self.language == 'en' else '\n执行错误：'
-                    action.observation += label + feedback(sparql_query.error, self.language)
+                    label = '\nExecution error: '
+                    action.observation += label + sparql_query.error
                 # Store the SPARQL query
                 return action, sparql_query
 
             elif action.action_name == "stop":
-                action.observation = "正在结束执行"
+                action.observation = "Stopping execution"
 
             elif action.action_name == "error":
                 # Error action for retry logic - observation already set
@@ -739,17 +684,14 @@ Here are examples of Text-to-SPARQL conversions for reference:
                 pass
 
             else:
-                action.observation = f"未知动作：{action.action_name}"
+                action.observation = f"Unknown action: {action.action_name}"
 
         except Exception as e:
-            action.observation = feedback(f"执行动作时出错：{str(e)}", self.language)
+            action.observation = f"Error executing action: {e}"
 
         action.diagnostics = self.brick_graph.last_tool_diagnostic
         if action.diagnostics:
             self._log_to_jsonl(self.log_file, {'event': 'tool_diagnostic', 'diagnostic': action.diagnostics})
-        # Do not run replacements over result tables, RDF labels or values.
-        if action.observation and action.action_name not in ('search_brick', 'get_brick_entity', 'get_property_examples'):
-            action.observation = feedback(action.observation, self.language)
         return action, None
 
     def run(self, question: str, verbose: bool = True) -> Tuple[AgentState, Optional[BrickSparqlQuery]]:
@@ -765,6 +707,9 @@ Here are examples of Text-to-SPARQL conversions for reference:
         """
         self._assert_graph()
         state = AgentState(question=question, mode='paper', language=self.language, implementation_mode='upstream')
+        state.interface_language = self.interface_language
+        from prompting import decomposition_policy
+        state.decomposition_policy = decomposition_policy(self)
 
         # Store state reference for temporal handler access
         self._current_state = state
@@ -786,17 +731,12 @@ Here are examples of Text-to-SPARQL conversions for reference:
                 if verbose:
                     print("🔍 Step 1: Decomposing query (complex query detected)...\n")
 
-                context = (f"Namespaces: {namespace_map()}; timeseries range: {self.dataset_date_range}" if self.language == 'en'
-                           else f"当前命名空间：{namespace_map()}；时序范围：{self.dataset_date_range}")
-                decomposition = self.decomposer.decompose(question, verbose=verbose, cancel_event=self.cancel_event, context=context, language=self.language)
+                context = ''  # Upstream decomposition receives the question only.
+                decomposition = self.decomposer.decompose(question, verbose=verbose, cancel_event=self.cancel_event,
+                    context=context, language=self.language, use_temporal=self.use_temporal_handler,
+                    use_aggregation=self.use_aggregation)
                 state.decomposition = decomposition
                 state.decomposition_fallback = getattr(self.decomposer, 'last_fallback', False)
-                if not self.use_temporal_handler:
-                    decomposition.temporal.has_constraint = False
-                    decomposition.temporal.type = 'none'
-                if not self.use_aggregation:
-                    decomposition.aggregation.required = False
-                    decomposition.aggregation.operations = []
                 if self.decomposer.last_usage:
                     state.prompt_tokens += self.decomposer.last_usage.get('prompt_tokens', 0)
                     state.completion_tokens += self.decomposer.last_usage.get('completion_tokens', 0)
@@ -835,21 +775,13 @@ Here are examples of Text-to-SPARQL conversions for reference:
                         print("[WARNING] Retrying with clarification...")
 
                         error_action = BrickAction(
-                            thought="上一次输出的格式无效",
+                            thought="The previous output had an invalid format",
                             action_name="error",
                             action_argument="Parse error"
                         )
                         error_action.observation = (
-                            "错误：上一次的回复无法被解析。"
-                            "你必须使用如下精确格式（保留英文标签）：\n"
-                            "Thought: [你的推理过程，可用中文]\n"
-                            "Action: execute_sparql(查询) 或 stop()\n\n"
-                            "不要添加多余文本，也不要省略 Action: 标签。"
-                        )
-                        if self.language == 'en':
-                            error_action.thought = 'The previous output had an invalid format'
-                            error_action.observation = ('ERROR: Reply with exactly one Thought: and one Action: label. '
-                                                        'Use Action: execute_sparql(query) or stop(). Do not include Observation:.')
+                            'ERROR: Reply with exactly one Thought: and one Action: label. '
+                            'Use Action: execute_sparql(query) or stop(). Do not include Observation:.')
                         state.actions.append(error_action)
 
                         if verbose:
@@ -861,17 +793,13 @@ Here are examples of Text-to-SPARQL conversions for reference:
                         # Max retries exceeded, force stop
                         print(f"[ERROR] Max parse retries exceeded. Stopping agent.")
                         action = BrickAction(
-                            thought="无法生成有效的输出格式",
+                            thought="Unable to generate a valid output format",
                             action_name="stop",
                             action_argument=""
                         )
-                        action.observation = "Agent 因反复解析错误已停止"
+                        action.observation = "Agent stopped after repeated output parsing errors"
                 else:
                     raise  # Re-raise if not a parse error
-
-            if self.language == 'en' and action.action_name == 'error':
-                action.observation = ('Please revise the query using the latest execution error or validation warnings. '
-                                      'Execute the corrected query before stopping; exploratory fragments are not final answers.')
 
             # Check for duplicates
             if state.is_duplicate_action(action):
@@ -881,7 +809,7 @@ Here are examples of Text-to-SPARQL conversions for reference:
                     print("   Skipping...\n")
                 # Force stop if repeating
                 action = BrickAction(
-                    thought="检测到重复动作，正在停止",
+                    thought="Duplicate action detected; stopping",
                     action_name="stop",
                     action_argument=""
                 )

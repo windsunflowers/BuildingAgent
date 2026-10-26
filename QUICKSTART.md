@@ -1,8 +1,54 @@
-# BrickQA 本地启动指南（Qwen 版）
+# BrickQA 本地启动指南
 
-## 唯一方法：BrickQA 作者方法
+## 模型请求超时
 
-网页、API、Python 和 CLI 均只提供作者方法，已移除方法下拉框、`--implementation-mode`、本地修复分支及本地模板规划器。直接加载建筑后查询或运行评测，无需选择方法。旧客户端传入 `mode` 或 `implementation_mode` 参数会返回参数错误，而不会切换到其他实现。
+LLM_TIMEOUT 默认 300 秒，适用于 BrickQA 与 ReAct，SDK 和新评测报告使用同一数值。长提示/并发时不会再按旧默认 30 秒过早终止。需进一步调整时，在启动前设置：
+
+```powershell
+$env:LLM_TIMEOUT = '600'
+npm run dev
+```
+
+改动后需重启服务，已创建的客户端不会自动更新。LLM_TIMEOUT 必须为有限正数；独立的 EVAL_PER_QUESTION_TIMEOUT/CLI --timeout 仍按原配置执行。此设置增加网络等待时间，不保证断网或上游持续无响应时成功，不会自动重跑失败题。
+
+## 选择模型
+
+点击页面右上角的模型按钮打开右侧滑动面板，可在现有 Qwen 配置与 `gemini-2.5-flash` 之间选择。输入该供应商的 API Key，点击“应用模型”，再点击“测试连接”。密钥按供应商分别使用 Windows 当前用户 DPAPI 加密，保存到 Git 忽略的 `.local/model_profiles.json`；页面和报告不返回密钥。重启后恢复所选模型，需使用同一 Windows 用户。
+
+Gemini 使用 Google 官方 OpenAI 兼容地址 `https://generativelanguage.googleapis.com/v1beta/openai/`。模型切换不修改作者工具、提示模板、数据或 BuildingQA 三项评分。现有温度与 token 上限保留，未额外关闭 Gemini 默认思考；Gemini 与 Qwen 属于不同实验条件，应分别报告。查询、评测或图谱加载期间禁止切换；新报告记录实际模型、供应商、地址与响应模型标识。不会自动重跑评测。
+
+## 主方法：BrickQA 作者方法
+
+## BuildingQA ReAct 对照评测
+
+2026-10-22 新增作者 GraphDB 分支。选择 ReAct 后，在“ReAct 执行后端”选择 GraphDB（网页默认）或 RDFLib。GraphDB 按加载建筑固定映射：TUC_building → `http://CHINAMI-42UOT9U:7200/repositories/TUC_building_test`，dflexlibs_multizone → `http://CHINAMI-42UOT9U:7200/repositories/DFLEX`，bldg11 → `http://CHINAMI-42UOT9U:7200/repositories/bldg11`。gold 和预测都发往同一仓库；不在失败时回退本地。CLI 可加 `--react-backend graphdb`；网页、API、CLI 未指定后端时均为 graphdb（2026-10-24 按作者 Notebook 默认值统一）；本地对照须显式指定 --react-backend rdflib。示例：`.\.venv\Scripts\python.exe evaluate.py --method react --react-backend graphdb --benchmark benchmarks/TUC_building_all.jsonl --context 5000 --workers 3`（会真实调用当前模型）。
+
+远程分支标记 `buildingqa_react_graphdb_author_v1`：Critic 接收作者原文摘要和前十行 SPARQL JSON bindings，不额外添加列名头或 TTL；空结果/失败使用作者远程分支摘要，HTTP 错误保留响应正文。本地分支继续按下述 RDFLib 设置，仅反馈行数。两者评分使用全量 bindings，3 轮、英文提示、固定当前模型不变。仅初始 TTL 提示来自本地文件；远程执行数据取自 GraphDB 仓库，服务端推理保留默认，报告记录为未核实配置。传输用标准库 GET/JSON 替代 SPARQLWrapper，无新增依赖；取消在当前 HTTP 请求返回或 180 秒超时后生效。未知建筑拒绝运行。
+
+显式选择 RDFLib 时对齐作者本地分支，`implementation_mode=buildingqa_react_rdflib_author_v1`、`feedback_policy=upstream_rdflib_row_count_only_v1`。保留 **3 轮与固定 Qwen 模型**；Critic 成功反馈仅含行数，空结果及错误采用作者摘要，错误正文不经过界面翻译。ReAct 的执行和 gold 裁判都使用建筑 TTL 源图，不额外合并本体；主方法仍使用工作台原图。文档原件及代码块保存在 `third_party/user_react_baseline/`，报告记录文档 SHA256、实际图范围及覆盖项。三项 F1 直接使用完整类型化 SPARQL JSON bindings；行列数及 `arity_matching_f1`、`perfect_match`、`less_columns_flag` 等辅助字段与文件对应。
+
+早期 `buildingqa_react_rdflib_preview_v1` 使用共享合并图；`buildingqa_react_document_v1` 使用源图与前十行反馈。两者仅作为旧报告条件保留。可运行 `.\.venv\Scripts\python.exe audit_react_run.py --report <报告路径> --output <独立审计路径>`，用保存的真实响应离线对照作者原循环；审计输出不覆盖原报告、不调用模型。需要报告目录中的 context.ttl 和完整模型请求快照。
+
+准确度评测中可选择 BrickQA 或 ReAct，随后选择同一建筑、题集和上下文并运行。两者使用右上角当前选择的同一 API 供应商、模型和对应密钥，输出同一套 Entity-set F1、Row Matching F1、Exact Match F1；历史结果不混入新汇总，报告记录 method、实际模型、完整多角色提示快照、轨迹与停止原因。论文模型条件为 Gemini 2.5 Flash；选择 Qwen 仍属于模型迁移条件，不等同原论文数值复现。
+
+ReAct 对齐 BuildingQA `b792a627419dfb679ad1f26e4d3dc325a758e95b` 的 Writer → 所选后端执行 → Critic 流程，最多 3 轮（来源为 `ReAct_demo.ipynb` 的显式参数，类构造默认值是 5）。Writer 累积自己的查询与 Critic 反馈；Critic 每轮只接收原问题、当前查询和作者分支对应摘要：GraphDB 为前 10 行 bindings，RDFLib 为行数；不额外提供 TTL 或列名头。无分解、动态搜索、BrickQA 模式描述或日期指南，也不补写/替换 PREFIX。JSON object、temperature=0、输出 token 上限未指定，均按参考实现；Critic 或后续 Writer 失败时保留最后已生成查询。沿用当前工程 SDK 的网络超时与重试封装，每次角色调用不增加外层重试；ReAct SDK 重试为 2，与原 Notebook 创建 OpenAI 客户端时的 SDK 默认行为对齐。网络等待默认 300 秒为用户运行设置。原版源码存于 `third_party/buildingqa/react/`，提示表达式从哈希固定的原文件提取，不导入原文件的 SDK/远程端点配置。本项目默认远程 GraphDB，与 Notebook 默认分支一致；最多 3 轮，Critic FINAL 可提前结束。
+
+网页上下文文件原文在两种方法之间共用；CLI 的 0/100/5000 同样共用现有上下文选择逻辑。需使用同一冻结上下文并核对哈希，不能只看 100T/5000T 标签。GraphDB 执行使用远程仓库；显式 RDFLib 与 BrickQA 使用本地完整建筑图，不额外合并本体。各自 gold/pred 使用同后端和同图。共享官方评分、gold 预检、SPARQL 子进程隔离、180 秒预算及 SDK 超时，这些平台适配写入报告。不会自动更换模型或重跑整套基准。
+
+```powershell
+.\.venv\Scripts\python.exe evaluate.py --method react --benchmark benchmarks/TUC_building_all.jsonl --context 0 --workers 3
+.\.venv\Scripts\python.exe evaluate.py --method brickqa --benchmark benchmarks/TUC_building_all.jsonl --context 0 --workers 3
+```
+
+以上命令会真实调用模型并分别生成报告。两方法可复用取消、并发、逐题详情和导出；新增入口的离线测试不代表论文全量成绩已复现。
+
+BuildingQA 网页与 `evaluate.py` 固定关闭 Temporal Constraints 和 Operations：实际发送的分解提示仅保留实体与意图，排除关闭模块的指令、输出字段及混合示例；控制器不注入时间分解、聚合分解或时序范围指导。模型额外返回的关闭模块字段也不会进入运行状态。此开关不禁止最终 SPARQL 使用题目所需的 COUNT 等语法。原始英文模板、作者工具与三项 F1 实现不变。
+
+新报告的 `decomposition_policy`、`experiment=buildingqa` 及提示快照记录此条件，当前版本为 `BrickQA-author-only-20261020-v5-english-prompts`；此前仅返回后关闭字段或使用中文提示的历史报告不可重标或与新结果直接合并。网页双语说明已同步。
+
+LBNL FDD 时序案例与标准基准分开：自然语言查询默认保留完整模块，须先加载正确 TTL、CSV、日期及行数。`main.py --experiment lbnl_fdd` 显式启用全部分解模块，`main.py --experiment buildingqa` 显式仅启用实体分解；二者不能与 `--no-temporal` 或 `--no-decomposer` 混用。这些参数只控制模块，不自动加载 CSV；命令行时序输入须提供已包含观测的图谱。标准 `evaluate.py` 不作为 LBNL 完整时序案例入口，表 4 数值答案仍须独立 pandas 核验。
+
+自然语言查询仅提供 BrickQA 作者方法；评测可显式选择 BrickQA 或独立的 BuildingQA ReAct 基线。本地修复分支、`--implementation-mode` 与模板规划器保持移除。评测使用 `method` / `--method`，旧客户端传入 `mode` 或 `implementation_mode` 仍会返回参数错误，不会恢复旧实现。
 
 搜索、实体/属性定位及 CSV 导入直接调用指定提交的原函数：保留固定 `bldg-59#`、原属性解析、文件行序末尾 N 行及 `xsd:float`。默认 N=100；原函数失败时记录原因，不启动其他方法。源文件和 SHA256 见 `third_party/brickqa_upstream/source_manifest.json`。
 
@@ -24,9 +70,11 @@ CLI 同样默认并发 3 题，可指定 `evaluate.py --workers 3` 或 `--worker
 
 点击每题标题展开详情，再点击“评分说明与失败原因”“对照标准与生成查询”“标准与预测结果对照”或“执行详情与过程”查看对应内容。诊断另列，原因使用真实错误或中性的结果差异说明，不将启发式诊断当作确定的错误归因。结果表最多展示 50 行，完整内容可导出 JSON；进度刷新保留当前展开状态。
 
-网页右上角选择 **中文 / English**，界面、示例问题、controller 与分解器提示会一起切换，选择会保存在当前浏览器。运行中暂时锁定语言，避免一个任务混用两套提示。问题原文、实体 URI 和 SPARQL 不会被翻译。
+网页右上角选择 **中文 / English** 仅改变显示，选择会保存在当前浏览器，运行中也可切换。controller、分解器模板和回传给模型的工具反馈始终为英文。中文示例显示中文标签，点击提交与英文界面相同的固定英文题目；手动输入的用户问题、实体 URI 和 SPARQL 保持原文，不自动翻译。
 
-英文模式下，新运行的受控工具反馈（空结果、语法/前缀错误、停止等）使用英文，结果中的 RDF 值保持原样。历史中文运行会明确标记，英文界面显示按动作生成的英文步骤摘要及受控反馈；原始中文轨迹可展开核查。这些摘要不是逐句翻译，也不会回写报告或追加模型调用。仅切换界面不会把一次中文实验重标为英文实验。
+新运行的受控工具反馈统一英文；中文页面对受控提示和动作摘要做本地显示适配，英文原轨迹可展开核查，结果中的 RDF 值保持原样。历史中文运行仍明确标记；摘要不是逐句翻译，不回写报告、不追加模型调用、不改变旧实验语言。
+
+新 API 使用 `interface_language`（zh/en）；`prompt_language` 只能为 en。旧 `language` 参数保留为显示别名。报告的 `language`、`prompt_language` 均表示实际英文模型输入，`interface_language` 单独记录显示偏好，`language_policy=english-prompts-ui-only-v1` 标记本次策略。完整提示快照用于核查实际发送内容。
 
 评测详情采用整页向下滚动，展开的轨迹和查询自然增加页面高度，不再挤在固定高度的结果窗口内；轮询保留展开状态和当前页面滚动位置。
 
@@ -38,9 +86,9 @@ CLI 同样默认并发 3 题，可指定 `evaluate.py --workers 3` 或 `--worker
 
 查询和评测的“模型上下文 TTL”可选 NoKG，或当前建筑在项目中已有的 TTL，例如 `prompts/bldg11_sample_100.ttl`、`prompts/bldg11_sample_5000.ttl`、`buildings/bldg11.ttl`（完整路径为 `data/buildings/bldg11.ttl`）。选择后读取所选文件原文，不再从执行图重新截取 100/5000 条。切换建筑后自动更新可选文件；执行图仍由左侧加载的建筑决定。完整 TTL 可能显著增加输入 token，请按实验条件选择。评测报告记录文件路径、SHA256 和实际三元组数，并保存 `context.ttl` 快照；CLI 的旧数值上下文参数保留兼容。
 
-英文模板保存在 `prompts/en/`，与作者提交 `49d9e283c2a3958e9be110583be6575cbd40039b` 的两个模板逐字节一致；来源和哈希见该目录的 `source_manifest.json`。运行时仍会加入当前图谱命名空间、日期范围和必要的执行指导。切换语言不会改变配置的模型，也不会撤销本体合并或工具修复。
+英文模板保存在 `prompts/en/`，与作者提交 `49d9e283c2a3958e9be110583be6575cbd40039b` 的两个模板逐字节一致；来源和哈希见该目录的 `source_manifest.json`。两种界面语言都使用这套模板；BuildingQA 排除关闭模块，时序实验仍加入日期范围等执行指导。旧中文模板仅作历史资料保留，不进入新模型请求。切换界面不会改变配置的模型或数据。
 
-CLI 可指定提示语言：
+CLI 的 `--language` 仅记录显示偏好，模型提示固定英文：
 
 ```powershell
 .\.venv\Scripts\python.exe main.py --ttl data/buildings/TUC_building.ttl --language en --question "What temperature sensors are in the building?"
@@ -51,7 +99,7 @@ CLI 可指定提示语言：
 
 模型失败以零分计入完整题目分母；标准查询失败标记为 `gold_error`，汇总分数暂不可比较。JSON 同时给出按题目均值和 `building_macro`，后者对应论文表 2 的建筑宏平均。网页提供导出，CLI 默认写入新的 `output/evaluations/<run_id>/report.json`，也可指定 `--report`。
 
-English mode uses the original upstream controller and decomposition templates with English runtime context. The configured model is unchanged. Web and CLI evaluations share the pinned official BuildingQA Entity-set F1, Row Matching F1 and Exact Match F1 implementation. Reports preserve duplicate rows, count model failures as zero, and flag invalid gold queries separately.
+Both interface languages use upstream English controller and decomposition templates with English runtime context, subject to the BuildingQA module ablation. The configured model is unchanged. Web and CLI evaluations share the pinned official BuildingQA Entity-set F1, Row Matching F1 and Exact Match F1 implementation. Reports preserve duplicate rows, count model failures as zero, and flag invalid gold queries separately.
 
 ## 网页工作台启动
 
@@ -97,7 +145,7 @@ npm run dev
 |---|---|
 | `LLM_API_KEY` | DashScope API Key（已设置） |
 | `LLM_BASE_URL` | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
-| `LLM_MODEL` | `qwen-plus` |
+| `LLM_MODEL` | `qwen-plus-2025-12-01`（固定版本） |
 
 换模型/换服务商只需改这三个环境变量，无需改代码：
 - DashScope：`qwen-plus` / `qwen-turbo` / `qwen-max` / `qwen-flash`

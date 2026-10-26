@@ -83,8 +83,12 @@ Examples:
         help="Minimal output"
     )
 
-    parser.add_argument('--language', choices=('zh', 'en'), default='zh', help='Agent prompt language')
+    parser.add_argument('--language', choices=('zh', 'en'), default='zh', help='Display language only; model prompts always use upstream English')
+    parser.add_argument('--experiment', choices=('buildingqa', 'lbnl_fdd'), default=None,
+                        help='Module profile: BuildingQA sensors only; LBNL FDD all modules. Data files remain explicit.')
     args = parser.parse_args()
+    if args.experiment and (args.no_temporal or args.no_decomposer):
+        parser.error('--experiment cannot be combined with --no-temporal or --no-decomposer')
 
     # Legacy Google Cloud option (kept for CLI compatibility, no longer used)
     _ = args.project
@@ -106,10 +110,13 @@ Examples:
     agent = BrickAgent(
         engine="gemini-flash",
         use_decomposer=not args.no_decomposer,
-        use_temporal_handler=not args.no_temporal,
+        use_temporal_handler=args.experiment != 'buildingqa' and not args.no_temporal,
+        use_aggregation=args.experiment != 'buildingqa',
         ttl_schema_file=args.schema_in_prompt,
         language=args.language,
     )
+    from prompting import decomposition_policy
+    print('Decomposition modules:', decomposition_policy(agent))
 
     # Load Brick schema
     print(f"\nLoading Brick schema from: {args.ttl}")

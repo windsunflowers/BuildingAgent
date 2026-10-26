@@ -5,9 +5,24 @@ const el = (tag, cls, text) => { const n=document.createElement(tag);if(cls)n.cl
 const btn = (text, action, cls='button secondary') => { const n=el('button',cls,text);n.type='button';n.onclick=action;return n; };
 const S={status:null,active:null,running:null,pending:false,evaluating:false,cache:new Map(),poll:null,signature:'',evaluation:null,evalPoll:null,evalTimer:null,buildings:[],contextBuilding:null};
 let modelCatalog=null,modelPending=false;
-const actionNames={search_brick:'搜索图谱',get_brick_entity:'查看实体',get_property_examples:'验证关系',execute_sparql:'执行查询',stop:'完成',error:'修正查询'};
+const actionNames={react_writer:'ReAct Writer',react_critic:'ReAct Critic',search_brick:'搜索图谱',get_brick_entity:'查看实体',get_property_examples:'验证关系',execute_sparql:'执行查询',stop:'完成',error:'修正查询'};
 function recordedFeedback(value){
-  if(BrickI18n.language!=='en'||!value)return value||'';
+  if(!value)return value||'';
+  if(BrickI18n.language!=='en')return String(value).split('\n').map(line=>{
+    const exact={'No results found.':'未找到结果。','No examples found':'未找到示例',
+      'Stopping execution':'正在结束执行','Query cancelled':'查询已取消',
+      'Agent stopped after repeated output parsing errors':'Agent 因反复解析错误已停止',
+      'ERROR: Reply with exactly one Thought: and one Action: label. Use Action: execute_sparql(query) or stop(). Do not include Observation:.':'格式错误：请只输出一个 Thought: 和一个 Action:，使用 execute_sparql(query) 或 stop()，不要输出 Observation:。',
+      'Write every PREFIX URI inside angle brackets.':'所有 PREFIX URI 都必须放在尖括号内。',
+      'Required prefixes: brick:, bldg:, ref:, xsd:':'所需前缀：brick:、bldg:、ref:、xsd:'};
+    if(Object.hasOwn(exact,line))return exact[line];
+    const prefixes={'No results. Status: ':'查询未返回任何结果。状态：', 'Execution error: ':'执行错误：',
+      'Error executing action: ':'执行动作时出错：', 'SPARQL execution error: ':'SPARQL 执行错误：',
+      'PREFIX error: ':'PREFIX 错误：', 'Unknown action: ':'未知动作：',
+      'Types:':'类型:','Properties:':'属性:'};
+    for(const [source,target]of Object.entries(prefixes))if(line.startsWith(source))return target+line.slice(source.length);
+    return line.replace(/^Query exceeded (\d+(?:\.\d+)?) seconds$/, '查询超过 $1 秒');
+  }).join('\n');
   return String(value).split('\n').map(line=>{
     const pairs=[['查询未返回任何结果。状态：','No results. Status: '],['执行错误：','Execution error: '],['执行动作时出错：','Error executing action: '],['SPARQL 执行错误：','SPARQL execution error: '],['PREFIX 错误：','PREFIX error: '],['类型:','Types:'],['属性:','Properties:']];
     for(const [source,target] of pairs)if(line.startsWith(source))return target+line.slice(source.length);
@@ -29,34 +44,35 @@ function recordedMessage(value){
 function traceStep(action,index){
   const n=el('div','trace-step'),en=BrickI18n.language==='en';
   n.append(el('strong','',(index+1)+'. '+(t(actionNames[action.action_name])||action.action_name)));
-  const purpose=action.thought||'',summarized=en&&/[\u4e00-\u9fff]/.test(purpose);
-  const purposes={search_brick:'Search the graph for candidate entities.',get_brick_entity:'Inspect the entity and its properties.',get_property_examples:'Inspect examples of the requested relationship.',execute_sparql:'Execute the generated SPARQL query.',stop:'Stop and select the last generated query.',error:'Review the previous execution feedback.'};
-  n.append(el('p','trace-purpose',summarized?'Step summary: '+(purposes[action.action_name]||'Perform the recorded action.'):purpose));
+  const purpose=action.thought||'',summarized=en?/[\u4e00-\u9fff]/.test(purpose):/[A-Za-z]/.test(purpose);
+  const purposes=en?{react_writer:'Generate or revise the query.',react_critic:'Review the query and execution summary.',search_brick:'Search the graph for candidate entities.',get_brick_entity:'Inspect the entity and its properties.',get_property_examples:'Inspect examples of the requested relationship.',execute_sparql:'Execute the generated SPARQL query.',stop:'Stop and select the last generated query.',error:'Review the previous execution feedback.'}:{react_writer:'生成或修改查询。',react_critic:'评审查询与执行摘要。',search_brick:'搜索图谱中的候选实体。',get_brick_entity:'查看实体及其属性。',get_property_examples:'查看指定关系的示例。',execute_sparql:'执行模型生成的 SPARQL 查询。',stop:'停止并选择最后生成的查询。',error:'查看上一动作的执行反馈。'};
+  n.append(el('p','trace-purpose',summarized?(en?'Step summary: ':'步骤摘要：')+(purposes[action.action_name]||(en?'Perform the recorded action.':'执行记录中的动作。')):purpose));
   const original=action.observation||'',observation=recordedFeedback(original);
   const controlled=['execute_sparql','stop','error'].includes(action.action_name)&&(/(?:状态：|执行错误：|出错：|PREFIX 错误：|已取消|反复解析错误)/.test(original)||action.execution_error);
-  let shown=observation,sourceNeeded=summarized;
+  let shown=observation,sourceNeeded=summarized||observation!==original;
   if(en&&controlled&&/[\u4e00-\u9fff]/.test(observation)){
     shown='Execution feedback was recorded in Chinese. See the original trace for exact details.';
     if(action.execution_status)shown+=' Status: '+action.execution_status;
     sourceNeeded=true;
   }
   n.append(el('pre','code trace-feedback',(action.action_argument||'')+'\n\n'+shown));
-  if(sourceNeeded)n.append(detail('Original recorded trace (Chinese; preserved)',el('pre','code',purpose+'\n\n'+original)));
+  if(sourceNeeded)n.append(detail(en?'Original recorded trace (Chinese; preserved)':'原始执行记录（保留英文原文；摘要仅用于显示）',el('pre','code',purpose+'\n\n'+original)));
   return n;
 }
 let toastTimer;
 function toast(text,error=false){$('toast').textContent=text;$('toast').className='toast'+(error?' error':'');$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},6000);}
 async function api(path,body){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);try{const r=await fetch(path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),signal:controller.signal});const d=await r.json();if(!r.ok){const error=new Error(typeof d.detail==='string'?t(d.detail):t('输入参数无效，请检查数据和范围'));error.status=r.status;throw error;}return d;}finally{clearTimeout(timer);}}
 function busy(){return S.pending||!!S.running||S.evaluating||S.status?.loading;}
-function controls(){modelControls();const b=busy();for(const id of ['askBtn','loadBtn','evalRun','schemaContext','evalContext','languageSelect','benchSelect','evalWorkers'])$(id).disabled=b;$('cancelBtn').hidden=!S.running;document.querySelectorAll('.example').forEach(n=>n.disabled=b);$('connection').className='connection '+(b?'busy':'ready');$('connectionText').textContent=S.status?.loading?t('加载中'):S.evaluating?t('评测中'):b?t('查询中'):t('已连接');if(!b)$('runStatus').textContent=t('就绪');$('evalCancel').disabled=!!S.evaluation?.cancel_requested||!S.status?.evaluation_cancellation;}
+function evaluationMethodControls(b){const react=$('evalMethod').value==='react';$('reactBackendField').hidden=!react;$('reactBackend').disabled=b||!react;$('brickqaEvaluationNote').hidden=react;$('reactEvaluationNote').hidden=!react;}
+function controls(){modelControls();const b=busy();for(const id of ['askBtn','loadBtn','evalRun','schemaContext','evalContext','evalMethod','reactBackend','benchSelect','evalWorkers'])$(id).disabled=b;evaluationMethodControls(b);$('evalRun').disabled=b||!S.status?.graph?.ttl||!$('benchSelect').value;$('benchSelect').disabled=b||!$('benchSelect').value;$('cancelBtn').hidden=!S.running;document.querySelectorAll('.example').forEach(n=>n.disabled=b);$('connection').className='connection '+(b?'busy':'ready');$('connectionText').textContent=S.status?.loading?t('加载中'):S.evaluating?t('评测中'):b?t('查询中'):t('已连接');if(!b)$('runStatus').textContent=t('就绪');$('evalCancel').disabled=!!S.evaluation?.cancel_requested||!S.status?.evaluation_cancellation;}
 function drawer(open){$('sidebar').inert=matchMedia('(max-width:760px)').matches&&!open;$('sidebar').classList.toggle('open',open);$('drawerBackdrop').classList.toggle('show',open);$('sidebarToggle').setAttribute('aria-expanded',String(open));}
-async function refreshStatus(initial=false){try{const d=await api('/api/status');S.status=d;$('modelChooser').textContent=t('模型 · ')+d.model;$('modelChooser').title=(d.model_provider||'')+' · '+d.model;S.running=d.active_task_id;S.evaluating=d.evaluating;const g=d.graph;if(S.contextBuilding!==g.ttl){S.contextBuilding=g.ttl;loadContextOptions();}$('buildingLabel').textContent=g.building?(g.sample?t('样本 · '):t('完整 · '))+g.building:t('尚未加载');$('tripleCount').textContent=Number(g.triples||0).toLocaleString();$('sensorCount').textContent=Number(g.sensors||0).toLocaleString();$('modelInfo').textContent=d.llm_ready?t('模型已配置 · ')+d.model:t('模型未配置 · Agent 需要 API Key');const notices=[...(g.warnings||[])];if(!g.implementation_mode)notices.push('当前服务仍为旧版；本轮评测完成后请重启，才能启用作者方法及完整进度显示。');$('notice').hidden=!notices.length;$('notice').textContent=notices.map(t).join(' ');$('loadHint').textContent=g.timeseries?.rows?t('已加载 ')+g.timeseries.rows+t(' 行 · ')+g.timeseries.start.slice(0,10)+t(' 至 ')+g.timeseries.end.slice(0,10):g.building?t('已加载。时间类问题需选择对应 CSV。'):t('请选择建筑后加载');if(initial){$('buildingSelect').value=g.ttl||$('buildingSelect').value;$('csvSelect').value=g.csv||'';}controls();const evaluationId=d.active_eval_task_id||(initial?recoveryEvaluationId():null);if(evaluationId&&S.evalPoll!==evaluationId){showTab('evaluate');pollEvaluation(evaluationId);}if(initial&&d.active_task_id){S.active=d.active_task_id;pollTask(d.active_task_id);}}catch(e){$('connection').className='connection error';$('connectionText').textContent=t('连接中断');if(initial)toast(t('无法连接服务：')+e.message,true);}}
+async function refreshStatus(initial=false){try{const d=await api('/api/status');S.status=d;$('modelChooser').textContent=t('模型 · ')+d.model;$('modelChooser').title=(d.model_provider||'')+' · '+d.model;S.running=d.active_task_id;S.evaluating=d.evaluating;const g=d.graph;if(S.contextBuilding!==g.ttl){S.contextBuilding=g.ttl;loadContextOptions();loadBenchmarks();}$('buildingLabel').textContent=g.building?(g.sample?t('样本 · '):t('完整 · '))+g.building:t('尚未加载');$('tripleCount').textContent=Number(g.triples||0).toLocaleString();$('sensorCount').textContent=Number(g.sensors||0).toLocaleString();$('modelInfo').textContent=d.llm_ready?t('模型已配置 · ')+d.model:t('模型未配置 · Agent 需要 API Key');const notices=[...(g.warnings||[])];if(!g.implementation_mode)notices.push('当前服务仍为旧版；本轮评测完成后请重启，才能启用作者方法及完整进度显示。');$('notice').hidden=!notices.length;$('notice').textContent=notices.map(t).join(' ');$('loadHint').textContent=g.timeseries?.rows?t('已加载 ')+g.timeseries.rows+t(' 行 · ')+g.timeseries.start.slice(0,10)+t(' 至 ')+g.timeseries.end.slice(0,10):g.building?t('已加载。时间类问题需选择对应 CSV。'):t('请选择建筑后加载');if(initial){$('buildingSelect').value=g.ttl||$('buildingSelect').value;$('csvSelect').value=g.csv||'';}controls();const evaluationId=d.active_eval_task_id||(initial?recoveryEvaluationId():null);if(evaluationId&&S.evalPoll!==evaluationId){showTab('evaluate');pollEvaluation(evaluationId);}if(initial&&d.active_task_id){S.active=d.active_task_id;pollTask(d.active_task_id);}}catch(e){$('connection').className='connection error';$('connectionText').textContent=t('连接中断');if(initial)toast(t('无法连接服务：')+e.message,true);}}
 async function loadBuildings(){const d=await api('/api/buildings');S.buildings=d.buildings;const full=el('optgroup'),sample=el('optgroup');full.label=t('完整建筑');sample.label=t('论文上下文样本');$('buildingSelect').replaceChildren();for(const b of d.buildings){const o=el('option','',b.id);o.value=b.ttl;o.dataset.description=b.description||'';(b.sample?sample:full).append(o);}$('buildingSelect').append(full,sample);for(const p of d.csvs){const o=el('option','',p.split(/[\\/]/).pop());o.value=p;$('csvSelect').append(o);}}
 function loadContextOptions(){
   const buildingId=value=>String(value||'').split(/[\\/]/).pop().replace(/\.ttl$/i,'').replace(/_sample_\d+$/,'');
   const current=buildingId(S.status?.graph?.ttl);
   for(const id of ['schemaContext','evalContext']){
-    const select=$(id),previous=select.value,none=el('option','',t('NoKG · 动态探索'));none.value='';
+    const select=$(id),previous=select.value,none=el('option','',t('NoKG · 无初始图谱'));none.value='';
     select.replaceChildren(none);
     for(const b of S.buildings.filter(b=>buildingId(b.ttl)===current)){
       const option=el('option','',b.ttl.split(/[\\/]/).slice(-2).join('/'));option.value=b.ttl;select.append(option);
@@ -64,11 +80,11 @@ function loadContextOptions(){
     select.value=[...select.options].some(o=>o.value===previous)?previous:'';
   }
 }
-async function loadExamples(){try{const language=BrickI18n.language,d=await api('/api/examples?language='+language);if(language!==BrickI18n.language)return;$('examples').replaceChildren();for(const q of d.questions){const n=btn(q,()=>ask(q),'example');n.append(el('span','','↗'));$('examples').append(n);}controls();}catch(e){toast(e.message,true);}}
+async function loadExamples(){try{const language=BrickI18n.language,d=await api('/api/examples?language='+language);if(language!==BrickI18n.language)return;$('examples').replaceChildren();for(const [index,q] of d.questions.entries()){const n=btn(q,()=>ask(d.model_questions[index]),'example');n.append(el('span','','↗'));$('examples').append(n);}controls();}catch(e){toast(e.message,true);}}
 async function doLoad(){if(busy())return;S.pending=true;controls();$('loadHint').textContent=t('正在加载图谱与时序数据…');const custom=$('customTtl').value.trim();try{await api('/api/load',{ttl:custom||$('buildingSelect').value,description:custom?null:$('buildingSelect').selectedOptions[0]?.dataset.description||null,csv:$('csvSelect').value||null,start_date:$('startDate').value||null,end_date:$('endDate').value||null,max_rows:Number($('maxRows').value)});S.active=null;S.signature='';$('answer').replaceChildren();$('welcome').hidden=false;$('sparqlEditor').value='';await refreshStatus();await loadExamples();await loadExplore();drawer(false);toast(t('建筑已加载'));}catch(e){toast(t('加载失败：')+e.message,true);}finally{S.pending=false;controls();}}
 async function loadHistory(){try{const rows=await api('/api/tasks');$('historyList').replaceChildren();for(const r of rows){const n=btn('',()=>selectHistory(r.task_id),'history-item');n.classList.toggle('active',S.active===r.task_id);n.append(el('span','',r.question),el('small','',(r.building||'')+' · '+({running:t('查询中'),done:t('完成'),error:t('查询失败'),cancelled:t('已取消')}[r.status]||r.status)));$('historyList').append(n);}if(!rows.length)$('historyList').append(el('p','micro',t('第一次查询从这里开始。')));$('historyCount').textContent=rows.length;}catch(e){toast(e.message,true);}}
 async function selectHistory(tid){S.active=tid;S.signature='';try{const d=S.cache.get(tid)||await api('/api/task/'+tid);renderAnswer(d);await loadHistory();if(d.status==='running')pollTask(tid);}catch(e){toast(e.message,true);}drawer(false);}
-async function ask(question){if(busy())return;const q=question.trim();if(!q){$('questionInput').focus();return;}S.pending=true;controls();try{const d=await api('/api/ask',{question:q,context_ttl:$('schemaContext').value||null,language:BrickI18n.language});S.active=d.task_id;S.running=d.task_id;S.signature='';$('cancelBtn').disabled=false;$('questionInput').value='';$('welcome').hidden=true;$('answer').replaceChildren(el('div','card question-card',q),loading(t('正在准备查询…')));await loadHistory();pollTask(d.task_id);}catch(e){toast(t('提交失败：')+e.message,true);}finally{S.pending=false;controls();}}
+async function ask(question){if(busy())return;const q=question.trim();if(!q){$('questionInput').focus();return;}S.pending=true;controls();try{const d=await api('/api/ask',{question:q,context_ttl:$('schemaContext').value||null,interface_language:BrickI18n.language});S.active=d.task_id;S.running=d.task_id;S.signature='';$('cancelBtn').disabled=false;$('questionInput').value='';$('welcome').hidden=true;$('answer').replaceChildren(el('div','card question-card',q),loading(t('正在准备查询…')));await loadHistory();pollTask(d.task_id);}catch(e){toast(t('提交失败：')+e.message,true);}finally{S.pending=false;controls();}}
 function loading(text){const n=el('div','card loading-state');n.append(el('span','spinner'),el('span','',text));return n;}
 function pollTask(tid){clearTimeout(S.poll);let failures=0;const poll=async()=>{try{const d=await api('/api/task/'+tid);failures=0;S.cache.set(tid,d);if(S.active===tid)renderAnswer(d);$('runStatus').textContent=(t(d.phase)||t('查询中'))+' · '+(d.elapsed_seconds||0)+'s';if(d.status==='running'){S.running=tid;S.poll=setTimeout(poll,1000);}else{S.running=null;controls();await loadHistory();}}catch(e){failures++;if(failures===3)toast(t('连接暂时中断，正在恢复查询进度…'),true);S.poll=setTimeout(poll,Math.min(failures*1000,8000));}};S.poll=setTimeout(poll,200);}
 function card(title,badge){const c=el('div','card'),head=el('div','card-head'),body=el('div','card-body');head.append(el('span','',title));if(badge)head.append(el('span','pill',badge));c.append(head,body);return{c,body};}
@@ -87,8 +103,19 @@ async function openClass(x){try{const d=await api('/api/class_instances?t='+enco
 async function openRelation(x){try{const d=await api('/api/relation_instances?pred='+encodeURIComponent(x.uri)+'&limit=100'),{c,body}=card(x.pred,t('前 ')+d.instances.length+t(' 条关系'));for(const r of d.instances){const p=el('div','property');p.append(uriButton(r.subject_uri),el('span','',' → '),r.object_uri?uriButton(r.object_uri):el('span','',r.object));body.append(p);}$('entityDetail').replaceChildren(c);}catch(e){toast(e.message,true);}}
 async function loadPrefixes(){try{const d=await api('/api/prefixes');$('sparqlEditor').value=d.block+'\n\nSELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 25';}catch(e){toast(e.message,true);}}
 async function runSparql(){const q=$('sparqlEditor').value.trim();if(!q)return;$('sparqlRun').disabled=true;$('sparqlStatus').textContent=t('执行中…');try{const d=await api('/api/sparql',{query:q});$('sparqlStatus').textContent=d.ask?t('ASK 已执行'):t('共 ')+d.total+t(' 行 · 显示前 ')+d.rows.length+t(' 行');$('sparqlResult').replaceChildren(d.ask?el('div','card card-body',t('ASK 结果：')+d.value):table(d.rows));}catch(e){$('sparqlStatus').textContent=t('执行失败');$('sparqlResult').replaceChildren(el('p','error-message',e.message));}finally{$('sparqlRun').disabled=false;}}
-async function loadBenchmarks(){try{const d=await api('/api/benchmarks'),selected=$('benchSelect').value;$('benchSelect').replaceChildren(...d.benchmarks.map(b=>{const o=el('option','',b);o.value=b;return o;}));const current=S.evaluation?.configuration?.benchmark||selected||('benchmarks/'+S.status?.graph?.building+'_all.jsonl');if(current)selectRunningBenchmark(current);}catch(e){toast(e.message,true);}}
-async function runEvaluation(){if(busy())return;const workers=Number($('evalWorkers').value);if(!Number.isInteger(workers)||workers<1||workers>8){toast(t('并发题数必须为 1 到 8 的整数'),true);return;}S.pending=true;controls();try{const d=await api('/api/evaluate',{benchmark:$('benchSelect').value,context_ttl:$('evalContext').value||null,language:BrickI18n.language,workers});S.evaluating=true;S.evaluation=null;$('evalSummary').replaceChildren();$('evalResults').replaceChildren(el('p','muted',t('正在启动评测…')));pollEvaluation(d.task_id);}catch(e){toast(e.message,true);}finally{S.pending=false;controls();}}
+async function loadBenchmarks(){
+  const loaded=S.status?.graph?.ttl,selected=$('benchSelect').value;
+  $('benchSelect').replaceChildren();controls();
+  try{
+    const d=await api('/api/benchmarks');
+    if(loaded!==S.status?.graph?.ttl||d.ttl!==loaded)return;
+    $('benchSelect').replaceChildren(...d.benchmarks.map(b=>{const o=el('option','',b);o.value=b;return o;}));
+    if(!d.benchmarks.length){const o=el('option','',t('当前建筑没有对应的基准题集'));o.value='';o.disabled=true;$('benchSelect').append(o);}
+    selectRunningBenchmark('benchmarks/'+S.status?.graph?.building+'_all.jsonl');
+    if(selected)selectRunningBenchmark(selected);
+  }catch(e){toast(e.message,true);}finally{controls();}
+}
+async function runEvaluation(){if(busy())return;const workers=Number($('evalWorkers').value);if(!Number.isInteger(workers)||workers<1||workers>8){toast(t('并发题数必须为 1 到 8 的整数'),true);return;}S.pending=true;controls();try{const d=await api('/api/evaluate',{benchmark:$('benchSelect').value,context_ttl:$('evalContext').value||null,interface_language:BrickI18n.language,workers,method:$('evalMethod').value,react_backend:$('reactBackend').value});S.evaluating=true;S.evaluation=null;if(d.method==='react')toast(t('已提交评测，服务端确认后端：')+(d.react_backend==='graphdb'?'GraphDB':d.react_backend==='rdflib'?'RDFLib':t('未记录')));$('evalSummary').replaceChildren();$('evalResults').replaceChildren(el('p','muted',t('正在启动评测…')));pollEvaluation(d.task_id);}catch(e){toast(e.message,true);}finally{S.pending=false;controls();}}
 function metricValue(value){return value==null?'—':Number(value).toFixed(3);}
 async function cancelEvaluation(){
   const tid=S.evalPoll;if(!tid)return;
@@ -96,12 +123,29 @@ async function cancelEvaluation(){
   try{const d=await api('/api/eval_task/'+tid+'/cancel',{});if(d.cancel_requested){if(S.evaluation)S.evaluation.cancel_requested=true;$('evalCancel').textContent=t('正在取消…');toast(t('已请求取消评测，当前请求结束后停止；已完成结果会保留。'));}}
   catch(e){$('evalCancel').disabled=false;toast(e.message,true);}
 }
+function evaluationBackend(configuration){
+  const mode=configuration?.baseline_reference?.execution_mode;
+  if(mode==='remote_GraphDB')return 'graphdb';
+  if(mode==='local_rdflib')return 'rdflib';
+  return ['graphdb','rdflib'].includes(configuration?.react_backend)?configuration.react_backend:null;
+}
 function evaluationReason(row){
   if(row.status==='cancelled')return t('本题已取消，未计入评分。');
   if(row.error)return row.error;
   if(row.execution_error)return row.execution_error;
+  if(row.status==='done'&&row.pred_count===0){
+    const earlier=(row.actions||[]).find(a=>a.action_name==='execute_sparql'&&a.result_count>0);
+    const empty=t('查询语法合法且执行成功，但最终查询没有匹配数据。合法空结果不代表答案正确；标准结果非空时三项 F1 为零。');
+    return earlier?empty+' '+t('先前查询曾返回 ')+earlier.result_count+t(' 行，修订后的最终查询返回 0 行；作者规则仍选择最后生成的查询评分。'):empty;
+  }
   if(row.exact_match_f1===1)return t('标准与预测结果的 Exact Match F1 为 1。');
   return t('标准与预测结果未完全匹配。请展开查询和结果对照；仅凭分数无法确定模型出错的原因。');
+}
+function evaluationPhase(current){
+  if(current.stage==='gold')return t('执行标准查询');
+  // Older live workers expose their completed Agent state while F1 is still running.
+  if(current.stage==='scoring'||(current.stage==='model'&&current.phase==='完成'))return t('计算官方 F1（列匹配可能耗时）');
+  return current.stage==='model'?(t(current.phase)||t('模型处理中')):t('正在处理');
 }
 function renderEvaluation(d){
   const summary=d.summary||{},done=summary.done||0;
@@ -115,8 +159,27 @@ function renderEvaluation(d){
   for(const [label,value] of [[t('已评测'),done+'/'+(summary.total||0)],['Entity-set F1',metricValue(summary.entity_set_f1)],['Row Matching F1',metricValue(summary.row_matching_f1)],['Exact Match F1',metricValue(summary.exact_match_f1)],[t('执行异常'),summary.errors||0]]){
     const node=el('div','metric');node.append(el('strong','',value),el('small','',label));metrics.append(node);
   }
-  $('evalSummary').replaceChildren(metrics);
+  const facts=el('div','card card-body');
+  facts.append(el('strong','',t('以下分数来自已记录的本轮配置，上方控件用于下一次运行。')));
+  if(d.configuration?.method==='react'){
+    const backend=evaluationBackend(d.configuration);
+    facts.append(el('p','evaluation-note',t('本轮实际执行后端：')+(backend==='graphdb'?'GraphDB':backend==='rdflib'?'RDFLib':t('未记录'))));
+    if(backend==='graphdb')facts.append(el('p','uri',d.configuration.evaluation_graph?.endpoint||d.configuration.baseline_reference?.endpoint||t('未记录')));
+    facts.append(el('p','evaluation-note',t('实际模型：')+(d.configuration.model_configuration?.model||d.configuration.model||t('未记录'))));
+    if(backend&&$('reactBackend').value!==backend)facts.append(el('p','warn-text',t('当前所选后端与这份报告不同。切换选项不会重跑或改变已有分数。')));
+  }
+  $('evalSummary').replaceChildren(facts,metrics);
   $('evalSummary').append(el('p','evaluation-note metric-protocol',t('评分协议：')+(d.metric_protocol||'BuildingQA (legacy report)')+' · '+t('汇总：已评测题目均值；建筑宏平均另存报告。')));
+  $('evalSummary').append(el('p','evaluation-note',t('本轮方法：')+((d.configuration?.method||'brickqa')==='react'?'ReAct · BuildingQA':'BrickQA')));
+  if(d.configuration?.method==='react'){
+    if(d.configuration.evaluation_graph?.scope==='raw_building_ttl')$('evalSummary').append(el('p','evaluation-note',t('按提供文档使用建筑 TTL 源图，不合并本体；标准与预测查询使用同一执行图。')));
+    $('evalSummary').append(el('p','evaluation-note',t('实际模型：')+(d.configuration.model_configuration?.model||d.configuration.model||'—')));
+    $('evalSummary').append(el('p','evaluation-note',t('当前为方法复现与反馈适配，不代表论文原实验。论文模型为 Gemini 2.5 Flash；当前实际模型与执行后端以本轮记录为准。')));
+    if(d.configuration.baseline_reference?.execution_mode==='remote_GraphDB')$('evalSummary').append(el('p','evaluation-note',t('GraphDB 仓库：')+(d.configuration.evaluation_graph?.endpoint||'—')+' · '+t('Critic 接收作者前 10 行结果反馈；全量结果用于评分。')));
+    if(d.configuration.baseline_reference?.feedback_policy==='rdflib_graphdb_preview_v1')$('evalSummary').append(el('p','evaluation-note',t('本轮由 RDFLib 执行；Critic 接收列名、总行数及前 10 行真实结果。结果反馈参照作者 GraphDB 分支，执行后端仍为本地 RDFLib。')));
+    else if(d.configuration.baseline_reference?.execution_mode==='local_rdflib')$('evalSummary').append(el('p','evaluation-note',t('本轮使用作者本地 RDFLib 分支，Critic 仅接收行数；官方演示使用 GraphDB 并反馈前 10 行结果。此报告不代表论文运行环境完全一致。')));
+  }
+  if(d.status==='running'){$('evalMethod').value=d.configuration?.method||'brickqa';$('reactBackend').value=d.configuration?.react_backend||'rdflib';}
   $('evalResults').replaceChildren();
   if(d.restored_from_disk)$('evalResults').append(el('p','warn-text',t('历史报告只读显示，分数未按当前策略重新计算。')));
   if(['cancelled','interrupted'].includes(d.status))root.append(el('p','warn-text',t('评测已停止。以下分数仅汇总已完成题目，不代表完整基准成绩；未完成题目不计零分。')));
@@ -124,7 +187,7 @@ function renderEvaluation(d){
   if(d.status==='running'){
     const currents=d.active_questions||(d.current?[d.current]:[]);
     root.append(el('p','micro',t('并发执行：')+(d.configuration?.workers||1)+t(' · 运行中：')+currents.length));
-    for(const c of currents){const phase=c.stage==='gold'?t('执行标准查询'):c.stage==='model'?(t(c.phase)||t('模型处理中')):t('正在处理');root.append(el('p','evaluation-current',t('当前第 ')+c.index+'/'+c.total+t(' 题 · ')+phase+' · '+(c.elapsed_seconds||0)+'s'+(c.steps!=null?' · '+c.steps+t(' 个动作'):'')+'\n'+c.question));}
+    for(const c of currents){const phase=evaluationPhase(c);root.append(el('p','evaluation-current',t('当前第 ')+c.index+'/'+c.total+t(' 题 · ')+phase+' · '+(c.elapsed_seconds||0)+'s'+(c.steps!=null?' · '+c.steps+t(' 个动作'):'')+'\n'+c.question));}
   }
   if(summary.gold_errors)$('evalResults').append(el('p','error-message',t('标准查询异常，当前汇总不可比较。')));
   const rows=[...(d.results||[]),...(d.interrupted_questions||(d.interrupted_question?[d.interrupted_question]:[]))];rows.sort((a,b)=>(a.question_index||0)-(b.question_index||0));
@@ -143,10 +206,11 @@ function renderEvaluation(d){
     const results=el('div','evaluation-comparison');
     for(const [label,data] of [[t('标准结果'),row.gold_rows],[t('预测结果'),row.pred_rows]]){const part=el('div');part.append(el('h4','',label));if(data==null)part.append(el('p','muted',t('未记录')));else if(!data.length)part.append(el('p','muted',t(label===t('预测结果')&&row.status!=='done'?'未得到可执行结果':'合法空结果')));else{part.append(table(data.slice(0,50)));if(data.length>50)part.append(el('p','micro',t('仅展示前 50 行，完整内容请导出评测 JSON。')));}results.append(part);}
     body.append(dropdown(index+':results',t('标准与预测结果对照'),results));
-    const trace=el('div');if(BrickI18n.language==='en'&&row.language==='zh')trace.append(el('p','warn-text','This run used Chinese prompts. English step summaries are display-only; the original trace is preserved below. New runs use the selected prompt language.'));trace.append(el('p','muted',t('停止原因：')+(row.stop_reason||t('未记录'))+' · '+t('动作数：')+(row.steps??'—')+' · '+t('用时：')+(row.elapsed_sec??'—')+'s'));
+    const trace=el('div');if(BrickI18n.language==='en'&&row.language==='zh')trace.append(el('p','warn-text','This run used Chinese prompts. English step summaries are display-only; the original trace is preserved below. New runs always use upstream English prompts.'));trace.append(el('p','muted',t('停止原因：')+(row.stop_reason||t('未记录'))+' · '+t('动作数：')+(row.steps??'—')+' · '+t('用时：')+(row.elapsed_sec??'—')+'s'));
     for(const [step,a] of (row.actions||[]).entries())trace.append(traceStep(a,step));
     if(!row.actions?.length)trace.append(el('p','muted',t('未记录执行轨迹')));
     body.append(dropdown(index+':trace',t('执行详情与过程'),trace));
+    if(row.model_diagnostics?.length)body.append(dropdown(index+':model-diagnostics',t('模型调用诊断（原始记录）'),el('pre','code',JSON.stringify(row.model_diagnostics,null,2))));
     if(row.diagnostic_warnings?.length)body.append(dropdown(index+':warnings',t('校验诊断（仅记录）'),el('pre','code',row.diagnostic_warnings.join('\n'))));if(row.tool_diagnostics?.length)body.append(dropdown(index+':diagnostics',t('方法与定位诊断'),el('pre','code',JSON.stringify(row.tool_diagnostics,null,2))));
     $('evalResults').append(c);
   });
@@ -181,7 +245,6 @@ function pollEvaluation(tid){
 }
 
 async function changeLanguage(){
-  if(busy())return;
   BrickI18n.setLanguage($('languageSelect').value);S.signature='';loadContextOptions();
   const groups=$('buildingSelect').querySelectorAll('optgroup');
   if(groups[0])groups[0].label=t('完整建筑');if(groups[1])groups[1].label=t('论文上下文样本');
@@ -216,6 +279,7 @@ async function openModels(){
     $('modelSelect').replaceChildren(...modelCatalog.profiles.map(profile=>{const option=el('option','',profile.model+' · '+profile.provider);option.value=profile.profile_id;return option;}));
     $('modelSelect').value=modelCatalog.active.profile_id;$('modelApiKey').value='';$('modelResult').textContent='';selectedModelInfo();
     $('modelPanel').hidden=false;$('modelBackdrop').hidden=false;document.body.classList.add('model-panel-open');$('modelChooser').setAttribute('aria-expanded','true');
+    void $('modelPanel').offsetWidth;
     requestAnimationFrame(()=>$('modelPanel').classList.add('open'));$('modelSelect').focus();
   }catch(e){toast(e.message,true);}
 }
@@ -239,3 +303,6 @@ async function testCurrentModel(){
   catch(e){$('modelResult').textContent=t('连接失败：')+e.message;}finally{modelPending=false;modelControls();await refreshStatus();}
 }
 $('modelChooser').onclick=openModels;$('modelClose').onclick=closeModels;$('modelBackdrop').onclick=closeModels;$('modelForm').onsubmit=e=>{e.preventDefault();applyModel();};$('modelSelect').onchange=()=>{$('modelApiKey').value='';$('modelResult').textContent='';selectedModelInfo();};$('modelApiKey').oninput=modelControls;$('modelTest').onclick=testCurrentModel;
+
+$('evalMethod').addEventListener('change',()=>{controls();if(S.evaluation)renderEvaluation(S.evaluation);});
+$('reactBackend').addEventListener('change',()=>{if(S.evaluation)renderEvaluation(S.evaluation);});

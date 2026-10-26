@@ -1,0 +1,1417 @@
+{
+  "kind": "saved_remote_vs_current_local_same_query_replay_not_model_rerun",
+  "runs": [
+    {
+      "report_id": "e885a265ee6254bf28e8fc765f4954024",
+      "report_sha256": "c543e90cac367cfbed1cf37d4a9994f353c787c154c5ddc5c61d5fdb5d0f0c4d",
+      "same_gold": 36,
+      "same_pred": 34,
+      "local_mean": {
+        "entity_set_f1": 0.19444444444444445,
+        "row_matching_f1": 0.19444444444444445,
+        "exact_match_f1": 0.08333333333333333
+      },
+      "rows": [
+        {
+          "index": 1,
+          "gold_count": 1080,
+          "pred_count": 0,
+          "status": "syntax_error",
+          "error": "Expected SelectQuery, found 'BIND'  (at char 704), (line:18, col:3)",
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0,
+            "row_matching_f1": 0,
+            "exact_match_f1": 0
+          }
+        },
+        {
+          "index": 2,
+          "gold_count": 1080,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 3,
+          "gold_count": 1080,
+          "pred_count": 30,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 4,
+          "gold_count": 1080,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 5,
+          "gold_count": 1080,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 6,
+          "gold_count": 1080,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 7,
+          "gold_count": 5,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 8,
+          "gold_count": 5,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 9,
+          "gold_count": 5,
+          "pred_count": 2,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": false,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 10,
+          "gold_count": 5,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 11,
+          "gold_count": 5,
+          "pred_count": 0,
+          "status": "syntax_error",
+          "error": "Expected SelectQuery, found 'UNION'  (at char 1247), (line:32, col:3)",
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0,
+            "row_matching_f1": 0,
+            "exact_match_f1": 0
+          }
+        },
+        {
+          "index": 12,
+          "gold_count": 5,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 13,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 14,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 15,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 16,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 17,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 18,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 19,
+          "gold_count": 1,
+          "pred_count": 1,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": false,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 20,
+          "gold_count": 1,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 21,
+          "gold_count": 1,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 22,
+          "gold_count": 1,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 23,
+          "gold_count": 1,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 24,
+          "gold_count": 1,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 25,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 26,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 27,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 28,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 29,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 30,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 31,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 32,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 33,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 34,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 35,
+          "gold_count": 7,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 36,
+          "gold_count": 7,
+          "pred_count": 7,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "report_id": "e3687039e90ae48cbb273e0abcaab5b15",
+      "report_sha256": "b9e055b7e9f10a93b01ce92cc25e9d9c0bb28b38b8eb2ef9a0664695ee9bfbec",
+      "same_gold": 30,
+      "same_pred": 30,
+      "local_mean": {
+        "entity_set_f1": 0.31666666666666665,
+        "row_matching_f1": 0.3,
+        "exact_match_f1": 0.2
+      },
+      "rows": [
+        {
+          "index": 1,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 2,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.5,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.5,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 3,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 4,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 5,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 6,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 7,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 8,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 9,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 10,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 11,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 12,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 13,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 14,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 15,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 16,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 17,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 18,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 19,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 20,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 21,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 22,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 23,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 24,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 25,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 26,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 27,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 28,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        },
+        {
+          "index": 29,
+          "gold_count": 18,
+          "pred_count": 18,
+          "status": "success",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 1.0,
+            "row_matching_f1": 1.0,
+            "exact_match_f1": 1.0
+          }
+        },
+        {
+          "index": 30,
+          "gold_count": 18,
+          "pred_count": 0,
+          "status": "empty_result",
+          "error": null,
+          "gold_status": "success",
+          "gold_error": null,
+          "same_gold_bindings": true,
+          "same_pred_bindings": true,
+          "saved_graphdb_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          },
+          "local_replay_scores": {
+            "entity_set_f1": 0.0,
+            "row_matching_f1": 0.0,
+            "exact_match_f1": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}

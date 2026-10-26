@@ -41,6 +41,12 @@
 .evaluation-question{flex:1;min-width:180px;overflow-wrap:anywhere}
 .evaluation-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:12px 0}
 .evaluation-comparison>div{min-width:0}.evaluation-comparison h4{font-size:11px;margin-bottom:8px}
+/* Wide answer sets scroll inside their panel; columns must not shrink to characters. */
+.evaluation-comparison .table-wrap{width:100%;min-width:0;overflow-x:auto}
+.evaluation-comparison .table-wrap table{table-layout:auto;width:max-content;min-width:100%}
+.evaluation-comparison .table-wrap th,.evaluation-comparison .table-wrap td{min-width:120px;max-width:none;white-space:nowrap;overflow-wrap:normal;word-break:normal}
+.evaluation-comparison .table-wrap .result-link{max-width:none;white-space:nowrap;overflow-wrap:normal;word-break:normal}
+
 .evaluation-comparison .code{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto}
 #evalCancel{border-color:#e6bcbc;color:var(--red)}
 @media(max-width:1000px){.evaluation-comparison{grid-template-columns:minmax(0,1fr)}}
@@ -60,3 +66,9 @@ body.evaluation-page .evaluation-row .trace-step pre{max-height:none}
 @media(max-width:540px){.model-chooser{max-width:110px;font-size:10px;padding:7px}.topbar-controls{gap:8px}#connectionText{display:none}}
 @media(min-width:761px){body.evaluation-page .sidebar{position:sticky;top:0;height:100dvh;max-height:100dvh}}
 @media(max-width:760px){body.evaluation-page .workspace{min-height:calc(100dvh - 60px)}body.evaluation-page .app-layout{min-height:calc(100dvh - 60px)}}
+
+.evaluation-field{display:flex;align-items:center;gap:10px;min-width:0}
+
+#panel-evaluate .evaluation-options{padding-bottom:10px}
+#panel-evaluate .evaluation-actions{padding-top:0}
+.evaluation-workers{flex-shrink:0;white-space:nowrap}

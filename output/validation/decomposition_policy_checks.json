@@ -1,0 +1,52 @@
+{
+  "alignment": "BrickQA-author-only-20261020-v4-module-ablation",
+  "tests_passed": 119,
+  "model_calls": 0,
+  "prompts": {
+    "zh_sensors_only": {
+      "sha256": "ebc122832ee894d9bf5cb0fa6663e85d6505b40a45c665c21bc1ee224ca21451",
+      "contains_temporal_schema": false,
+      "contains_operations_schema": false,
+      "contains_mixed_examples": false
+    },
+    "zh_full": {
+      "sha256": "6aa2ebfa7c961d96e49445408088bf59e40eeff528e4ce84c01fbfdf31c8cc8d",
+      "contains_temporal_schema": true,
+      "contains_operations_schema": true,
+      "contains_mixed_examples": true
+    },
+    "en_sensors_only": {
+      "sha256": "e333c3f9373250a443e46806c0eaf61f19d6c5d42d4420fcc3914e81b75ed3c3",
+      "contains_temporal_schema": false,
+      "contains_operations_schema": false,
+      "contains_mixed_examples": false
+    },
+    "en_full": {
+      "sha256": "b24e6665fc26343e6094722495a3f7526aa68045b962756f6d890bd9f6ac73c9",
+      "contains_temporal_schema": true,
+      "contains_operations_schema": true,
+      "contains_mixed_examples": true
+    }
+  },
+  "unchanged_english_templates": {
+    "brick_controller.prompt": true,
+    "brick_decomposition.prompt": true
+  },
+  "official_scorer_sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b",
+  "buildingqa_policy": {
+    "version": "module-ablation-v1",
+    "sensors": true,
+    "temporal": false,
+    "operations": false,
+    "prompt_variant": "sensors_only",
+    "disabled_modules": "excluded_from_prompt_and_result"
+  },
+  "full_policy": {
+    "version": "module-ablation-v1",
+    "sensors": true,
+    "temporal": true,
+    "operations": true,
+    "prompt_variant": "full",
+    "disabled_modules": "excluded_from_prompt_and_result"
+  }
+}

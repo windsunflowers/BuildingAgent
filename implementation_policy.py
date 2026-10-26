@@ -15,7 +15,7 @@ import math
 from third_party.brickqa_upstream import brick_utils as author
 
 UPSTREAM_COMMIT = '49d9e283c2a3958e9be110583be6575cbd40039b'
-EVALUATION_ALIGNMENT = 'BrickQA-author-only-20261020-v3'
+EVALUATION_ALIGNMENT = 'BrickQA-author-only-20261023-v6-prompt-and-bindings'
 
 
 def evaluation_policy():
@@ -42,6 +42,13 @@ def policy_metadata(graph):
             'scope': ['search_brick', 'get_brick_entity', 'get_property_examples', 'csv_observations',
                       'diagnostic_validation', 'agent_stop_and_final_selection'],
             'evaluation_policy': evaluation_policy(),
+            'controller_prompt_policy': 'upstream_template_without_local_suffix; module_ablation_and_empty_history_rendering',
+            'scoring_input': 'full_typed_sparql_json_bindings',
+            'query_prefix_policy': 'upstream_agent_preprocessor_and_fixed_executor_prefixes',
+            'generation_parameters': {'temperature': 'provider_default', 'max_output_tokens': 'provider_default'},
+            'execution_graph_policy': 'building_TTL_without_extra_ontology',
+            'paper_environment_verified': False,
+            'remaining_adaptations': ['selected_API_model', 'isolated_executor'],
             'diagnostic_log': getattr(graph, 'diagnostic_log', None)}
 
 
@@ -152,3 +159,20 @@ def import_author_csv(graph, csv_file, max_rows, start_date, end_date):
                              'uri_mapping': 'constant bldg-59# plus CSV column; no entity matching',
                              'value_datatype': str(author.XSD.float)}
     record_event(graph, **details, status='ok', selected_row_indices=graph.timeseries_meta['selected_row_indices'])
+
+
+@lru_cache(maxsize=1)
+def author_query_preprocessor():
+    """Execute only the pinned author's method, without importing its SDK stack."""
+    import ast
+    import hashlib
+    path = Path(__file__).resolve().parent / 'third_party/brickqa_upstream/brick_agent.py'
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != 'f8d2ae2307c8614072e822320728da62bd27cb7a4d4d940f43f09a9315abcb35':
+        raise RuntimeError('Pinned BrickQA agent checksum mismatch')
+    tree = ast.parse(raw)
+    cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'BrickAgent')
+    method = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == '_validate_and_fix_sparql')
+    namespace = {'BRICK_PREFIXES': author.BRICK_PREFIXES}
+    exec(compile(ast.Module(body=[method], type_ignores=[]), str(path), 'exec'), namespace)
+    return namespace[method.name]

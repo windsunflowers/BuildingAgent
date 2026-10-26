@@ -16,16 +16,36 @@
 
 ## 保持实验条件明确
 
-- 项目只提供作者方法，固定对齐提交 `49d9e283c2a3958e9be110583be6575cbd40039b` 的工具、CSV 导入和评测接收规则。不得恢复方法切换、本地修复分支、自动模式或本地模板查询。界面语言仅改变呈现和提示语言，不改变数据、执行或评分策略。
+- 2026-10-26 用户明确 ReAct 目标为 BuildingQA 方法 + qwen-plus-2025-12-01，不因方法对齐自动切换 Gemini。仅 ReAct 使用 Notebook OpenAI SDK 默认 max_retries=2（通过 per-call SDK options），应用层1次；保留用户300秒超时与最多3轮，记录日志和元数据。覆盖下方旧 sdk_max_retries=0 说明；BrickQA 重试不受影响。
+
+- 2026-10-26 模型链路固定提示及平台自有错误须直接生成英文，解析重试亦不按界面语言分支。历史 observation 保留原文，禁止对整个结果表、模型输出或第三方异常运行翻译替换。中文仅在 UI recordedFeedback 生成展示副本并提供原文；不能为去除中文字符而改写 RDF 数据或异常证据。新语言策略 english-prompts-verbatim-history-ui-only-v2，旧报告不重标。
+
+- 2026-10-26 按用户要求，LLM_TIMEOUT 默认 300 秒，由 llm_client.llm_timeout_seconds 统一解析并写入新评测配置；覆盖下方或历史文件中的 30 秒说明。只改变网络等待预算，保留重试次数、三轮和模型提示，不能把旧报告重标为新预算。
+
+- 2026-10-24 用户指定采用作者 Notebook 默认 GraphDB 分支，最多 3 轮：网页/API/CLI/Agent 工厂默认 graphdb，覆盖下方旧 API/CLI 默认 RDFLib 的兼容说明。RDFLib 仅可显式选择，无自动回退；两分支反馈仍各按作者实现，模型和上下文不因后端默认值改变。
+
+- 2026-10-23 最新对齐优先于下方历史说明：新加载 BrickQA 图不额外合并本体；标准网页评测清除 schema_description 并恢复交互配置；控制器和分解器不额外注入本地图谱命名空间/类型路径。查询预处理直接执行固定作者 AST（包括固定 bldg-59#、去除 Z、DESC 补 LIMIT 1），不使用本地 prepare_query；执行器仅按作者缺省 PREFIX 规则补常量。BrickQA 请求省略温度和 token 上限，ReAct 保持显式温度 0。两方法均用完整 bindings 评分。不得将这些源码对齐称为论文定量复现；Qwen 模型替换、GraphDB 配置、历史 Exact 差异仍需披露。
+
+- 2026-10-22 GraphDB 接入：按用户提供的仓库地址新增 ReAct 显式 graphdb/rdflib 后端。GraphDB 严格使用作者远程分支的前十行 bindings 摘要，本地 RDFLib 保留作者行数反馈；不混用反馈，不自动回退。gold 与预测必须使用相同后端及仓库，全部 bindings 进入固定三项 F1。网页默认选 GraphDB，旧 API/CLI 默认 RDFLib 保持兼容；报告保存实际 endpoint、反馈和后端，仓库推理采用服务端默认且未核实具体配置。三个映射固定于 react_graphdb.py；不得仅根据远程计数声称数据/推理与作者完全一致。下方“当前 RDFLib”说明仅约束本地分支。
+
+- 2026-10-22 当前 ReAct 按用户最新要求严格采用作者 RDFLib 分支反馈：成功仅反馈行数，空结果/错误使用作者原文，不向 Critic 提供列名或结果预览。新 implementation_mode=buildingqa_react_rdflib_author_v1，feedback_policy=upstream_rdflib_row_count_only_v1；下方列名/前十行反馈要求仅代表历史条件。保留 Notebook 的 3 轮、用户固定模型、原始建筑源图及完整结果评分；不把本次反馈对齐称为论文全部环境复现。
+
+- 当前 ReAct 以用户提供的 react_baseline_implementation.md 为直接对照；按用户确认保留 3 轮、列名及前 10 行预览、固定 Qwen。新 implementation_mode=buildingqa_react_document_v1。ReAct 使用建筑 TTL 源图，不使用工作台额外合并的本体，gold 和预测必须共用这张源图；BrickQA 主方法不受此改变影响。完整类型化 bindings、行列数、syntax_ok/error_message 与文档对应，报告包含文档哈希和显式覆盖项。下方早期共享合并图与旧模式名仅为历史条件。
+
+- BrickQA 主方法固定对齐提交 `49d9e283c2a3958e9be110583be6575cbd40039b` 的工具、CSV 导入和评测接收规则。按用户明确要求，仅评测入口另提供 BuildingQA 固定提交的独立 ReAct Writer/Critic 基线；不得把关闭 BrickQA 分解器冒充 ReAct，不恢复本地修复分支、自动模式或本地模板查询。界面语言仅改变呈现，模型始终使用英文提示和英文工具反馈，不改变数据、执行或评分策略。
 - `third_party/brickqa_upstream/` 中的作者源文件保持原样。工具固定使用 `BLDG=bldg-59#` 与原属性规则，CSV 保留文件行序 tail(N) 和 `xsd:float`；定位失败记录原因，不引入替代定位逻辑。
 - 校验仅记录诊断，不加入模型 observation、不拒绝 stop 或评分。stop、重复动作或 15 步结束后选择最后生成的查询。默认无整题取消时限，单次 SPARQL 预算 180 秒；显式环境变量/CLI 超时另记。
 - 作者方法不等于完整官方运行环境：本体合并、TTL 恢复、模型适配和通用 SPARQL 执行器仍是工程适配。保留此边界，不宣称与论文全部条件一致。
-- 新查询与评测记录只标记作者方法；旧报告保留原模式、原分数并只读展示，不重标、不重算。历史问题及长标识符完整换行显示。
+- 新查询标记 BrickQA 作者方法；新评测逐题记录 method=brickqa/react 及对应来源、停止规则、上下文、实际模型。旧报告保留原模式、原分数并只读展示，不重标、不重算。历史问题及长标识符完整换行显示。
+- ReAct 固定 BuildingQA b792a627419dfb679ad1f26e4d3dc325a758e95b 的原始 Writer/Critic 提示和历史追加规则，使用演示入口显式 3 轮（类默认 5 须区分）；temperature=0、JSON object、多角色消息、未指定输出 token 上限。不得注入 BrickQA 搜索、分解、模式描述或前缀修复。与 BrickQA 共用选定 API/model、冻结上下文、已加载只读执行图和官方三项 F1；本体合并、执行预算、SDK 超时、预检 gold 等工程适配须记入报告。
+- 2026-10-21 按用户明确要求，ReAct 仍使用 RDFLib 执行，Critic 改收列名、总行数和前 10 行真实 SPARQL JSON bindings，参照作者 GraphDB 分支。标记 feedback_policy=rdflib_graphdb_preview_v1，保留 RDF 类型/语言标签/未绑定字段；仅预览截断，评分使用全量结果。旧行数摘要报告保持原样，新适配不称为 GraphDB 执行，也不改变原始提示、三轮停止或末次查询规则。
+- ReAct 新评测的 implementation_mode 使用 buildingqa_react_rdflib_preview_v1，与 BrickQA 的 upstream 分开记录。源码循环一致不等于论文环境一致。可用 audit_react_run.py 离线回放保存的真实模型响应，核对逐条请求、停止与最终查询，并独立重算保存行的官方评分；该回放不代表新的模型或 GraphDB 实验。
 - 执行图使用完整建筑 TTL；0/100/5000 仅控制初始实例上下文。保存实际上下文文件、条数和哈希，不能用提示样本替代完整执行图。
 - 网页上下文改为 NoKG 或当前建筑已有的 TTL 文件，直接读取文件原文，不重新截取 100/5000 条；旧数值接口和 CLI 保留兼容。评测保存文件路径、SHA256、实际三元组数及上下文快照，已有 TTL 原件保持不变。
 - Qwen 与 Gemini、中文与英文提示、raw 与本体合并、工具和校验改造分别标记。不能仅更改 engine 标签就宣称切换了实际模型。
-- `prompts/en/` 的两个提示模板是作者提交的原样副本，其来源在 `source_manifest.json`；保持原件，不把中文指令附加到英文模式。语言选择贯穿界面、请求、Agent 和分解器，不翻译问题、RDF 值或 SPARQL。
+- `prompts/en/` 的两个提示模板是作者提交的原样副本，其来源在 `source_manifest.json`；保持原件，所有新运行只使用这套英文模板（BuildingQA 仍派生模块消融提示），不附加中文指令。界面使用 interface_language，实际 prompt_language 固定 en；旧 language 参数仅作显示别名。用户问题、RDF 值和 SPARQL 不翻译；中文示例按钮显示中文标签，提交同一固定英文题目。不得把历史中文运行重标为英文实验。
 - 标准 BuildingQA 关闭 Temporal 和 Operations；时序案例另外启用。描述、few-shot 和其他注入知识也须记录。
+- 模块关闭必须贯穿分解提示、响应解析和控制器，不能只在返回后清除标志。BuildingQA 从原模板派生 sensors_only 提示，排除关闭模块指令、字段及混合示例；原模板文件保持不变。LBNL FDD 使用 full 提示，报告保存 decomposition_policy 和实际提示快照；旧报告不得重标。
 - 新增开关、回退或修复若改变模型看到的内容、执行图、最终答案或停止策略，需要说明对复现的影响，并保留对照方式。
 - 分解失败进入 mock 时显式记入逐题结果，不能在报告中仍称分解成功。
 - 不向模型提供测试 gold、期望答案或从 gold 推导的专用规则；独立 gold 执行仅用于裁判。
@@ -39,6 +59,8 @@
 - `third_party/buildingqa/metrics.py` 是固定版本的未修改参考实现；通过 `evaluation_metrics.py` 适配数据。网页和 CLI 共用 `evaluation_runner.py` 与 `summarize_results`，不得另写近似评分。
 - 保留重复行、列序和全局列映射语义。修正 scorer 时用有判别力的反例核验，不能只测函数对自身的假设。
 - 模型失败题保留在完整题目分母内；gold 无效或超时属于数据和执行条件问题，单列并解决，不能悄悄删题。
+- 两种方法共用 raw gold 裁判；仅按固定 BuildingQA notebook 规则，在 gold 完全不含 prefix 时补源 TTL 的声明，不覆盖已有声明。原 gold 与执行文本均落盘。模型查询仍走各自方法规则，不将裁判修复注入 ReAct。
+- Windows 查询子进程的数值库线程固定为 1，启动后恢复父进程环境；这是资源隔离，不改变题目并发数。进程通信错误记录异常类型、PID/退出码，与语法错误分开。
 - 表 2 按建筑宏平均；成本图等按题目均值时注明。Human 子集、全题集、不同上下文均分开报告。
 - 不用 status=success、非空结果、测试通过或校验通过推断答案正确。合法空答案可以得分，但不能用缺失执行图产生的双空结果证明任务完成。
 - 作者模式先按原 Agent 规则提交最终查询，再由 BuildingQA 官方三项 F1 评分；执行异常与合法空结果分开，诊断提示不得把正确可执行结果置零。只有无最终查询或真实执行失败才列模型/执行错误。历史结果不可重写；回放末次查询应单独注明，不能冒充模型重跑。

@@ -1,0 +1,29 @@
+{
+  "kind": "read_only_diagnosis_no_model_calls",
+  "report": "output\\evaluations\\e33b3c92de0fc4c949b796cef540c79c6\\report.json",
+  "report_sha256": "46c5689bdd3f636f4dafca8b12f03451cf2db9cad3e865c3e239852ebb4f348e",
+  "context_mode": "NoKG",
+  "method": "react",
+  "model": "qwen-plus-2025-12-01",
+  "backend": "graphdb",
+  "statuses": {
+    "done": 29,
+    "error": 1
+  },
+  "execution_statuses": {
+    "empty_result": 29,
+    "other_error": 1
+  },
+  "counts": {
+    "class_Min_Air_Temperature_Setpoint": 23,
+    "class_Air_Temperature_Setpoint_Sensor": 0,
+    "class_Minimum_Air_Temperature_Setpoint_Sensor": 0,
+    "property_brick_hasTimeseries": 0,
+    "property_brick_uuid": 0,
+    "property_brick_hasTag_Minimum": 0,
+    "property_ref_hasTimeseriesId": 2244,
+    "property_ref_ifcName": 104,
+    "space_direct_hasPoint": 0,
+    "space_via_equipment_hasPoint": 179
+  }
+}

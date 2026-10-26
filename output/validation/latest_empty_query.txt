@@ -1,0 +1,14 @@
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tag: <https://brickschema.org/schema/BrickTag#>
+
+SELECT ?zone_name ?timeseries_id WHERE {
+  ?zone a brick:Zone .
+  OPTIONAL { ?zone rdfs:label ?zone_name } .
+  ?point a brick:Point ;
+    brick:timeseriesId ?timeseries_id ;
+    brick:hasTag tag:Temperature ;
+    brick:hasTag tag:Setpoint ;
+    brick:hasTag tag:Minimum .
+  ?point brick:isLocatedIn ?zone .
+}

@@ -49,7 +49,7 @@ def test_model_switch_persists_encrypted_keys_and_restores_separate_qwen(registr
     assert restored.current().api_key == 'offline-gemini-key'
     assert restored.current().profile_id == 'gemini-2.5-flash'
     restored.activate('qwen')
-    assert restored.current().model == 'qwen-plus'
+    assert restored.current().model == 'qwen-plus-2025-12-01'
     assert restored.current().api_key == 'offline-qwen-key'
     assert restored.current().base_url == model_settings.QWEN_URL
 
@@ -107,3 +107,82 @@ def test_unconfigured_model_and_unknown_destination_are_rejected(registry):
     assert client.post('/api/models/select', json={'profile_id':'gemini-2.5-flash'}).status_code == 400
     assert client.post('/api/models/select', json={'profile_id':'unknown','api_key':'offline-test-key'}).status_code == 422
     assert client.post('/api/models/select', json={'profile_id':'gemini-2.5-flash','base_url':'https://other.invalid'}).status_code == 422
+
+
+def test_saved_floating_alias_migrates_and_actual_request_is_pinned(registry, monkeypatch):
+    registry.activate('qwen')
+    saved = json.loads(registry.path.read_text(encoding='utf-8'))
+    saved['existing_profile']['model'] = 'qwen-plus'
+    registry.path.write_text(json.dumps(saved), encoding='utf-8')
+    restored = ModelRegistry(registry.path)
+    assert restored.current().model == model_settings.QWEN_MODEL
+    monkeypatch.setattr(model_settings, 'get_registry', lambda: restored)
+    create = Mock(return_value=SimpleNamespace(model=model_settings.QWEN_MODEL, usage=None,
+        choices=[SimpleNamespace(message=SimpleNamespace(content='OK'))]))
+    monkeypatch.setattr(llm_client, 'OpenAI', lambda **kwargs:
+        SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))))
+    client = llm_client.LLMClient()
+    client.generate_text('offline', max_retries=1)
+    assert create.call_args.kwargs['model'] == 'qwen-plus-2025-12-01'
+
+
+def test_missing_model_defaults_to_fixed_version(monkeypatch, tmp_path):
+    monkeypatch.delenv('LLM_MODEL', raising=False)
+    monkeypatch.setenv('LLM_BASE_URL', model_settings.QWEN_URL)
+    assert ModelRegistry(tmp_path/'absent.json').current().model == model_settings.QWEN_MODEL
+
+
+@pytest.mark.parametrize('override,expected', [(None,300.0), ('600',600.0)])
+def test_model_timeout_reaches_sdk_and_react_metadata(registry, monkeypatch, override, expected):
+    from react_reference import reference
+    if override is None:
+        monkeypatch.delenv('LLM_TIMEOUT', raising=False)
+    else:
+        monkeypatch.setenv('LLM_TIMEOUT', override)
+    sdk = Mock(return_value=SimpleNamespace())
+    monkeypatch.setattr(llm_client, 'OpenAI', sdk)
+    client = llm_client.LLMClient()
+    assert client.timeout_seconds == sdk.call_args.kwargs['timeout'] == expected
+    assert sdk.call_args.kwargs['max_retries'] == 0
+    assert reference()['model_timeout_seconds'] == expected
+
+
+@pytest.mark.parametrize('value', ['0','-1','nan','inf','invalid'])
+def test_model_timeout_rejects_invalid_values(monkeypatch, value):
+    monkeypatch.setenv('LLM_TIMEOUT', value)
+    with pytest.raises(ValueError, match='LLM_TIMEOUT'):
+        llm_client.llm_timeout_seconds()
+
+
+
+def test_react_sdk_retries_transient_failures_without_changing_shared_client(monkeypatch):
+    import httpx
+    import openai._base_client
+    from openai import OpenAI
+    from react_reference import reference
+    calls = []
+    def handle(request):
+        calls.append(request)
+        if len(calls) < 3:
+            return httpx.Response(503, json={'error':{'message':'Transient upstream failure'}})
+        return httpx.Response(200, json={'id':'offline','object':'chat.completion','created':0,
+            'model':model_settings.QWEN_MODEL,'choices':[{'index':0,'finish_reason':'stop',
+            'message':{'role':'assistant','content':'{"decision":"FINAL","feedback":"OK"}'}}]})
+    monkeypatch.setattr(openai._base_client.time, 'sleep', lambda seconds:None)
+    client = llm_client.LLMClient.__new__(llm_client.LLMClient)
+    client.model = model_settings.QWEN_MODEL
+    client.api_key = 'offline-key'
+    client.base_url = 'https://offline.invalid/v1'
+    client.timeout_seconds = 300
+    client.client = OpenAI(api_key=client.api_key,base_url=client.base_url,timeout=300,max_retries=0,
+                           http_client=httpx.Client(transport=httpx.MockTransport(handle)))
+    try:
+        text = client.generate_messages([{'role':'user','content':'Return JSON.'}],
+                    max_retries=1,sdk_max_retries=2,response_format={'type':'json_object'})
+        assert json.loads(text)['decision'] == 'FINAL'
+        assert len(calls) == 3
+        assert client.client.max_retries == 0 and client.client.timeout == 300
+        assert reference()['sdk_max_retries'] == 2
+        assert 'paper_model_required' not in reference()
+    finally:
+        client.client.close()

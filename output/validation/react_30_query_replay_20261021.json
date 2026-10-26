@@ -1,0 +1,2037 @@
+{
+  "kind": "offline_saved_query_replay_not_model_rerun",
+  "run_id": "e6cf4e80cdf244eefbf7cf422fca186f2",
+  "report_sha256": "50c7017650e2dad9d2bde0d245a999f886d5308801df4931a3360c8079694574",
+  "model": "qwen-plus-2025-12-01",
+  "local_status_counts": {
+    "done": 26,
+    "error": 4
+  },
+  "final_empty": 24,
+  "official_means": {
+    "entity_set_f1": 0.8648768768768769,
+    "row_matching_f1": 0.7102102102102102,
+    "exact_match_f1": 0.0
+  },
+  "saved_final_means": {
+    "entity_set_f1": 0.041666666666666664,
+    "row_matching_f1": 0.03333333333333333,
+    "exact_match_f1": 0.03333333333333333
+  },
+  "first_round_means": {
+    "entity_set_f1": 0.6333333333333333,
+    "row_matching_f1": 0.5666666666666667,
+    "exact_match_f1": 0.3
+  },
+  "local_rounds": [
+    {
+      "index": 1,
+      "query_id": "TUC_001",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 2,
+      "query_id": "TUC_001",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 3,
+      "query_id": "TUC_001",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 4,
+      "query_id": "TUC_001",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 5,
+      "query_id": "TUC_001",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "success",
+          "error": null,
+          "count": 54,
+          "entity_set_f1": 0.25,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.25,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 6,
+      "query_id": "TUC_001",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 7,
+      "query_id": "TUC_002",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 8,
+      "query_id": "TUC_002",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 9,
+      "query_id": "TUC_002",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 10,
+      "query_id": "TUC_002",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 11,
+      "query_id": "TUC_002",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 12,
+      "query_id": "TUC_002",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 13,
+      "query_id": "TUC_003",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 14,
+      "query_id": "TUC_003",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 15,
+      "query_id": "TUC_003",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      }
+    },
+    {
+      "index": 16,
+      "query_id": "TUC_003",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 17,
+      "query_id": "TUC_003",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 18,
+      "query_id": "TUC_003",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "syntax_error",
+          "error": "Expected SelectQuery, found '|'  (at char 1870), (line:50, col:63)",
+          "count": 0,
+          "entity_set_f1": 0,
+          "row_matching_f1": 0,
+          "exact_match_f1": 0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 19,
+      "query_id": "TUC_004",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "success",
+          "error": null,
+          "count": 54,
+          "entity_set_f1": 0.8,
+          "row_matching_f1": 0.5,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.5
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 20,
+      "query_id": "TUC_004",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 21,
+      "query_id": "TUC_004",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "syntax_error",
+          "error": "Expected SelectQuery, found 'UNION'  (at char 958), (line:26, col:3)",
+          "count": 0,
+          "entity_set_f1": 0,
+          "row_matching_f1": 0,
+          "exact_match_f1": 0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 22,
+      "query_id": "TUC_004",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 23,
+      "query_id": "TUC_004",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "syntax_error",
+          "error": "Expected SelectQuery, found 'UNION'  (at char 425), (line:11, col:3)",
+          "count": 0,
+          "entity_set_f1": 0,
+          "row_matching_f1": 0,
+          "exact_match_f1": 0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 24,
+      "query_id": "TUC_004",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 0.5,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 25,
+      "query_id": "TUC_005",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 26,
+      "query_id": "TUC_005",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 27,
+      "query_id": "TUC_005",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 28,
+      "query_id": "TUC_005",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 29,
+      "query_id": "TUC_005",
+      "rounds": [
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "success",
+          "error": null,
+          "count": 18,
+          "entity_set_f1": 1.0,
+          "row_matching_f1": 1.0,
+          "exact_match_f1": 1.0,
+          "execution_accuracy_binary": 1,
+          "exact_match": 1,
+          "f1": 1.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 30,
+      "query_id": "TUC_005",
+      "rounds": [
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "empty_result",
+          "error": null,
+          "count": 0,
+          "entity_set_f1": 0.0,
+          "row_matching_f1": 0.0,
+          "exact_match_f1": 0.0,
+          "execution_accuracy_binary": 0,
+          "exact_match": 0,
+          "f1": 0.0
+        },
+        {
+          "status": "syntax_error",
+          "error": "Expected SelectQuery, found 'UNION'  (at char 837), (line:20, col:3)",
+          "count": 0,
+          "entity_set_f1": 0,
+          "row_matching_f1": 0,
+          "exact_match_f1": 0
+        }
+      ],
+      "saved_final": {
+        "entity_set_f1": 0.0,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    }
+  ],
+  "official_query_replay": [
+    {
+      "query_id": "TUC_001",
+      "question_number": "1",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_001",
+      "question_number": "2",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_001",
+      "question_number": "3",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_001",
+      "question_number": "4",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_001",
+      "question_number": "5",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_001",
+      "question_number": "6",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_002",
+      "question_number": "1",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_002",
+      "question_number": "2",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_002",
+      "question_number": "3",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_002",
+      "question_number": "4",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_002",
+      "question_number": "5",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_002",
+      "question_number": "6",
+      "saved_count": 36,
+      "local_count": 36,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_003",
+      "question_number": "1",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_003",
+      "question_number": "2",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_003",
+      "question_number": "3",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_003",
+      "question_number": "4",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_003",
+      "question_number": "5",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_003",
+      "question_number": "6",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_004",
+      "question_number": "1",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_004",
+      "question_number": "2",
+      "saved_count": 36,
+      "local_count": 36,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_004",
+      "question_number": "3",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_004",
+      "question_number": "4",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_004",
+      "question_number": "5",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_004",
+      "question_number": "6",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_005",
+      "question_number": "1",
+      "saved_count": 19,
+      "local_count": 19,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_005",
+      "question_number": "2",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_005",
+      "question_number": "3",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_005",
+      "question_number": "4",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_005",
+      "question_number": "5",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    },
+    {
+      "query_id": "TUC_005",
+      "question_number": "6",
+      "saved_count": 18,
+      "local_count": 18,
+      "status": "success",
+      "error": null
+    }
+  ],
+  "context_isomorphic_to_raw_ttl": true,
+  "official_scores_replayed": [
+    {
+      "index": 1,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 2,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 3,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 4,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 5,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 6,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 7,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 8,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 9,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 10,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 11,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 12,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.9866666666666666,
+        "row_matching_f1": 0.6666666666666666,
+        "exact_match_f1": 0.6666666666666666
+      },
+      "published": {
+        "entity_set_f1": 0.9866666666666666,
+        "row_matching_f1": 0.6666666666666666,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 13,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 14,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 15,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 16,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 17,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 18,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 19,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 20,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.9866666666666666,
+        "row_matching_f1": 0.6666666666666666,
+        "exact_match_f1": 0.6666666666666666
+      },
+      "published": {
+        "entity_set_f1": 0.9866666666666666,
+        "row_matching_f1": 0.6666666666666666,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 21,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 22,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 23,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 24,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 25,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.972972972972973,
+        "row_matching_f1": 0.972972972972973,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.972972972972973,
+        "row_matching_f1": 0.972972972972973,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 26,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 27,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 28,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 29,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 1.0
+      },
+      "published": {
+        "entity_set_f1": 1.0,
+        "row_matching_f1": 1.0,
+        "exact_match_f1": 0.0
+      }
+    },
+    {
+      "index": 30,
+      "status": "success",
+      "error": null,
+      "scores": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      },
+      "published": {
+        "entity_set_f1": 0.5,
+        "row_matching_f1": 0.0,
+        "exact_match_f1": 0.0
+      }
+    }
+  ],
+  "official_replay_means": {
+    "entity_set_f1": 0.8648768768768769,
+    "row_matching_f1": 0.7102102102102102,
+    "exact_match_f1": 0.4444444444444445
+  },
+  "official_score_matches": 16
+}

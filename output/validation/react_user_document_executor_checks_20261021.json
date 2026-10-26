@@ -1,0 +1,64 @@
+{
+  "kind": "offline_document_executor_comparison_not_model_run",
+  "implementation_mode": "buildingqa_react_document_v1",
+  "source_triples": 1855,
+  "workbench_triples": 51942,
+  "max_iterations": 3,
+  "feedback_policy": "rdflib_graphdb_preview_v1",
+  "provided_document": {
+    "document": "react_baseline_implementation.md",
+    "sha256": "a13be7714b5700b176a09e12447edf7595db305744c6ddd26c19f2e655aaa51e",
+    "extracted_source_sha256": "306793307fa3dc98ace33ad84c429b9c43fa90ec362d8f5b795115da1f8fcdae",
+    "prompt_expressions_match_pinned_source": true,
+    "class_default_max_iterations": 5,
+    "class_default_model": "openai/o4-mini"
+  },
+  "tests_passed": 182,
+  "results": [
+    {
+      "query_id": "TUC_001",
+      "document_count": 18,
+      "adapter_count": 18,
+      "columns": 2,
+      "full_bindings_match_as_bag": true,
+      "status_fields_match": true,
+      "preview_count": 10
+    },
+    {
+      "query_id": "TUC_002",
+      "document_count": 18,
+      "adapter_count": 18,
+      "columns": 2,
+      "full_bindings_match_as_bag": true,
+      "status_fields_match": true,
+      "preview_count": 10
+    },
+    {
+      "query_id": "TUC_003",
+      "document_count": 18,
+      "adapter_count": 18,
+      "columns": 2,
+      "full_bindings_match_as_bag": true,
+      "status_fields_match": true,
+      "preview_count": 10
+    },
+    {
+      "query_id": "TUC_004",
+      "document_count": 18,
+      "adapter_count": 18,
+      "columns": 2,
+      "full_bindings_match_as_bag": true,
+      "status_fields_match": true,
+      "preview_count": 10
+    },
+    {
+      "query_id": "TUC_005",
+      "document_count": 18,
+      "adapter_count": 18,
+      "columns": 2,
+      "full_bindings_match_as_bag": true,
+      "status_fields_match": true,
+      "preview_count": 10
+    }
+  ]
+}

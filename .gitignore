@@ -10,3 +10,9 @@ _paper_text.txt
 app_server.log
 .env
 .local/
+.workbuddy/
+
+# Bulk experiment artifacts stay local; only tracked baselines and validation evidence are versioned.
+output/evaluations/*/
+output/validation/pytest_*/
+node_modules/

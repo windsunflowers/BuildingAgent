@@ -14,7 +14,7 @@ import llm_client
 from brick_agent import AgentState, BrickAction, BrickAgent, BrickSparqlQuery
 from brick_utils import SparqlExecutionStatus
 from evaluation_metrics import METRIC_KEYS, score_rows, summarize_results
-from evaluation_runner import evaluate_question
+from evaluation_runner import evaluate_question, GoldSparqlQuery
 from prompting import load_prompt
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +36,8 @@ def tiny_agent(monkeypatch, tmp_path):
     a.log_file = str(tmp_path / 'prompts.jsonl')
     original_execute = BrickSparqlQuery.execute
     monkeypatch.setattr(BrickSparqlQuery, 'execute', lambda self, isolated=True: original_execute(self, isolated=False))
+    original_gold_execute = GoldSparqlQuery.execute
+    monkeypatch.setattr(GoldSparqlQuery, 'execute', lambda self, isolated=True: original_gold_execute(self, isolated=False))
     monkeypatch.setattr(app, 'agent', a)
     monkeypatch.setattr(app, 'graph_meta', {'building': 'building', 'ttl': str(path), 'warnings': [], 'triples': 1, 'sensors': 1})
     monkeypatch.setattr(app, '_active_tid', None)
@@ -74,7 +76,8 @@ def test_english_agent_uses_english_prompt_and_tool_feedback(tiny_agent, monkeyp
     assert all(not re.search('[一-鿿]', prompt) for prompt in prompts)
     assert all('{{' not in prompt and '{%' not in prompt for prompt in prompts)
     assert 'Your task is' in prompts[0]
-    assert 'Namespaces in the loaded graph' in prompts[0]
+    assert 'Namespaces in the loaded graph' not in prompts[0]
+    assert 'Brick class aliases use' not in prompts[0]
     import hashlib
     requests = [json.loads(line) for line in Path(tiny_agent.log_file).read_text(encoding='utf-8').splitlines()
                 if json.loads(line).get('event') == 'model_request']
@@ -84,10 +87,11 @@ def test_english_agent_uses_english_prompt_and_tool_feedback(tiny_agent, monkeyp
         assert raw.decode('utf-8') == prompt
         assert hashlib.sha256(raw).hexdigest() == request['prompt_sha256']
     tiny_agent.language = 'zh'
-    # A new language selects its template without changing the original question.
+    # Legacy assignments now change display only; user text stays verbatim.
     from prompting import build_controller_prompt
     prompt, _ = build_controller_prompt(tiny_agent, AgentState('保留用户问题'))
-    assert '保留用户问题' in prompt and '用中文' in prompt
+    assert '保留用户问题' in prompt and '用中文' not in prompt
+    assert tiny_agent.language == 'en' and tiny_agent.interface_language == 'zh'
 
 
 def test_english_decomposer_does_not_receive_chinese_instructions(monkeypatch):
@@ -138,6 +142,8 @@ def test_failures_and_building_macro_use_explicit_denominators():
 
 
 def test_web_evaluation_uses_all_three_metrics_and_persists_report(tiny_agent, monkeypatch, tmp_path):
+    tiny_agent.use_decomposer = True
+    tiny_agent.decomposer = brick_decomposer.BrickQueryDecomposer()
     def run(question, **kwargs):
         assert tiny_agent.language == 'en' and kwargs == {'verbose':False}
         assert not tiny_agent.use_temporal_handler and not tiny_agent.use_aggregation
@@ -147,6 +153,7 @@ def test_web_evaluation_uses_all_three_metrics_and_persists_report(tiny_agent, m
         state.actions.append(BrickAction('Finished', 'stop', ''))
         tiny_agent._current_state = state
         return state, BrickSparqlQuery('SELECT ?x WHERE {}', execution_result=[{'x':'A'}],
+                                      bindings=[{'x': {'type':'literal', 'value':'A'}}],
                                       execution_status=SparqlExecutionStatus.SUCCESS)
     monkeypatch.setattr(tiny_agent, 'run', run)
     benchmark = tmp_path / 'benchmark.jsonl'
@@ -156,6 +163,10 @@ def test_web_evaluation_uses_all_three_metrics_and_persists_report(tiny_agent, m
     app._run_eval('test', str(benchmark), 0, 'en')
     report = app.eval_tasks['test']
     assert report['status'] == 'done'
+    assert report['configuration']['experiment'] == 'buildingqa'
+    assert report['configuration']['decomposition_policy']['prompt_variant'] == 'sensors_only'
+    assert all(not row['decomposition_policy']['temporal'] and not row['decomposition_policy']['operations']
+               for row in report['results'])
     assert report['metric_reference']['sha256'] == 'd7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b'
     assert report['summary']['model_errors'] == 1
     for key in METRIC_KEYS:
@@ -195,21 +206,24 @@ def test_language_reaches_api_task_and_english_examples(tiny_agent, monkeypatch)
     assert client.post('/api/ask', json={'question':'test','language':'fr'}).status_code == 422
 
 
-def test_cli_reports_three_official_metrics_and_retains_model_failures(monkeypatch, tmp_path):
+@pytest.mark.parametrize('display_language', ['zh', 'en'])
+def test_cli_reports_three_official_metrics_and_retains_model_failures(monkeypatch, tmp_path, display_language):
     import evaluate
     benchmark = tmp_path / 'questions.jsonl'
     target = tmp_path / 'report.json'
     benchmark.write_text('\n'.join(json.dumps({'question':q}) for q in ('partial', 'failed')), encoding='utf-8')
     def fake_item(item, args):
-        assert args.language == 'en'
+        assert args.language == display_language
         failed = item['question'] == 'failed'
         return {'question':item['question'], 'building':'test', 'status':'error' if failed else 'done',
                 **{key:0.0 if failed else 2/3 for key in METRIC_KEYS}}
     monkeypatch.setattr(evaluate, 'evaluate_item', fake_item)
-    monkeypatch.setattr('sys.argv', ['evaluate.py','--benchmark',str(benchmark),'--language','en','--report',str(target),'--workers','1'])
+    monkeypatch.setattr('sys.argv', ['evaluate.py','--benchmark',str(benchmark),'--language',display_language,'--report',str(target),'--workers','1'])
     evaluate.main()
     report = json.loads(target.read_text(encoding='utf-8'))
     assert report['configuration']['language'] == 'en'
+    assert report['configuration']['prompt_language'] == 'en'
+    assert report['configuration']['interface_language'] == display_language
     assert report['summary']['model_errors'] == 1
     assert all(report['summary'][key] == pytest.approx(1/3) for key in METRIC_KEYS)
 
@@ -252,8 +266,10 @@ def test_evaluation_uses_snapshot_and_restores_previous_context(tiny_agent, monk
     snapshot = app._prepare_ttl_context(app.EvalRequest(context_ttl=str(selected)))
     selected.write_text('changed after request', encoding='utf-8')
     tiny_agent.ttl_schema_content = 'previous context'
+    tiny_agent.schema_description = 'interactive guide must not reach the benchmark'
     def evaluate(a, item, **kwargs):
         assert a.ttl_schema_content == original
+        assert a.schema_description is None
         return {'status':'done','building':'building', **{key:1 for key in METRIC_KEYS}}
     monkeypatch.setattr(app, 'evaluate_question', evaluate)
     benchmark = tmp_path / 'benchmark.jsonl'
@@ -268,6 +284,8 @@ def test_evaluation_uses_snapshot_and_restores_previous_context(tiny_agent, monk
     import hashlib
     assert hashlib.sha256(Path(report['report_path']).with_name('context.ttl').read_bytes()).hexdigest() == report['configuration']['context_ttl']['sha256']
     assert tiny_agent.ttl_schema_content == 'previous context'
+    assert tiny_agent.schema_description == 'interactive guide must not reach the benchmark'
+    assert report['configuration']['schema_description_in_prompt'] is False
 
 
 def test_evaluation_rejects_wrong_building_before_start(tiny_agent, monkeypatch, tmp_path):
@@ -307,7 +325,7 @@ def test_active_evaluation_id_and_live_progress_are_recoverable(tiny_agent, monk
 def test_evaluation_initialization_failure_releases_busy_state(tiny_agent, monkeypatch, tmp_path):
     app.eval_tasks['e123'] = {'status':'running', 'results':[], 'summary':{}, 'error':None}
     app._eval_running = True
-    monkeypatch.setattr(app, 'policy_metadata', lambda graph: (_ for _ in ()).throw(RuntimeError('initialization failed')))
+    monkeypatch.setattr(app, 'method_metadata', lambda *args: (_ for _ in ()).throw(RuntimeError('initialization failed')))
     app._run_eval('e123', str(tmp_path / 'unused.jsonl'))
     assert app.eval_tasks['e123']['status'] == 'error'
     assert app.eval_tasks['e123']['error'] == 'initialization failed'
@@ -561,7 +579,8 @@ def test_api_passes_default_concurrency_to_worker(tiny_agent, monkeypatch, tmp_p
     monkeypatch.setattr(app.threading, 'Thread', OfflineThread)
     response = app.start_eval(app.EvalRequest(benchmark=str(benchmark)))
     assert captured['started'] and captured['target'] is app._run_eval
-    assert captured['args'][-1] == 3 and captured['args'][0] == response['task_id']
+    assert captured['args'][-3:] == (3, 'graphdb', 'brickqa')
+    assert captured['args'][0] == response['task_id']
 
 
 def test_english_exception_feedback_has_no_untranslated_control_messages(tiny_agent, monkeypatch):
@@ -597,3 +616,190 @@ def test_metric_reference_rejects_a_changed_source(monkeypatch):
     monkeypatch.setattr(evaluation_metrics, 'REFERENCE_SHA256', '0' * 64)
     with pytest.raises(RuntimeError, match='checksum mismatch'):
         metric_reference()
+
+@pytest.mark.parametrize('language', ['zh', 'en'])
+@pytest.mark.parametrize('temporal,operations', [(False, False), (True, True), (False, True), (True, False)])
+def test_module_ablation_changes_actual_prompt_without_changing_question(language, temporal, operations):
+    from prompting import build_decomposition_prompt
+    question = 'Which sensors recorded a maximum yesterday?'
+    prompt = build_decomposition_prompt(question, language, 'Namespaces: urn:test:',
+                                         use_temporal=temporal, use_aggregation=operations)
+    assert question in prompt and 'Namespaces: urn:test:' in prompt
+    if temporal and operations:
+        assert prompt == load_prompt('brick_decomposition.prompt', 'en').replace('{{ question }}', question) + '\nGraph context: Namespaces: urn:test:'
+    else:
+        assert '# Examples' not in prompt and '**Temporal Types:**' not in prompt
+        assert ('"temporal"' in prompt) == temporal
+        assert ('**Extract Temporal**' in prompt) == temporal
+        assert ('"aggregation"' in prompt) == operations
+        assert ('**Extract Aggregations**' in prompt) == operations
+        assert all(token in prompt for token in ('"sensors"', '"sensor_count"', '"query_intent"'))
+    assert not re.search('[一-鿿]', prompt)
+
+
+def test_disabled_response_fields_are_ignored_before_parsing():
+    raw = {'sensors': [], 'temporal': 'invalid disabled field',
+           'aggregation': {'required': True, 'operations': ['AVG'], 'conditions': ['secret-condition']}}
+    result = brick_decomposer.BrickQueryDecomposer()._json_to_decomposition(
+        raw, use_temporal=False, use_aggregation=False)
+    assert not result.temporal.has_constraint and result.temporal.type == 'none'
+    assert result.temporal.details == {} and result.temporal.sparql_pattern == ''
+    assert not result.aggregation.required and result.aggregation.operations == []
+    assert result.aggregation.conditions == []
+    assert 'temporal' not in result.raw_json and 'aggregation' not in result.raw_json
+    assert 'temporal' in raw and 'aggregation' in raw
+
+
+@pytest.mark.parametrize('language', ['zh', 'en'])
+@pytest.mark.parametrize('full', [False, True])
+def test_agent_module_policy_reaches_decomposer_and_controller(tiny_agent, monkeypatch, language, full):
+    from prompting import build_controller_prompt
+    prompts = []
+    def generate(prompt, **kwargs):
+        prompts.append(prompt)
+        return json.dumps({'sensors': [], 'sensor_count': 0, 'query_intent': 'List sensors',
+            'temporal': {'has_constraint': True, 'type': 'yesterday', 'details': {'date': '2020-01-01'}},
+            'aggregation': {'required': True, 'operations': ['AVG'], 'conditions': ['value > 7']}})
+    monkeypatch.setattr(brick_decomposer, 'get_client', lambda: SimpleNamespace(generate_text=generate, last_usage=None))
+    tiny_agent.use_decomposer = True
+    tiny_agent.decomposer = brick_decomposer.BrickQueryDecomposer()
+    tiny_agent.use_temporal_handler = full
+    tiny_agent.use_aggregation = full
+    tiny_agent.language = language
+    tiny_agent.dataset_date_range = 'SENTINEL-TIMESERIES-RANGE'
+    monkeypatch.setattr(tiny_agent, 'controller', lambda state: BrickAction('Finished', 'stop', ''))
+    state, _ = tiny_agent.run('Which temperature sensors are in each zone?', verbose=False)
+    assert len(prompts) == 1 and ('"temporal"' in prompts[0]) == full
+    assert ('"aggregation"' in prompts[0]) == full
+    assert 'SENTINEL-TIMESERIES-RANGE' not in prompts[0]
+    assert 'Graph context:' not in prompts[0]
+    assert state.decomposition.temporal.has_constraint == full
+    assert state.decomposition.aggregation.required == full
+    assert state.decomposition_policy['temporal'] == full
+    assert state.decomposition_policy['operations'] == full
+    actual_prompt = Path(tiny_agent.decomposer.last_prompt['prompt_file']).read_text(encoding='utf-8')
+    assert actual_prompt == prompts[0]
+    prompt, guide = build_controller_prompt(tiny_agent, state)
+    if not full:
+        assert not guide
+        assert all(token not in prompt for token in ('SENTINEL-TIMESERIES-RANGE', '- Temporal constraint:',
+                                                     '- Aggregation:', '- 时间约束：', '- 聚合：'))
+        assert state.decomposition.temporal.details == {} and state.decomposition.aggregation.conditions == []
+    else:
+        assert 'SENTINEL-TIMESERIES-RANGE' not in prompt and 'AVG' in prompt
+
+
+def test_parallel_evaluation_fork_preserves_parent_full_modules(tiny_agent):
+    from prompting import decomposition_policy
+    tiny_agent.use_decomposer = True
+    tiny_agent.decomposer = brick_decomposer.BrickQueryDecomposer()
+    child = tiny_agent.fork_evaluation()
+    assert decomposition_policy(child)['prompt_variant'] == 'sensors_only'
+    assert decomposition_policy(tiny_agent)['prompt_variant'] == 'full'
+    assert child.decomposer is not tiny_agent.decomposer
+
+
+@pytest.mark.parametrize('profile,enabled', [('buildingqa', False), ('lbnl_fdd', True)])
+def test_cli_explicit_module_profiles(monkeypatch, tmp_path, profile, enabled):
+    import main
+    import sys
+    ttl = tmp_path / 'test.ttl'
+    ttl.write_text('', encoding='utf-8')
+    calls = []
+    def create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(**kwargs, initialize_graph=lambda **kw: None,
+                               run=lambda *a, **kw: (None, None))
+    monkeypatch.setattr(main, 'BrickAgent', create)
+    monkeypatch.setattr(sys, 'argv', ['main.py', '--ttl', str(ttl), '--question', 'List sensors',
+                                     '--experiment', profile])
+    main.main()
+    assert calls[0]['use_decomposer']
+    assert calls[0]['use_temporal_handler'] == enabled
+    assert calls[0]['use_aggregation'] == enabled
+
+
+@pytest.mark.parametrize('flag', ['--no-temporal', '--no-decomposer'])
+def test_cli_rejects_conflicting_module_profile(monkeypatch, flag):
+    import main
+    import sys
+    monkeypatch.setattr(sys, 'argv', ['main.py', '--ttl', 'unused.ttl', '--experiment', 'lbnl_fdd', flag])
+    with pytest.raises(SystemExit) as result:
+        main.main()
+    assert result.value.code == 2
+
+@pytest.mark.parametrize('full', [False, True])
+def test_display_language_does_not_change_any_model_prompt_or_observation(tiny_agent, monkeypatch, full):
+    runs = []
+    tiny_agent.use_decomposer = True
+    tiny_agent.use_temporal_handler = full
+    tiny_agent.use_aggregation = full
+    tiny_agent.decomposer = brick_decomposer.BrickQueryDecomposer()
+    question = 'Which temperature sensors are in each zone?'
+    for display in ('zh', 'en'):
+        captured = []
+        answers = iter([json.dumps({'sensors': [], 'sensor_count': 0, 'query_intent': 'List sensors'}),
+            'Thought: Retrieve sensors.\nAction: execute_sparql(SELECT ?s WHERE { ?s a brick:Zone_Air_Temperature_Sensor })',
+            'Thought: Finished.\nAction: stop()'])
+        def generate(prompt, **kwargs):
+            captured.append(prompt)
+            return next(answers)
+        client = SimpleNamespace(generate_text=generate, last_usage=None, model='offline-test')
+        monkeypatch.setattr(llm_client, 'get_client', lambda: client)
+        monkeypatch.setattr(brick_decomposer, 'get_client', lambda: client)
+        tiny_agent.language = display
+        state, final = tiny_agent.run(question, verbose=False)
+        assert state.language == 'en' and state.interface_language == display
+        assert state.question == question and final.execution_result
+        runs.append((captured, [a.observation for a in state.actions], final.sparql))
+    assert runs[0] == runs[1]
+    assert len(runs[0][0]) == 3
+    assert all(not re.search('[一-鿿]', prompt) for prompt in runs[0][0])
+
+
+@pytest.mark.parametrize('field', ['language', 'interface_language'])
+def test_chinese_display_api_cannot_change_prompt_language(tiny_agent, monkeypatch, field):
+    import time
+    monkeypatch.setattr(tiny_agent, 'controller', lambda state: BrickAction('Finished', 'stop', ''))
+    client = TestClient(app.app)
+    response = client.post('/api/ask', json={'question': '保留这个问题原文', field: 'zh'})
+    assert response.status_code == 200
+    for _ in range(100):
+        row = client.get('/api/task/' + response.json()['task_id']).json()
+        if row['status'] != 'running':
+            break
+        time.sleep(.01)
+    assert row['language'] == row['prompt_language'] == 'en'
+    assert row['interface_language'] == 'zh' and row['question'] == '保留这个问题原文'
+    assert client.post('/api/ask', json={'question': 'test', 'prompt_language': 'zh'}).status_code == 422
+    assert client.post('/api/evaluate', json={'prompt_language': 'zh'}).status_code == 422
+    assert client.get('/api/status').json()['prompt_language'] == 'en'
+
+
+def test_example_display_labels_share_identical_model_questions(tiny_agent):
+    client = TestClient(app.app)
+    zh = client.get('/api/examples?language=zh').json()
+    en = client.get('/api/examples?language=en').json()
+    assert zh['questions'] != en['questions']
+    assert zh['model_questions'] == en['model_questions'] == en['questions']
+    assert len(zh['questions']) == len(zh['model_questions'])
+
+
+def test_chinese_evaluation_display_is_recorded_separately(tiny_agent, monkeypatch, tmp_path):
+    tiny_agent.use_decomposer = True
+    tiny_agent.decomposer = brick_decomposer.BrickQueryDecomposer()
+    before = tiny_agent.interface_language
+    benchmark = tmp_path / 'display.jsonl'
+    benchmark.write_text(json.dumps({'question': 'List sensors'}), encoding='utf-8')
+    seen = []
+    def evaluate(agent, item, **kwargs):
+        seen.append((agent.language, agent.interface_language))
+        return {'question':item['question'], 'status':'done', 'building':'test', **{k:1 for k in METRIC_KEYS}}
+    monkeypatch.setattr(app, 'evaluate_question', evaluate)
+    app.eval_tasks['display'] = {'status':'running','results':[],'summary':{},'error':None}
+    app._run_eval('display', str(benchmark), language='zh', workers=2)
+    report = app.eval_tasks['display']
+    assert seen == [('en', 'zh')]
+    assert report['configuration']['language'] == report['configuration']['prompt_language'] == 'en'
+    assert report['configuration']['interface_language'] == 'zh'
+    assert tiny_agent.interface_language == before

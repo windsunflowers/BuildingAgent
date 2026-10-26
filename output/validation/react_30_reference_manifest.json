@@ -1,0 +1,22 @@
+{
+  "react_source": {
+    "file": "tmp/react_upstream_verified_20261021.py",
+    "source": "https://github.com/INFERLab/BuildingQA/blob/b792a627419dfb679ad1f26e4d3dc325a758e95b/ReAct_agent/sparql_refinement_agent.py",
+    "sha256": "91f3409b15df57d652895fa0b94b7668cc6cdafaeb0cecb1c17784e4bbdcd52e"
+  },
+  "notebook": {
+    "file": "tmp/buildingqa_notebook_verified.ipynb",
+    "source": "https://github.com/INFERLab/BuildingQA/blob/b792a627419dfb679ad1f26e4d3dc325a758e95b/ReAct_demo.ipynb",
+    "sha256": "fec11c4493009eab57ebf4cecd1f66cf6cc44604d3cab3f1604bfc4d06e4f2a9"
+  },
+  "historical_results": {
+    "file": "output/validation/buildingqa_react5000_gemini_upstream.csv",
+    "source": "https://github.com/INFERLab/BuildingQA/blob/b792a627419dfb679ad1f26e4d3dc325a758e95b/Experiment_Results/ReAct(5000)/gemini-flash-2.5.csv",
+    "sha256": "e5970751169489ef665a4f675d7865793edd905a00c7f8afaa35f0eddaa5b3d2"
+  },
+  "metrics": {
+    "file": "third_party/buildingqa/metrics.py",
+    "source": "https://github.com/INFERLab/BuildingQA/blob/b792a627419dfb679ad1f26e4d3dc325a758e95b/metrics.py",
+    "sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b"
+  }
+}

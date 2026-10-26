@@ -1,0 +1,47 @@
+{
+  "task_id": "e055fffde2d90446494951b6835260f81",
+  "done_at_check": 33,
+  "status": "running",
+  "active_questions": [
+    {
+      "index": 1,
+      "total": 36,
+      "question": "For each HVAC zone in the building, what are the timeseries IDs for the available zone temperature sensor' points, min and max temperature setpoints, temperature setpoints (single, heating/cooling or occupied/unoccupied), occupancy sensors and commands, and any related VAV damper, discharge temperature, and reheat command points?",
+      "query_id": "DFLEXLIBS_001",
+      "stage": "model",
+      "started_at": 1792990407.3929782,
+      "elapsed_seconds": 1002.8,
+      "phase": "完成",
+      "steps": 4,
+      "tokens": 60906
+    },
+    {
+      "index": 2,
+      "total": 36,
+      "question": "For each HVAC zone, what is the zone name and the timeseries ID for each point that the zone has, including the zone air temperature sensor point, the minimum air temperature setpoint point, the maximum air temperature setpoint point, the zone air heating temperature setpoint point, the zone air cooling temperature setpoint point, the occupancy sensor point, the occupancy command point, the unoccupied cooling temperature setpoint point, the unoccupied heating temperature setpoint point, the occupied cooling temperature setpoint point, the occupied heating temperature setpoint point, the general zone air temperature setpoint point, and for the VAV feeding that zone the damper position setpoint point, the discharge air temperature sensor point, and the valve reheat command point?",
+      "query_id": "DFLEXLIBS_001",
+      "stage": "model",
+      "started_at": 1792990407.393978,
+      "elapsed_seconds": 1002.8,
+      "phase": "完成",
+      "steps": 4,
+      "tokens": 65943
+    },
+    {
+      "index": 3,
+      "total": 36,
+      "question": "For each labeled HVAC zone, list its name and all associated timeseries identifiers for temperature measurements, various setpoint targets (min, max, heating, cooling, occupied and unoccupied), occupancy sensing and command, as well as the VAV unit’s damper position, discharge temperature, and reheat control signals.",
+      "query_id": "DFLEXLIBS_001",
+      "stage": "model",
+      "started_at": 1792990407.393978,
+      "elapsed_seconds": 1002.8,
+      "phase": "完成",
+      "steps": 8,
+      "tokens": 144081
+    }
+  ],
+  "scorer_sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b",
+  "reference_mapping_timeout_seconds": 1200,
+  "timeout_is_hard_deadline": false,
+  "backend_restart": false
+}

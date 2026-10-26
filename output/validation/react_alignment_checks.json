@@ -1,0 +1,67 @@
+{
+  "validation_kind": "offline integration; no real ReAct model run",
+  "tests_passed": 148,
+  "reference": {
+    "repository": "https://github.com/INFERLab/BuildingQA",
+    "commit": "b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "source": "ReAct_agent/sparql_refinement_agent.py",
+    "sha256": "91f3409b15df57d652895fa0b94b7668cc6cdafaeb0cecb1c17784e4bbdcd52e",
+    "max_iterations": 3,
+    "iteration_source": "ReAct_demo.ipynb (explicit 3; class default 5)",
+    "workflow": "writer_execute_critic",
+    "temperature": 0,
+    "response_format": {
+      "type": "json_object"
+    },
+    "max_output_tokens": null,
+    "model_attempts_per_call": 1,
+    "prompt_language": "en",
+    "sdk_max_retries": 0,
+    "upstream_sdk_retries": "not explicitly configured by the reference notebook",
+    "model_timeout_seconds": 30.0,
+    "execution_mode": "local_rdflib",
+    "query_rewriting": false,
+    "local_critic_observation": "official row-count summary; no result preview",
+    "adaptations": [
+      "shared configured API/model and read-only loaded graph (including existing ontology merge)",
+      "per-question isolated SPARQL worker; 180 second execution budget; cancellation",
+      "shared SDK timeout/retry wrapper; no extra application retries",
+      "shared official three-F1 scorer and invalid-gold precheck",
+      "same frozen TTL context as BrickQA; context is not independently resampled"
+    ]
+  },
+  "metrics": {
+    "protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b",
+    "source": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\third_party\\buildingqa\\metrics.py",
+    "metrics": [
+      "entity_set_f1",
+      "row_matching_f1",
+      "exact_match_f1"
+    ],
+    "duplicates": "preserved",
+    "column_mapping": "one global mapping, optimized for Row Matching F1",
+    "exact_match_f1": "fixed column positions, one-to-one row matching; not binary EM",
+    "aggregation": "question mean and separate building macro average",
+    "model_failure": "zero",
+    "gold_failure": "invalid comparable summary",
+    "cancelled_question": "not scored; incomplete run"
+  },
+  "original_loop_cases": [
+    "critic FINAL",
+    "IMPROVE then FINAL",
+    "critic invalid JSON",
+    "later writer invalid JSON",
+    "maximum 3 rounds",
+    "later writer transport failure"
+  ],
+  "verified": [
+    "role messages equal the executable pinned loop",
+    "same shared model client",
+    "NoKG has no hidden graph/decomposition/gold inputs",
+    "raw SPARQL is not repaired",
+    "web/CLI method provenance and official scoring",
+    "cancellation and independent worker state"
+  ],
+  "remaining": "Real model paired experiments across all buildings and context conditions have not been run"
+}
