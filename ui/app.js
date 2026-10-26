@@ -171,6 +171,9 @@ function renderEvaluation(d){
   $('evalSummary').replaceChildren(facts,metrics);
   $('evalSummary').append(el('p','evaluation-note metric-protocol',t('评分协议：')+(d.metric_protocol||'BuildingQA (legacy report)')+' · '+t('汇总：已评测题目均值；建筑宏平均另存报告。')));
   $('evalSummary').append(el('p','evaluation-note',t('本轮方法：')+((d.configuration?.method||'brickqa')==='react'?'ReAct · BuildingQA':'BrickQA')));
+  const localExecution=d.configuration?.method_policy?.rdflib_execution||d.configuration?.baseline_reference?.rdflib_execution;
+  if(localExecution?.optimizer==='connected_bgp')$('evalSummary').append(el('p','evaluation-note',t('本轮启用本地 RDFLib 连接顺序优化；查询与数据不变，单次预算仍为 180 秒。此项属于执行器工程适配。')));
+  if(d.configuration?.completion_provenance)$('evalSummary').append(el('p','evaluation-note',t('本报告由历史已评测题与本次补跑题合成，逐题来源已记录；并非整套题的新模型重跑。')));
   if(d.configuration?.method==='react'){
     if(d.configuration.evaluation_graph?.scope==='raw_building_ttl')$('evalSummary').append(el('p','evaluation-note',t('按提供文档使用建筑 TTL 源图，不合并本体；标准与预测查询使用同一执行图。')));
     $('evalSummary').append(el('p','evaluation-note',t('实际模型：')+(d.configuration.model_configuration?.model||d.configuration.model||'—')));

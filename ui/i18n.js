@@ -5,6 +5,8 @@ window.BrickI18n = (() => {
   try { language = localStorage.getItem('brickqa-language'); } catch (_) {}
   if (!['zh', 'en'].includes(language)) language = 'zh';
   const english = {
+    '本轮启用本地 RDFLib 连接顺序优化；查询与数据不变，单次预算仍为 180 秒。此项属于执行器工程适配。':'This run uses local RDFLib join ordering. Queries and data are unchanged; the per-query budget remains 180 seconds. This is an execution-layer adaptation.',
+    '本报告由历史已评测题与本次补跑题合成，逐题来源已记录；并非整套题的新模型重跑。':'This report combines previously evaluated questions and the new retry subset, with per-question provenance. It is not a fresh model run over the full benchmark.',
     '计算官方 F1（列匹配可能耗时）':'Computing official F1 (column alignment may take time)',
     '当前建筑没有对应的基准题集':'No benchmark is available for the loaded building',
     '已提交评测，服务端确认后端：':'Evaluation submitted; server-confirmed backend: ',

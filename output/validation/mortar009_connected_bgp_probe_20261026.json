@@ -1,0 +1,9 @@
+{
+  "kind": "experimental_rdflib_custom_bgp_not_production",
+  "seconds": 1.014999999999418,
+  "status": "success",
+  "error": null,
+  "rows": 470,
+  "graphdb_calls": 0,
+  "same_multiset_as_independent_raw_graph_join": true
+}

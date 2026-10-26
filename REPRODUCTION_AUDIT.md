@@ -1,3 +1,21 @@
+## 2026-10-26 九道标准查询超时修复（本地 RDFLib）
+
+在用户明确要求解决九道标准查询超时、保留本地 RDFLib 与单次180秒预算后，将已验证的连接重排集成为显式执行器适配。rdflib_execution.py 通过 CUSTOM_EVALS 仅为 Project/Distinct/BGP 构成的无限制 SELECT 在每步绑定后重选未绑定节点最少的模式；单模式仍调用 RDFLib 原 evalBGP。包含 Slice/LIMIT/OFFSET、ORDER BY、聚合、BIND、OPTIONAL、UNION、子查询等的整个查询不启用优化。无查询重写、无图改动、无GraphDB、无LIMIT追加、无金标准改写。优化上下文按请求隔离并覆盖惰性物化，结束或异常均恢复。BRICK_RDFLIB_OPTIMIZER=native 可回到原生求值；默认 connected_bgp。作者源文件不修改，不能把该适配标作执行器完全原样。
+
+新元数据在 method_policy.rdflib_execution / 本地 ReAct baseline_reference.rdflib_execution 记录 RDFLib版本、模式、适用范围及无ORDER BY结果行序可能变化。单次预算仍180秒，不向模型注入金标准。黄金及预测共享同一本地执行通道，搜索/定位原作者工具直接 graph.query 不受请求优化上下文影响。
+
+九道原始 gold 在正式 query_graph/隔离进程通道下分别返回470行，首次约0.968秒、其余约0.140–0.250秒，完整多重集均与独立本地图遍历一致；原报告字节未改。证据 output/validation/nine_gold_rdflib_fixed_20261026.json。补跑题集保留原题和gold，只抽取原索引68–76，写入 output/validation/bldg11_mortar009_retry_20261026.jsonl。
+
+验证：228项完整回归通过，之后新增的重复行/RDF类型差分用例及原执行器用例共16项定向测试通过。服务已重启，单次180秒、Qwen固定版本与NoKG条件不变。仅补跑9题，任务e819b9f2c24d94ad18a066a3fbcf540ec，9/9完成、gold_error=0、model_error=0。新补全报告eef502e8234cf4ab89ecd0f7b74764d16复用原67题并替换9题，全部76题均有成功标准结果，保留原2个模型语法错误计零：Entity=0.36548762206588403，Row=0.28137814359687185，Exact=0.11294072153439859。新报告逐题带来源及原/补跑报告SHA，configuration.completion_provenance标注mixed_execution_policy=true；不能称为整轮统一执行器条件的新模型实验。旧报告哈希保持2341450d5269fc21156956050ef3d49db08f3d66ab2ed0568cbdb9271be2a726。
+
+## 2026-10-26 MORTAR_009 超时解决方案只读验证
+
+针对 e69c5d55371da4354b7c3f5f74f2ba16f 的9个重复 gold_error，读取保存的同一 gold_execution_sparql（不改查询），在空闲状态只读测试：原生 RDFLib 串行于20秒诊断预算超时；GraphDB 原查询首次约6.687秒返回470行。再按本地原始62578三元组独立计算 rdf:type/rdfs:subClassOf*、hasPoint、feeds+、HVAC_Zone 连接（保留多重集），470行，与 GraphDB infer=false 返回逐项多重集一致；该次关闭推理的远程查询约0.234秒。这里只证实这条查询，不证明两后端所有语义/推理条件相同。未把独立核算替换为正式gold。
+
+独立 CachedPathGraph 属性路径缓存探测仍在20秒预算超时；未接入正式代码。不能把该失败实验写成已完成加速。建议路线：如采用GraphDB执行适配，gold与生成查询均统一后端，并先核对建筑数据/推理、固定配置；按图数据哈希+完整查询+后端/推理配置缓存成功的全量gold，重复变体不重复执行。若坚持原生作者RDFLib条件，则保留独立实验、进行通用等价执行计划优化，不擅自改gold、加LIMIT或删题。增加SPARQL预算只作为临时诊断措施，不视为性能根治。
+
+本轮无生产代码变更、无模型调用、无历史结果修改。证据：output/validation/mortar009_execution_probe_20261026.json、mortar009_independent_crosscheck_20261026.json、mortar009_path_cache_probe_20261026.json。
+
 ## 2026-10-26 BuildingQA ReAct 方法 + 固定 Qwen 的最终口径
 
 用户再次明确：对齐 BuildingQA 的 ReAct 方法，模型继续 qwen-plus-2025-12-01。本轮不再将“必须改 Gemini”作为方法对齐条件；metadata 将误导性的 paper_model_required 改为 caller-selected model policy，并将 Gemini 仅标作 BrickQA 论文历史模型。未自动更换模型。

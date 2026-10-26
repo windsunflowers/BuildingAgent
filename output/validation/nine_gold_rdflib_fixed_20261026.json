@@ -1,0 +1,105 @@
+{
+  "kind": "nine_original_gold_queries_local_rdflib_no_model_calls",
+  "source_report": "D:\\\u684c\u9762\\HKUST\\Brickqa\\BrickQA\\output\\evaluations\\e69c5d55371da4354b7c3f5f74f2ba16f\\report.json",
+  "source_sha256": "2341450d5269fc21156956050ef3d49db08f3d66ab2ed0568cbdb9271be2a726",
+  "execution": {
+    "engine": "rdflib",
+    "version": "7.6.0",
+    "optimizer": "connected_bgp",
+    "adaptation": "query_local_connected_bgp_v1",
+    "eligible_algebra": [
+      "SelectQuery",
+      "Project",
+      "Distinct",
+      "BGP"
+    ],
+    "query_text_modified": false,
+    "graph_modified": false,
+    "unordered_result_sequence_may_change": true
+  },
+  "sparql_budget_seconds": 180,
+  "source_triples": 62578,
+  "results": [
+    {
+      "original_question_index": 68,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.9680000000007567,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 69,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.25,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 70,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.14099999999962165,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 71,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.14099999999962165,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 72,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.13999999999941792,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 73,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.15599999999903957,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 74,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.14100000000325963,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 75,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.14099999999962165,
+      "same_multiset_as_independent_raw_graph_join": true
+    },
+    {
+      "original_question_index": 76,
+      "query_id": "MORTAR_009",
+      "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+      "status": "success",
+      "rows": 470,
+      "elapsed_seconds": 0.15599999999903957,
+      "same_multiset_as_independent_raw_graph_join": true
+    }
+  ]
+}

@@ -36,7 +36,9 @@ def evaluation_timeout(configured=None):
 
 
 def policy_metadata(graph):
+    from rdflib_execution import execution_metadata
     return {'implementation_mode': 'upstream',
+            'rdflib_execution': execution_metadata(),
             'evaluation_alignment': EVALUATION_ALIGNMENT,
             'upstream_commit': UPSTREAM_COMMIT,
             'scope': ['search_brick', 'get_brick_entity', 'get_property_examples', 'csv_observations',

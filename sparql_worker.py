@@ -32,6 +32,12 @@ def _start_query_process(process):
 
 
 def _execute(graph, query, display_limit, include_bindings=False):
+    from rdflib_execution import query_execution
+    with query_execution(graph, query) as prepared:
+        return _materialize(graph, prepared, display_limit, include_bindings)
+
+
+def _materialize(graph, query, display_limit, include_bindings=False):
     result = graph.query(query)
     if result.type == 'ASK':
         value = bool(result.askAnswer)

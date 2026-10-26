@@ -66,6 +66,7 @@ def document_reference():
 
 def reference(backend='graphdb', endpoint=None):
     from llm_client import llm_timeout_seconds
+    from rdflib_execution import execution_metadata
     _expressions()
     result = {'repository':'https://github.com/INFERLab/BuildingQA', 'commit':COMMIT,
             'provided_document':document_reference(),
@@ -82,6 +83,7 @@ def reference(backend='graphdb', endpoint=None):
             'sdk_max_retries':2, 'upstream_sdk_retries':'OpenAI client default; notebook does not override it',
             'model_timeout_seconds':llm_timeout_seconds(),
             'execution_mode':'local_rdflib', 'query_rewriting':False,
+            'rdflib_execution':execution_metadata() if backend == 'rdflib' else None,
             'execution_graph_scope':'raw_building_ttl', 'ontology_merge':False,
             'alignment_target':'BuildingQA_RDFLib_branch',
             'feedback_policy':'upstream_rdflib_row_count_only_v1',

@@ -1,0 +1,47 @@
+{
+  "kind": "diagnostic_aggregation_not_complete_valid_reproduction",
+  "source_report": "output\\evaluations\\e69c5d55371da4354b7c3f5f74f2ba16f\\report.json",
+  "source_sha256": "2341450d5269fc21156956050ef3d49db08f3d66ab2ed0568cbdb9271be2a726",
+  "sparql_budget_seconds": 180,
+  "total_questions": 76,
+  "gold_error_count": 9,
+  "model_error_count": 2,
+  "official_comparable_summary": null,
+  "diagnostic_all_questions": {
+    "denominator": 76,
+    "gold_failure_policy": "explicit zero imputation for diagnostic aggregation only",
+    "scores": {
+      "entity_set_f1": 0.34060870720181785,
+      "row_matching_f1": 0.26966497638131226,
+      "exact_match_f1": 0.11294072153439859
+    }
+  },
+  "valid_gold_subset": {
+    "denominator": 67,
+    "model_error_policy": "zero",
+    "scores": {
+      "entity_set_f1": 0.3863621156319128,
+      "row_matching_f1": 0.30588862992507065,
+      "exact_match_f1": 0.12811186323304913
+    }
+  },
+  "new_model_calls": 0,
+  "original_report_modified": false,
+  "metric_reference": {
+    "protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "sha256": "d7d982fe1f9eaa020d00615ec8ab48ed6f0b6117cd4963a53f8e39473447010b",
+    "source": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\third_party\\buildingqa\\metrics.py",
+    "metrics": [
+      "entity_set_f1",
+      "row_matching_f1",
+      "exact_match_f1"
+    ],
+    "duplicates": "preserved",
+    "column_mapping": "one global mapping, optimized for Row Matching F1",
+    "exact_match_f1": "fixed column positions, one-to-one row matching; not binary EM",
+    "aggregation": "question mean and separate building macro average",
+    "model_failure": "zero",
+    "gold_failure": "invalid comparable summary",
+    "cancelled_question": "not scored; incomplete run"
+  }
+}

@@ -19,6 +19,8 @@ Gemini 使用 Google 官方 OpenAI 兼容地址 `https://generativelanguage.goog
 
 ## 主方法：BrickQA 作者方法
 
+本地执行器现启用 connected_bgp 工程适配：无限制简单 SELECT 在每次变量绑定后重排连接顺序，保持原 SPARQL/数据与180秒预算。含 LIMIT、排序、聚合、BIND、OPTIONAL、UNION、子查询等仍用原生求值。报告记录 rdflib_execution；无 ORDER BY 的结果行序可能变化。该适配不是作者源码原样执行器。需要原生对照时，在启动前设置 `$env:BRICK_RDFLIB_OPTIMIZER = 'native'`；默认值为 `connected_bgp`。不会自动接入 GraphDB。
+
 ## BuildingQA ReAct 对照评测
 
 2026-10-22 新增作者 GraphDB 分支。选择 ReAct 后，在“ReAct 执行后端”选择 GraphDB（网页默认）或 RDFLib。GraphDB 按加载建筑固定映射：TUC_building → `http://CHINAMI-42UOT9U:7200/repositories/TUC_building_test`，dflexlibs_multizone → `http://CHINAMI-42UOT9U:7200/repositories/DFLEX`，bldg11 → `http://CHINAMI-42UOT9U:7200/repositories/bldg11`。gold 和预测都发往同一仓库；不在失败时回退本地。CLI 可加 `--react-backend graphdb`；网页、API、CLI 未指定后端时均为 graphdb（2026-10-24 按作者 Notebook 默认值统一）；本地对照须显式指定 --react-backend rdflib。示例：`.\.venv\Scripts\python.exe evaluate.py --method react --react-backend graphdb --benchmark benchmarks/TUC_building_all.jsonl --context 5000 --workers 3`（会真实调用当前模型）。

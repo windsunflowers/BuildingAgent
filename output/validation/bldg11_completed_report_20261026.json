@@ -1,0 +1,39 @@
+{
+  "task_id": "eef502e8234cf4ab89ecd0f7b74764d16",
+  "report": "D:\\桌面\\HKUST\\Brickqa\\BrickQA\\output\\evaluations\\eef502e8234cf4ab89ecd0f7b74764d16\\report.json",
+  "summary": {
+    "total": 76,
+    "done": 76,
+    "errors": 2,
+    "gold_errors": 0,
+    "model_errors": 2,
+    "valid": true,
+    "complete": true,
+    "metric_protocol": "BuildingQA@b792a627419dfb679ad1f26e4d3dc325a758e95b",
+    "entity_set_f1": 0.36548762206588403,
+    "row_matching_f1": 0.28137814359687185,
+    "exact_match_f1": 0.11294072153439859,
+    "by_building": {
+      "bldg11": {
+        "total": 76,
+        "entity_set_f1": 0.36548762206588403,
+        "row_matching_f1": 0.28137814359687185,
+        "exact_match_f1": 0.11294072153439859
+      }
+    },
+    "building_macro": {
+      "entity_set_f1": 0.36548762206588403,
+      "row_matching_f1": 0.28137814359687185,
+      "exact_match_f1": 0.11294072153439859
+    }
+  },
+  "provenance": {
+    "source_report_id": "e69c5d55371da4354b7c3f5f74f2ba16f",
+    "source_sha256": "2341450d5269fc21156956050ef3d49db08f3d66ab2ed0568cbdb9271be2a726",
+    "retry_report_id": "e819b9f2c24d94ad18a066a3fbcf540ec",
+    "retry_sha256": "3af5ed916cdcb3352d528a725318cc9a3f9be29f16c90254c5557eb56410de40",
+    "reused_questions": 67,
+    "replaced_questions": 9,
+    "mixed_execution_policy": true
+  }
+}

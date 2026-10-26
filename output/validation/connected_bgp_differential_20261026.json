@@ -1,0 +1,583 @@
+{
+  "kind": "experimental_local_differential_test_not_production",
+  "passed": 96,
+  "random_seed": 260626,
+  "checks": [
+    {
+      "case": 0,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 34,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 33,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 37,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 2,
+      "same_multiset": true
+    },
+    {
+      "case": 0,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 38,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 49,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 50,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 1,
+      "same_multiset": true
+    },
+    {
+      "case": 1,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 21,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 21,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 42,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 21,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 64,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 64,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 4,
+      "same_multiset": true
+    },
+    {
+      "case": 2,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 21,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 34,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 34,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 36,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 4,
+      "same_multiset": true
+    },
+    {
+      "case": 3,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 17,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 38,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 64,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 64,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 3,
+      "same_multiset": true
+    },
+    {
+      "case": 4,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 32,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 33,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 37,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 0,
+      "same_multiset": true
+    },
+    {
+      "case": 5,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 32,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 49,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 51,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 1,
+      "same_multiset": true
+    },
+    {
+      "case": 6,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 16,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 36,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 49,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 50,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 3,
+      "same_multiset": true
+    },
+    {
+      "case": 7,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 36,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 50,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 51,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 5,
+      "same_multiset": true
+    },
+    {
+      "case": 8,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 38,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 56,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 57,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 1,
+      "same_multiset": true
+    },
+    {
+      "case": 9,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 36,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 39,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 41,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 4,
+      "same_multiset": true
+    },
+    {
+      "case": 10,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 18,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?o . OPTIONAL { ?o <urn:q> ?x } }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?o WHERE { { ?s <urn:p> ?o } UNION { ?s <urn:p> ?o } }",
+      "rows": 38,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p> ?m . ?m <urn:q> ?o . FILTER(?s != ?o) }",
+      "rows": 19,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>+ ?o . ?o <urn:q> ?x }",
+      "rows": 64,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?o WHERE { ?s <urn:p>* ?o . ?s <urn:q> ?x }",
+      "rows": 64,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s WHERE { ?s <urn:p> ?s . ?s <urn:q> ?x }",
+      "rows": 2,
+      "same_multiset": true
+    },
+    {
+      "case": 11,
+      "query": "SELECT ?s ?value WHERE { ?s <urn:q> ?value . ?s <urn:p> ?o }",
+      "rows": 19,
+      "same_multiset": true
+    }
+  ]
+}

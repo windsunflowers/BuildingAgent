@@ -1,0 +1,16 @@
+{
+  "source_report": "e69c5d55371da4354b7c3f5f74f2ba16f",
+  "retry": {
+    "task_id": "e819b9f2c24d94ad18a066a3fbcf540ec",
+    "method": "brickqa",
+    "react_backend": null
+  },
+  "request": {
+    "benchmark": "D:\\\u684c\u9762\\HKUST\\Brickqa\\BrickQA\\output\\validation\\bldg11_mortar009_retry_20261026.jsonl",
+    "method": "brickqa",
+    "context": 0,
+    "interface_language": "zh",
+    "workers": 5,
+    "react_backend": "rdflib"
+  }
+}

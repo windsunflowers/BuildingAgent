@@ -1,0 +1,21 @@
+{
+  "query_sha256": "ffe9e39388ee4bc3a722a5f34c1be4da4a012e9fce76f6d536964073b1c16ce2",
+  "source_triples": 62578,
+  "model_calls": 0,
+  "rdflib_serial": {
+    "elapsed_seconds": 21.01599999999962,
+    "status": "timed_out",
+    "error": "Query exceeded 20 seconds",
+    "rows": null
+  },
+  "graphdb": {
+    "elapsed_seconds": 6.687000000001717,
+    "columns": [
+      "temp_sensor",
+      "vav",
+      "zone"
+    ],
+    "rows": 470,
+    "endpoint": "http://CHINAMI-42UOT9U:7200/repositories/bldg11"
+  }
+}
