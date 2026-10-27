@@ -1,3 +1,9 @@
+## 2026-10-27 仓库历史结构（独立仓库）
+
+本仓库改为独立仓库：远程只保留 `windsunflowers/BuildingAgent`，不再关联原作者仓库。git 历史以作者基线 `49d9e283c2a3958e9be110583be6575cbd40039b` 的完整快照作为根提交 `Initial commit`（树内容与该提交逐字节一致），其后为本项目的本地提交；作者原有的中间提交对象不再位于 `main` 历史。
+
+可归因依据不因此改变：`third_party/brickqa_upstream/` 是作者源文件原样副本，其 `source_manifest.json` 记录上游提交哈希；`prompts/en/`、`third_party/buildingqa/` 同样记录来源。历史重写只改提交谱系，不改任何源码、数据、提示词或已保存实验报告的内容（改写前后工作树 diff 为空），也不能据此把工程适配表述为论文原样复现。
+
 ## 2026-10-26 bldg11 5000T 作者提示片段解析修复
 
 定位：prompts/bldg11_sample_5000.ttl 为5000行文本，末尾停在 sh:rule 空白节点内部，未闭合，RDFLib报EOF。与固定作者提交49d9e283c2a3958e9be110583be6575cbd40039b同路径文件原文一致，仅CRLF/LF差异。本地原始SHA256=fd704e01d857d71d45643392a448e992489545cfaa527416111e5911f8b0ea82；作者/LF归一化SHA256=6c0495503d2fb7a145b7ecaba6f9c776ce725a9f0fc043e7637346698dc990c7。
