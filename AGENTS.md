@@ -16,6 +16,8 @@
 
 ## 保持实验条件明确
 
+- 2026-10-26 bldg11_sample_5000.ttl 是经固定SHA核验的作者5000行截断提示原文，允许作为 prompt text fragment 原样传入，不要求Graph.parse成功。仅白名单确切文件/哈希/EOF可走此路径，其他损坏文件仍拒绝。triples=null、line_count=5000，明确标注不完整提示片段，不能当执行图或宣称已解析5000三元组。
+
 - 2026-10-26 九道标准查询修复：本地RDFLib connected_bgp 为显式工程适配（不是作者原生执行器）。仅 Project/Distinct/BGP 的无限制SELECT启用逐步连接重排，其他代数回原生；SPARQL/TTL不改、单次预算180秒不改。通过 BRICK_RDFLIB_OPTIMIZER=native 可对照。必须记录版本/模式及无ORDER BY行序风险，不连接GraphDB解决此问题，不覆盖历史报告。
 
 - 2026-10-26 用户明确 ReAct 目标为 BuildingQA 方法 + qwen-plus-2025-12-01，不因方法对齐自动切换 Gemini。仅 ReAct 使用 Notebook OpenAI SDK 默认 max_retries=2（通过 per-call SDK options），应用层1次；保留用户300秒超时与最多3轮，记录日志和元数据。覆盖下方旧 sdk_max_retries=0 说明；BrickQA 重试不受影响。

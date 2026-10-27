@@ -1,0 +1,16 @@
+{
+  "context": {
+    "file": "prompts/bldg11_sample_5000.ttl",
+    "sha256": "fd704e01d857d71d45643392a448e992489545cfaa527416111e5911f8b0ea82",
+    "triples": null,
+    "kind": "author_prompt_text_fragment",
+    "parse_status": "incomplete_upstream_turtle",
+    "line_count": 5000,
+    "nominal_context_label": "5000T",
+    "source_commit": "49d9e283c2a3958e9be110583be6575cbd40039b",
+    "source_normalized_sha256": "6c0495503d2fb7a145b7ecaba6f9c776ce725a9f0fc043e7637346698dc990c7"
+  },
+  "execution_building": "bldg11",
+  "execution_triples": 62578,
+  "model_calls": 0
+}

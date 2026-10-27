@@ -171,6 +171,7 @@ function renderEvaluation(d){
   $('evalSummary').replaceChildren(facts,metrics);
   $('evalSummary').append(el('p','evaluation-note metric-protocol',t('评分协议：')+(d.metric_protocol||'BuildingQA (legacy report)')+' · '+t('汇总：已评测题目均值；建筑宏平均另存报告。')));
   $('evalSummary').append(el('p','evaluation-note',t('本轮方法：')+((d.configuration?.method||'brickqa')==='react'?'ReAct · BuildingQA':'BrickQA')));
+  if(d.configuration?.context_ttl?.kind==='author_prompt_text_fragment')$('evalSummary').append(el('p','evaluation-note',t('本轮使用作者原始提示片段：文件末尾 Turtle 不完整，仅作为模型上下文原文；执行仍使用完整建筑图谱，实际三元组数未标定。')));
   const localExecution=d.configuration?.method_policy?.rdflib_execution||d.configuration?.baseline_reference?.rdflib_execution;
   if(localExecution?.optimizer==='connected_bgp')$('evalSummary').append(el('p','evaluation-note',t('本轮启用本地 RDFLib 连接顺序优化；查询与数据不变，单次预算仍为 180 秒。此项属于执行器工程适配。')));
   if(d.configuration?.completion_provenance)$('evalSummary').append(el('p','evaluation-note',t('本报告由历史已评测题与本次补跑题合成，逐题来源已记录；并非整套题的新模型重跑。')));

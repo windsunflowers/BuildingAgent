@@ -5,6 +5,7 @@ window.BrickI18n = (() => {
   try { language = localStorage.getItem('brickqa-language'); } catch (_) {}
   if (!['zh', 'en'].includes(language)) language = 'zh';
   const english = {
+    '本轮使用作者原始提示片段：文件末尾 Turtle 不完整，仅作为模型上下文原文；执行仍使用完整建筑图谱，实际三元组数未标定。':'This run uses the original upstream prompt fragment, whose Turtle ending is incomplete. Its text is preserved for model context; queries still execute on the full building graph. The fragment has no verified triple count.',
     '本轮启用本地 RDFLib 连接顺序优化；查询与数据不变，单次预算仍为 180 秒。此项属于执行器工程适配。':'This run uses local RDFLib join ordering. Queries and data are unchanged; the per-query budget remains 180 seconds. This is an execution-layer adaptation.',
     '本报告由历史已评测题与本次补跑题合成，逐题来源已记录；并非整套题的新模型重跑。':'This report combines previously evaluated questions and the new retry subset, with per-question provenance. It is not a fresh model run over the full benchmark.',
     '计算官方 F1（列匹配可能耗时）':'Computing official F1 (column alignment may take time)',

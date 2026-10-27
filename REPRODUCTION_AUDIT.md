@@ -1,3 +1,13 @@
+## 2026-10-26 bldg11 5000T 作者提示片段解析修复
+
+定位：prompts/bldg11_sample_5000.ttl 为5000行文本，末尾停在 sh:rule 空白节点内部，未闭合，RDFLib报EOF。与固定作者提交49d9e283c2a3958e9be110583be6575cbd40039b同路径文件原文一致，仅CRLF/LF差异。本地原始SHA256=fd704e01d857d71d45643392a448e992489545cfaa527416111e5911f8b0ea82；作者/LF归一化SHA256=6c0495503d2fb7a145b7ecaba6f9c776ce725a9f0fc043e7637346698dc990c7。
+
+根因：网页 _prepare_ttl_context 对所有提示TTL强制Graph.parse计数，错误地把作者的截断提示文本等同于完整可解析执行图。修复为仅对确切项目路径、固定归一化SHA、原EOF错误的已审查作者文件接受原始提示文本。保留全部原文字节和提示内容，不补括号、不删末尾、不重新采样、不作为执行图。其他损坏文件照旧400拒绝。
+
+上下文元数据 kind=author_prompt_text_fragment，parse_status=incomplete_upstream_turtle，line_count=5000，triples=null，并记录源提交与双哈希。模型不额外注入这些说明；UI在报告展示提示片段状态。5000T为文件名/实验标签，不能把5000行称作已验证5000条三元组。原数据执行仍为完整bldg11图，未改原样本或历史报告。
+
+100项相关离线回归通过，包括原字节保留、未审查改动拒绝、提示原文注入而执行图不变，以及既有中英文/评测/基线测试。服务空闲重启启用；未请求模型或自动重跑评测。
+
 ## 2026-10-26 九道标准查询超时修复（本地 RDFLib）
 
 在用户明确要求解决九道标准查询超时、保留本地 RDFLib 与单次180秒预算后，将已验证的连接重排集成为显式执行器适配。rdflib_execution.py 通过 CUSTOM_EVALS 仅为 Project/Distinct/BGP 构成的无限制 SELECT 在每步绑定后重选未绑定节点最少的模式；单模式仍调用 RDFLib 原 evalBGP。包含 Slice/LIMIT/OFFSET、ORDER BY、聚合、BIND、OPTIONAL、UNION、子查询等的整个查询不启用优化。无查询重写、无图改动、无GraphDB、无LIMIT追加、无金标准改写。优化上下文按请求隔离并覆盖惰性物化，结束或异常均恢复。BRICK_RDFLIB_OPTIMIZER=native 可回到原生求值；默认 connected_bgp。作者源文件不修改，不能把该适配标作执行器完全原样。

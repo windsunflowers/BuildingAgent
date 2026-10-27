@@ -160,13 +160,32 @@ def _prepare_ttl_context(req):
     try:
         triples = len(Graph().parse(data=content, format='turtle'))
     except Exception as exc:
+        from rdflib.plugins.parsers.notation3 import BadSyntax
+        # The pinned author artifact is truncated mid-statement at 5000 lines.
+        # It is valid prompt text, not a parseable execution graph. Accept only
+        # this exact reviewed source (allowing Windows newline conversion).
+        author_fragment = BASE_DIR / 'prompts' / 'bldg11_sample_5000.ttl'
+        expected = '6c0495503d2fb7a145b7ecaba6f9c776ce725a9f0fc043e7637346698dc990c7'
+        if (path == author_fragment.resolve() and isinstance(exc, BadSyntax)
+                and 'EOF' in str(exc)
+                and hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() == expected):
+            return {'content':content, 'raw':raw, 'file':path.relative_to(BASE_DIR).as_posix(),
+                    'sha256':hashlib.sha256(raw).hexdigest(), 'triples':None,
+                    'kind':'author_prompt_text_fragment', 'parse_status':'incomplete_upstream_turtle',
+                    'line_count':len(content.splitlines()), 'nominal_context_label':'5000T',
+                    'source_commit':'49d9e283c2a3958e9be110583be6575cbd40039b',
+                    'source_normalized_sha256':expected}
         raise HTTPException(status_code=400, detail='上下文 TTL 解析失败。') from exc
     return {'content': content, 'raw': raw, 'file': path.relative_to(BASE_DIR).as_posix(),
             'sha256': hashlib.sha256(raw).hexdigest(), 'triples': triples}
 
 
 def _context_metadata(snapshot):
-    return {key: snapshot[key] for key in ('file', 'sha256', 'triples')} if snapshot else None
+    if not snapshot:
+        return None
+    keys = ('file', 'sha256', 'triples', 'kind', 'parse_status', 'line_count',
+            'nominal_context_label', 'source_commit', 'source_normalized_sha256')
+    return {key:snapshot[key] for key in keys if key in snapshot}
 
 
 def _serialize_decomposition(decomp):
